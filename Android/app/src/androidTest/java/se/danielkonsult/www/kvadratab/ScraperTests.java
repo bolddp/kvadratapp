@@ -13,6 +13,8 @@ import se.danielkonsult.www.kvadratab.entities.MainPageWebData;
 import se.danielkonsult.www.kvadratab.services.scraper.MainPageParser;
 import se.danielkonsult.www.kvadratab.services.scraper.MainPageScraper;
 import se.danielkonsult.www.kvadratab.services.scraper.MainPageScraperListener;
+import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageData;
+import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageParser;
 
 /**
  * Tests of web page scraper functionality.
@@ -63,5 +65,320 @@ public class ScraperTests {
             Assert.assertTrue(webData.Id > 0);
             Assert.assertTrue(webData.Name != null && webData.Name != "");
         }
+    }
+
+    @Test
+    public void shouldScrapeSummaryWebPage() {
+
+        final String testData = "HTTP/1.1 200 OK\n" +
+                "Content-Type: text/html; charset=UTF-8\n" +
+                "Server: Microsoft-IIS/7.5\n" +
+                "X-Powered-By: PHP/5.4.24\n" +
+                "X-Pingback: http://www.kvadrat.se/xmlrpc.php\n" +
+                "Link: <http://www.kvadrat.se/?p=110>; rel=shortlink\n" +
+                "X-Powered-By: ASP.NET\n" +
+                "Date: Thu, 08 Sep 2016 20:36:57 GMT\n" +
+                "Content-Length: 17408\n" +
+                "\n" +
+                "<!DOCTYPE html>\n" +
+                "<html xmlns:og=\"http://ogp.me/ns#\" xmlns:fb=\"https://www.facebook.com/2008/fbml\">\n" +
+                "\t<head>\n" +
+                "\t\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                "\t\t<meta charset=\"utf-8\" />\n" +
+                "\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\" />\n" +
+                "\t\t<meta name=\"description\" content=\"\">\n" +
+                "\t\t<meta property=\"fb:app_id\" content=\"\" />\n" +
+                "\t\t<meta property=\"fb:admins\" content=\"\" />\n" +
+                "\t\t<!-- <meta property=\"og:image\" content=\"http://www.kvadrat.se/img/logo.png\" />\t -->\n" +
+                "\t\t<meta property='og:url' content='http://www.kvadrat.se'/>\n" +
+                "\t\t<meta property='og:site_name' content='Kvadrat.se'/>\n" +
+                "\t\t<meta property='og:description' content=''/>\n" +
+                "\t\t<meta property='og:type' content='website'/>\n" +
+                "\t\t<meta property='og:image' content='http://www.kvadrat.se/logotyp_og.gif'/>\n" +
+                "\n" +
+                "\t\t<title>Kvadrat.se &raquo; Konsulter</title>    \n" +
+                "\n" +
+                "\t\t<link rel=\"shortcut icon\" href=\"http://www.kvadrat.se/wp-content/themes/blocks/favicon.ico\" type=\"image/x-icon\" />\n" +
+                "\n" +
+                "\t\t<link rel=\"apple-touch-icon-precomposed\" href=\"/apple_57.png\" />\n" +
+                "\t\t<link rel=\"apple-touch-icon-precomposed\" sizes=\"72x72\" href=\"/apple_72.png\" />\n" +
+                "\t\t<link rel=\"apple-touch-icon-precomposed\" sizes=\"114x114\" href=\"/apple_114.png\" />\n" +
+                "\t\t<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css\">\n" +
+                "\t\t<script src='http://www.kvadrat.se/wp-content/themes/blocks/external/js/custom-selectbox.js' defer></script>\n" +
+                "\t\t<!-- Start of 'Sharethis' related -->\n" +
+                "\t\t<script type=\"text/javascript\">var switchTo5x= true;</script><!--without this, wrong type of cursor on all pages...-->\n" +
+                "\t\t<script type=\"text/javascript\" src=\"http://w.sharethis.com/button/buttons.js\"></script>\n" +
+                "\t\t<script type=\"text/javascript\">stLight.options({publisher: \"4fae27fe-5ddf-48d3-a391-f3f9a65b43e9\", doNotHash: true, doNotCopy: false, hashAddressBar: false, onhover:false});</script>\n" +
+                "\t\t<!-- End of 'Sharethis' related -->\n" +
+                "\t\t<!-- Start of 'ModalPopup' related -->\n" +
+                "\t\t<link rel=\"stylesheet\" href='http://www.kvadrat.se/wp-content/themes/blocks/external/css/overlay.css'>\n" +
+                "\n" +
+                "\t\t<!--<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>-->\n" +
+                "\t\t<script src='http://www.kvadrat.se/wp-content/themes/blocks/external/jquery/jquery.min.js'></script>\n" +
+                "\t\t<script src='http://www.kvadrat.se/wp-content/themes/blocks/external/jquery/overlay.js'></script>\n" +
+                "\t\t<!--<script src='http://www.kvadrat.se/wp-content/themes/blocks/external/jquery/overlay.min.js'></script>-->\n" +
+                "\t\t<!-- Vendemore Tracking -->\n" +
+                "\t\t<script>document.write(\"<script type='text/javascript' src='https://d2hya7iqhf5w3h.cloudfront.net/scripts/analytics.js?v=\" + Date.now() + \"' async><\\/script>\");</script>\n" +
+                "\t\t<meta http-equiv=\"Cache-control\" content=\"no-cache\">\n" +
+                "\n" +
+                "\t\t\n" +
+                "\t\n" +
+                "\t\t<!-- End of 'ModalPopup' related -->\n" +
+                "\t\t<!-- CMS automatic header start -->      \n" +
+                "    <link rel=\"alternate\" type=\"application/rss+xml\" title=\"Kvadrat.se &raquo; Konsulter kommentarsflöde\" href=\"http://www.kvadrat.se/konsulter/konsulter/feed/\" />\n" +
+                "<link rel='stylesheet' id='wprls-style-css'  href='http://www.kvadrat.se/wp-content/plugins/slider-slideshow/admin/includes/../css/public/slider-pro.min.css?ver=4.1.9' type='text/css' media='all' />\n" +
+                "<link rel='stylesheet' id='theme-style-css'  href='http://www.kvadrat.se/wp-content/themes/blocks/css/styles.css?ver=20130102' type='text/css' media='all' />\n" +
+                "<link rel='stylesheet' id='cpsh-shortcodes-css'  href='http://www.kvadrat.se/wp-content/plugins/column-shortcodes/assets/css/shortcodes.css?ver=0.6.6' type='text/css' media='all' />\n" +
+                "<script type='text/javascript' src='http://www.kvadrat.se/wp-includes/js/jquery/jquery.js?ver=1.11.1'></script>\n" +
+                "<script type='text/javascript' src='http://www.kvadrat.se/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'></script>\n" +
+                "<script type='text/javascript' src='http://www.kvadrat.se/wp-content/plugins/slider-slideshow/admin/includes/../js/public/rsslider.js?ver=4.1.9'></script>\n" +
+                "<link rel=\"EditURI\" type=\"application/rsd+xml\" title=\"RSD\" href=\"http://www.kvadrat.se/xmlrpc.php?rsd\" />\n" +
+                "<link rel=\"wlwmanifest\" type=\"application/wlwmanifest+xml\" href=\"http://www.kvadrat.se/wp-includes/wlwmanifest.xml\" /> \n" +
+                "<meta name=\"generator\" content=\"WordPress 4.1.9\" />\n" +
+                "      \n" +
+                "\t\t<!-- CMS automatic header end --> \n" +
+                "<script>\n" +
+                "  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){\n" +
+                "  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),\n" +
+                "  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)\n" +
+                "  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');\n" +
+                "\n" +
+                "  ga('create', 'UA-55987518-1', 'auto');\n" +
+                "  ga('send', 'pageview');\n" +
+                "</script>     \n" +
+                "\t</head>\n" +
+                "\t<body class='unknown' id='body'>\n" +
+                "  \n" +
+                "<header>\n" +
+                "<!--[if gte IE 9]>\n" +
+                "  <style type=\"text/css\">\n" +
+                "    .gradient {\n" +
+                "       filter: none;\n" +
+                "    }\n" +
+                "  </style>\n" +
+                "<![endif]-->\n" +
+                "  <div class='wrapper' title=\"\">\n" +
+                "    <a href=\"/\" class='logo-container'>\n" +
+                "      <div class='logo'></div>\n" +
+                "    </a>  \n" +
+                "    <nav class='navigation-container'>\n" +
+                "\t\t<ul class=\"menu-container\">\n" +
+                "      <li class='menu-item'><a href='http://www.kvadrat.se/'>Start</a></li><li class='menu-item'><a href='http://www.kvadrat.se/nyheter/'>Nyheter</a></li><li class='menu-item'><a href='http://www.kvadrat.se/blogg/'>Blogg</a></li><li class='menu-item'><a href='http://www.kvadrat.se/kalender/'>Kalender</a></li><li class='menu-item'><a href='http://www.kvadrat.se/om-oss/'>Om oss</a></li><li class='menu-item'><a href='http://www.kvadrat.se/kontakt/'>Kontakt</a></li><li class='menu-item'><a href='http://www.kvadrat.se/logga-in-pa-friendweb/'>Logga in på vår Friendsweb</a></li>\t\t\n" +
+                "\t\t</ul>\n" +
+                "     <div class='mobile-menu-container'>\n" +
+                "\t\t\t <div class='mobile-menu'>\n" +
+                "\t\t\t\t\t\t<select>\n" +
+                "\t\t\t\t\t\t\t<option value=\"/\">Hem</option>\n" +
+                "\t\t\t\t\t\t\t<option value=\"/bli-kvadratare\">Bli kvadratare</option>\n" +
+                "\t\t\t\t\t\t\t<option value='/bli-kvadratare/att-vara-kvadratare'> - Att vara kvadratare</option><option value='/bli-kvadratare/hur-det-fungerar'> - Varför Kvadrat?</option><option value='/bli-kvadratare/eget-bolag-hos-oss'> - Eget bolag hos oss</option><option value='/bli-kvadratare/mjukstart'> - Mjukstart</option><option value='/bli-kvadratare/underkonsult'> - Underkonsult</option><option value='/bli-kvadratare/kvadratboken'> - Kvadratboken</option>\t\t\t\t\t\t\t<option value=\"/konsulter\">Anlita Kvadrat</option>\t\t\t\t\t\t\t\n" +
+                "\t\t\t\t\t\t\t<option value='/konsulter/konsulter'> - Konsulter</option><option value='/konsulter/referenser'> - Referenser</option><option value='/konsulter/kontakta-en-saljare'> - Kontakta en säljare</option><option value='/konsulter/publikationer'> - Publikationer</option><option value='/konsulter/erbjudande'> - Erbjudande</option>\t\t\t\t\t\t\n" +
+                "\t\t\t\t\t\t\t<option value='http://www.kvadrat.se/'>Start</option><option value='http://www.kvadrat.se/nyheter/'>Nyheter</option><option value='http://www.kvadrat.se/blogg/'>Blogg</option><option value='http://www.kvadrat.se/kalender/'>Kalender</option><option value='http://www.kvadrat.se/om-oss/'>Om oss</option><option value='http://www.kvadrat.se/kontakt/'>Kontakt</option><option value='http://www.kvadrat.se/logga-in-pa-friendweb/'>Logga in på vår Friendsweb</option>\t\t\t\t\t\t</select>\n" +
+                "\t\t\t\t</div>\n" +
+                "\t\t\t\t<a class=\"mobile-search\" href=\"/mobile-search\">Sök på Kvadrat</a>\n" +
+                "      </div>\n" +
+                "\t  <div class='search-container'>\n" +
+                "\t\t  <form action=\"/results\" method=\"post\">\n" +
+                "\t\t\t<input class='search' name=\"comp\">\t  \n" +
+                "\t\t  </form>\n" +
+                "\t  </div>\n" +
+                "\t\t<div class='shortcut-container ' id='shortcut1'><a href='/bli-kvadratare'><h2>Bli kvadratare</h2>Vill du bli konsult hos oss?</a></div><div class='shortcut-container active-tab' id='shortcut2'><a href='/konsulter'><h2>Anlita Kvadrat</h2>Vad behöver du hjälp med?</a></div>\t  \t\n" +
+                "    </nav>  \n" +
+                "  </div>\n" +
+                "</header>\n" +
+                "<div id='consultants' class='with-nav'>\n" +
+                "\t<div class='wrapper'>\n" +
+                "\t\t<div class='section-subnav' title=\"\">\n" +
+                "\t<div class='wrapper'>\n" +
+                "\t\t<ul id='subnav'>\n" +
+                "        <li class=\"page_item page-item-110 current_page_item\"><a href=\"http://www.kvadrat.se/konsulter/konsulter/\">Konsulter</a></li>\n" +
+                "<li class=\"page_item page-item-1455 page_item_has_children\"><a href=\"http://www.kvadrat.se/konsulter/erbjudande/\">Erbjudande</a></li>\n" +
+                "<li class=\"page_item page-item-1451\"><a href=\"http://www.kvadrat.se/konsulter/publikationer/\">Publikationer</a></li>\n" +
+                "<li class=\"page_item page-item-112 page_item_has_children\"><a href=\"http://www.kvadrat.se/konsulter/referenser/\">Referenser</a></li>\n" +
+                "<li class=\"page_item page-item-114\"><a href=\"http://www.kvadrat.se/konsulter/kontakta-en-saljare/\">Kontakta en säljare</a></li>\n" +
+                "\t\t</ul>\n" +
+                "\t</div>\n" +
+                "</div>\n" +
+                "<div id='share-button'>Dela\n" +
+                "<!--\t<span class=\"st_sharethis\" \n" +
+                "\t\tst_title='Konsulter' \n" +
+                "\t\tst_url='http://www.kvadrat.se/konsulter/konsulter/' \n" +
+                "\t\tst_image='http://www.kvadrat.se/wp-content/themes/blocks/img/share-image.png' \n" +
+                "\t\tst_summary='En konsult på Kvadrat har både lång branscherfarenhet och spetskompetens inom sitt område. Vi har strukturer för hur vi tar till vara på ny och aktuell kunskap och våra konsulter utvecklas ständigt. Därför kan vi också på Kvadrat erbjuda marknadens bästa konsulter. Välj område här bredvid och läs mer om våra konsulter och hur de kan hjälpa dig och din organisation.'></span> -->\t\n" +
+                "</div>\n" +
+                "<script>\n" +
+                "\t\tstWidget.addEntry({\n" +
+                "\t\t\t\t\t \"service\":\"sharethis\",\n" +
+                "\t\t\t\t\t \"element\":document.getElementById('share-button'),\n" +
+                "\t\t\t\t\t \"url\":\"http://www.kvadrat.se/konsulter/konsulter/\",\n" +
+                "\t\t\t\t\t \"title\":\"Konsulter\",\n" +
+                "\t\t\t\t\t \"type\":\"custom\",\n" +
+                "\t\t\t\t\t \"image\":\"http://www.kvadrat.se/wp-content/themes/blocks/img/share-image.png\",\n" +
+                "\t\t\t\t\t \"summary\":\"En konsult på Kvadrat har både lång branscherfarenhet och spetskompetens inom sitt område. Vi har strukturer för hur vi tar till vara på ny och aktuell kunskap och våra konsulter utvecklas ständigt. Därför kan vi också på Kvadrat erbjuda marknadens bästa konsulter. Välj område här bredvid och läs mer om våra konsulter och hur de kan hjälpa dig och din organisation.\"\n" +
+                "\t\t});\n" +
+                "</script>\t\n" +
+                "\t\t\n" +
+                "\t\t<div id='wide-content'>\n" +
+                "\t\t\t<div class='section-consultants-intro' title=\"\">\n" +
+                "<p id='pre-heading'>Våra konsulter</p><div class='small-text'> Våra kunder vänder sig återkommande till oss för att de uppskattar våra konsulter för deras personliga egenskaper och deras djupa kunskap inom många olika specialistområden. Orsaken är att vi är annorlunda än andra konsultföretag – på riktigt! \n" +
+                "\t\tHos oss hittar du personer som lever sin dröm om att driva ett eget företag, samtidigt som dom har fördelarna av ett större konsultföretag. \n" +
+                "\t\tVåra konsulter drivs av att ligga i framkant som yrkespersoner och den starka gemenskap som präglar Kvadrat. \n" +
+                "</br></br>\n" +
+                "En konsult på Kvadrat har både lång branscherfarenhet och spetskompetens inom sitt område. Vi har strukturer för hur vi tar till vara på ny och aktuell kunskap och våra konsulter utvecklas ständigt. Därför kan vi också på Kvadrat erbjuda marknadens bästa konsulter. Välj område här bredvid och läs mer om våra konsulter och hur de kan hjälpa dig och din organisation.\n" +
+                "</br></br>\n" +
+                " \n" +
+                "Nedan kan du fritt söka efter konsulter med en specialistkompetens eller välja de förvalda kompetensområdena.\n" +
+                " </div></div>\n" +
+                "<form action=\"\" method=\"post\" class=\"consultants-form\" id=\"form-consultantsearch-filter\">\n" +
+                "    <input class=\"consultants-search\" id=\"consultantsearch-filter\" autocomplete=\"off\" >\n" +
+                "</form>\n" +
+                "\n" +
+                "<h2 class=\"small-heading\">Visa konsulter som kan:</h2>\n" +
+                "\n" +
+                "<div class=\"filter-section\" id=\"tag-filter\">\n" +
+                "    <a class=\"filter-tag active-tag\" data-id=\"0\" href=\"\">Alla konsulter</a>\n" +
+                "\t<a class=\"filter-tag\" data-id=\"1\" href=\"\">IT Management</a>\n" +
+                "    <a class=\"filter-tag\" data-id=\"2\" href=\"\">Management</a>\n" +
+                "    <a class=\"filter-tag\" data-id=\"3\" href=\"\">Projektledning</a>\n" +
+                "    <a class=\"filter-tag\" data-id=\"4\" href=\"\">Systemutveckling</a>\n" +
+                "    <a class=\"filter-tag\" data-id=\"5\" href=\"\">Test</a>\n" +
+                "    <a class=\"filter-tag\" data-id=\"6\" href=\"\">Arkitektur</a>\n" +
+                "    <a class=\"filter-tag\" data-id=\"7\" href=\"\">Krav</a>\n" +
+                "    <a class=\"filter-tag\" data-id=\"8\" href=\"\">Utbildning</a>\n" +
+                "    <div style=\"clear:both;\"></div>\n" +
+                "</div>\n" +
+                "\n" +
+                "<h2 class=\"small-heading\">Visa konsulter från kontoret i:</h2>\n" +
+                "\n" +
+                "<div class='filter-section' id='office-filter'>\n" +
+                "\t<a class='filter-tag active-tag' data-id='0' href=''>Alla kontor</a>\n" +
+                "\t<a class='filter-tag ' data-id='2' href=''>Stockholm</a>\n" +
+                "\t<a class='filter-tag' data-id='6' href=''>Linköping</a>\n" +
+                "\t<a class='filter-tag' data-id='12' href=''>Malmö</a>\n" +
+                "\t<a class='filter-tag' data-id='15' href=''>Göteborg</a>\n" +
+                "\t<a class='filter-tag' data-id='17' href=''>Jönköping</a>\n" +
+                "\t<a class='filter-tag' data-id='18' href=''>Örebro</a>\n" +
+                "\t\n" +
+                "</div>\n" +
+                "\n" +
+                "<div style=\"clear:both;\" />\n" +
+                "<img src=\"/wp-content/themes/blocks/img/ajax-loader.gif\" style=\"display:none\" id=\"ajax-loader\">\n" +
+                "<div id='consultant-grid'></div>\t\t</div>\n" +
+                "\t</div>\n" +
+                "</div>\n" +
+                "\n" +
+                "  <footer>\n" +
+                "  <div class='gutter-wrapper'>\t\n" +
+                "\t\t\t\t<div class='office-container'>\n" +
+                "\t\t\t  <div class='office'>\n" +
+                "\t\t\t\t<h3>Stockholm</h3>\n" +
+                "\t\t\t\t<div class='address'><a href=\"/kontakt/kontaktstockholm/\">Kvadrat Stockholm</a><br/>\n" +
+                "\t\t\t\t\tSveavägen 90<br/>\n" +
+                "\t\t\t\t\t104 30 Stockholm<br/>\t\t\t\t\t\n" +
+                "\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='number'>Tel: 08 - 441 87 00\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='email'><a href=\"mailto:stockholm@kvadrat.se\">stockholm@kvadrat.se</a></div>\n" +
+                "\t\t\t  </div>\n" +
+                "\t\t\t</div>\n" +
+                "\t\t\t\t\t<div class='office-container'>\n" +
+                "\t\t\t  <div class='office'>\n" +
+                "\t\t\t\t<h3>Linköping</h3>\n" +
+                "\t\t\t\t<div class='address'><a href=\"/kontakt/kontaktlinkoping/\">Kvadrat Linköping</a><br/>\n" +
+                "\t\t\t\t\tRepslagaregatan 19<br/>\n" +
+                "\t\t\t\t\t582 22 Linköping<br/>\t\t\t\t\t\n" +
+                "\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='number'>Tel: 08 - 441 87 00\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='email'><a href=\"mailto:linkoping@kvadrat.se\">linkoping@kvadrat.se</a></div>\n" +
+                "\t\t\t  </div>\n" +
+                "\t\t\t</div>\n" +
+                "\t\t\t\t\t<div class='office-container'>\n" +
+                "\t\t\t  <div class='office'>\n" +
+                "\t\t\t\t<h3>Malmö</h3>\n" +
+                "\t\t\t\t<div class='address'><a href=\"/kontakt/kontaktmalmo/\">Kvadrat Malmö</a><br/>\n" +
+                "\t\t\t\t\tMäster Johansgatan 6<br/>\n" +
+                "\t\t\t\t\t211 21 Malmö<br/>\t\t\t\t\t\n" +
+                "\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='number'>Tel: 040 - 12 76 30 \t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='email'><a href=\"mailto:malmo@kvadrat.se\">malmo@kvadrat.se</a></div>\n" +
+                "\t\t\t  </div>\n" +
+                "\t\t\t</div>\n" +
+                "\t\t\t\t\t<div class='office-container'>\n" +
+                "\t\t\t  <div class='office'>\n" +
+                "\t\t\t\t<h3>Örebro</h3>\n" +
+                "\t\t\t\t<div class='address'><a href=\"/kontakt/kontaktorebro/\">Kvadrat Örebro</a><br/>\n" +
+                "\t\t\t\t\tVasastrand 11<br/>\n" +
+                "\t\t\t\t\t703 54 Örebro<br/>\t\t\t\t\t\n" +
+                "\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='number'>Tel: 08 - 441 87 00\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='email'><a href=\"mailto:orebro@kvadrat.se\">orebro@kvadrat.se</a></div>\n" +
+                "\t\t\t  </div>\n" +
+                "\t\t\t</div>\n" +
+                "\t\t\t\t\t<div class='office-container'>\n" +
+                "\t\t\t  <div class='office'>\n" +
+                "\t\t\t\t<h3>Jönköping</h3>\n" +
+                "\t\t\t\t<div class='address'><a href=\"/kontakt/kontaktjonkoping/\">Kvadrat Jönköping</a><br/>\n" +
+                "\t\t\t\t\tSödra Strandgatan 3<br/>\n" +
+                "\t\t\t\t\t553 20 Jönköping<br/>\t\t\t\t\t\n" +
+                "\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='number'>Tel: 08 - 441 87 00\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='email'><a href=\"mailto:jonkoping@kvadrat.se\">jonkoping@kvadrat.se</a></div>\n" +
+                "\t\t\t  </div>\n" +
+                "\t\t\t</div>\n" +
+                "\t\t\t\t\t<div class='office-container'>\n" +
+                "\t\t\t  <div class='office'>\n" +
+                "\t\t\t\t<h3>Göteborg</h3>\n" +
+                "\t\t\t\t<div class='address'><a href=\"/kontakt/kontaktgoteborg/\">Kvadrat Göteborg</a><br/>\n" +
+                "\t\t\t\t\tKyrkogatan 13<br/>\n" +
+                "\t\t\t\t\t411 15  Göteborg<br/>\t\t\t\t\t\n" +
+                "\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='number'>Tel: 031-21 70 20\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='email'><a href=\"mailto:goteborg@kvadrat.se\">goteborg@kvadrat.se</a></div>\n" +
+                "\t\t\t  </div>\n" +
+                "\t\t\t</div>\n" +
+                "\t\t\t\t\t<div class='office-container'>\n" +
+                "\t\t\t  <div class='office'>\n" +
+                "\t\t\t\t<h3>Management</h3>\n" +
+                "\t\t\t\t<div class='address'><a href=\"/kontakt/management/\">Kvadrat Management</a><br/>\n" +
+                "\t\t\t\t\tSveavägen 90<br/>\n" +
+                "\t\t\t\t\t104 30 Stockholm<br/>\t\t\t\t\t\n" +
+                "\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='number'>Tel: 08 - 441 87 00\t\t\t\t</div>\n" +
+                "\t\t\t\t<div class='email'><a href=\"mailto:management@kvadrat.se\">management@kvadrat.se</a></div>\n" +
+                "\t\t\t  </div>\n" +
+                "\t\t\t</div>\n" +
+                "\t\t\t\t\n" +
+                "\t<div id=\"follow\">\n" +
+                "                    <a href=\"https://www.linkedin.com/company/1789202\" target=\"_blank\" title=\"LinkedIn\">\n" +
+                "                        <i class=\"fa fa-linkedin-square fa-lg\" style=\"color:white; padding-right: 10px;\"></i>\n" +
+                "                    </a>\n" +
+                "                    <a href=\"https://twitter.com/kvadratab\" target=\"_blank\" title=\"Twitter\">\n" +
+                "                        <i class=\"fa fa-twitter-square fa-lg\" style=\"color:white; padding-right: 10px;\"></i>\n" +
+                "                    </a>\n" +
+                "                    <a href=\"https://www.youtube.com/channel/UCipRFPJuuECJAq_wlbDxH5A\" target=\"_blank\" title=\"YouTube\">\n" +
+                "                        <i class=\"fa fa-youtube-square fa-lg\" style=\"color:white; padding-right: 10px;\"></i>\n" +
+                "                    </a>\n" +
+                "                    <a href=\"https://www.facebook.com/KvadratSE/\" target=\"_blank\" title=\"Facebook\">\n" +
+                "                        <i class=\"fa fa-facebook-square fa-lg\" style=\"color:white; padding-right: 10px;\"></i>\n" +
+                "                    </a>\n" +
+                "                    <a href=\"http://pratikvadrat.libsyn.com/\" target=\"_blank\" title=\"Podcast - Prat i Kvadrat\">\n" +
+                "                        <i class=\"fa fa-microphone fa-lg\" style=\"color:white;\"></i>\n" +
+                "                    </a>\n" +
+                "                </div>\n" +
+                "\t\t\t\t<a href=\"http://www.kvadrat.se/allakonsulter.html\">\n" +
+                "\t\t\t\t<img id=\"allakonsulter\" src=\"http://www.kvadrat.se/wp-content/themes/blocks/img/konsulter.gif\" /> </a>\n" +
+                "  </div>\n" +
+                "</footer>\n" +
+                "\n" +
+                "<!-- Performance optimized by W3 Total Cache. Learn more: http://www.w3-edge.com/wordpress-plugins/\n" +
+                "\n" +
+                "Page Caching using disk: enhanced\n" +
+                "\n" +
+                " Served from: www.kvadrat.se @ 2016-09-08 22:36:57 by W3 Total Cache -->";
+
+        SummaryPageData pageData = SummaryPageParser.parse(testData);
+
+        Assert.assertNotNull(pageData);
+        Assert.assertEquals(6, pageData.OfficeDatas.length);
+        Assert.assertEquals(8, pageData.TagDatas.length);
+
     }
 }

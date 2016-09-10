@@ -10,12 +10,16 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.OfficeData;
+import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataParser;
-import se.danielkonsult.www.kvadratab.services.scraper.AllConsultantsScraper;
 import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataListener;
 import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataScraper;
+import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataScraperConfig;
 import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageData;
+import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageListener;
 import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageParser;
+import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageScraper;
 
 /**
  * Tests of web page scraper functionality.
@@ -24,6 +28,7 @@ import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageParser;
 public class ScraperTests {
 
     static ConsultantData[] assertConsultantDatas;
+    static SummaryPageData assertSummaryPageData;
 
     @Test
     public void shouldParseMainPageWebData(){
@@ -48,7 +53,7 @@ public class ScraperTests {
         final CountDownLatch signal = new CountDownLatch(1);
 
         assertConsultantDatas = null;
-        AllConsultantsScraper scraper = new AllConsultantsScraper(new ConsultantDataListener() {
+        ConsultantDataScraper scraper = new ConsultantDataScraper(new ConsultantDataListener() {
             @Override
             public void onResult(ConsultantData[] consultants) {
                 assertConsultantDatas = consultants;
@@ -60,7 +65,8 @@ public class ScraperTests {
                 signal.countDown();
             }
         });
-        scraper.execute();
+        ConsultantDataScraperConfig cfg = new ConsultantDataScraperConfig(0,0);
+        scraper.execute(cfg);
         signal.await(10, TimeUnit.SECONDS);
 
         Assert.assertNotNull(assertConsultantDatas);
@@ -136,8 +142,9 @@ public class ScraperTests {
                 signal.countDown();
             }
         });
-        // 17 = Jönköping office
-        scraper.execute(17);
+
+        ConsultantDataScraperConfig cfg = new ConsultantDataScraperConfig(17, 0);
+        scraper.execute(cfg);
         signal.await(10, TimeUnit.SECONDS);
 
         Assert.assertNotNull(assertConsultantDatas);
@@ -146,6 +153,44 @@ public class ScraperTests {
         for (ConsultantData webData : assertConsultantDatas) {
             Assert.assertTrue(webData.Id > 0);
             Assert.assertTrue(webData.Name != null && webData.Name != "");
+        }
+    }
+
+    /**
+     * Tests that the summary data (available offices and tags) can be scraped from the web page.
+     */
+    @Test
+    public void shouldScrapeSummaryDataFromWebPage() throws InterruptedException {
+        final CountDownLatch signal = new CountDownLatch(1);
+
+        assertSummaryPageData = null;
+        SummaryPageScraper scraper = new SummaryPageScraper(new SummaryPageListener() {
+            @Override
+            public void onResult(SummaryPageData data) {
+                assertSummaryPageData = data;
+                signal.countDown();
+            }
+
+            @Override
+            public void onError(int statusCode, String message) {
+                signal.countDown();
+            }
+        });
+
+        scraper.execute();
+        signal.await(10, TimeUnit.SECONDS);
+
+        Assert.assertNotNull(assertSummaryPageData);
+        // Don't assert an exact number since the web page contents most likely will change
+        Assert.assertTrue(String.format("Offices length: %d", assertSummaryPageData.OfficeDatas.length), (assertSummaryPageData.OfficeDatas.length > 5) && (assertSummaryPageData.OfficeDatas.length < 10));
+        for (OfficeData officeData : assertSummaryPageData.OfficeDatas) {
+            Assert.assertTrue(officeData.Id > 0);
+            Assert.assertTrue(officeData.Name != null && officeData.Name != "");
+        }
+        Assert.assertTrue(String.format("Tags length: %d", assertSummaryPageData.TagDatas.length), (assertSummaryPageData.TagDatas.length > 7) && (assertSummaryPageData.TagDatas.length < 10));
+        for (TagData tagData : assertSummaryPageData.TagDatas) {
+            Assert.assertTrue(tagData.Id > 0);
+            Assert.assertTrue(tagData.Name != null && tagData.Name != "");
         }
     }
 }

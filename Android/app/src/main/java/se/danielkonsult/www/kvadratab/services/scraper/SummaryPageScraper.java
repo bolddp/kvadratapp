@@ -2,6 +2,7 @@ package se.danielkonsult.www.kvadratab.services.scraper;
 
 import android.os.AsyncTask;
 
+import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -10,26 +11,21 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.helpers.Utils;
 
 /**
- * Performs a scraping of the Kvadrat web page so a list of all available consultants,
- * regardless of tag or office, can be compiled.
+ * Requests info about consultants that belong to a specific office or tag.
  */
-public class AllConsultantsScraper extends AsyncTask<Void, Integer, ConsultantData[]> {
+public class SummaryPageScraper extends AsyncTask<Void, Integer, SummaryPageData> {
 
-    // Private variables
-
-    private final String MAIN_PAGE_URL = "http://www.kvadrat.se/wp-content/themes/blocks/ext/consultdata_new.php";
+    private final String MAIN_PAGE_URL = "http://www.kvadrat.se/konsulter/konsulter/";
     private static final int STD_TIMEOUT = 20000;
     private static final String USER_AGENT = "KvadratApp/1.0";
     private static final String ACCEPT = "text/html";
-    private final ConsultantDataListener _listener;
+    private final SummaryPageListener _listener;
 
     private int statusCode;
     private String errorMessage;
 
-    // Private methods
-
     @Override
-    protected ConsultantData[] doInBackground(Void... params) {
+    protected SummaryPageData doInBackground(Void... params) {
         HttpURLConnection httpCon = null;
         InputStream is = null;
         try {
@@ -48,7 +44,7 @@ public class AllConsultantsScraper extends AsyncTask<Void, Integer, ConsultantDa
             if (urlContents == null)
                 return null;
 
-            return ConsultantDataParser.parse(urlContents);
+            return SummaryPageParser.parse(urlContents);
         }
         catch (Throwable e) {
             errorMessage = e.getMessage();
@@ -67,16 +63,14 @@ public class AllConsultantsScraper extends AsyncTask<Void, Integer, ConsultantDa
     }
 
     @Override
-    protected void onPostExecute(ConsultantData[] consultantDatas) {
-        if (consultantDatas == null)
+    protected void onPostExecute(SummaryPageData summaryPageData) {
+        if (summaryPageData == null)
             _listener.onError(statusCode, errorMessage);
         else
-            _listener.onResult(consultantDatas);
+            _listener.onResult(summaryPageData);
     }
 
-    // Constructor
-
-    public AllConsultantsScraper(ConsultantDataListener listener){
-        _listener = listener;
+    public SummaryPageScraper(SummaryPageListener _listener) {
+        this._listener = _listener;
     }
 }

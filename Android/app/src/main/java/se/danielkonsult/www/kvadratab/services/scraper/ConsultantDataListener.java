@@ -1,12 +1,12 @@
 package se.danielkonsult.www.kvadratab.services.scraper;
 
-import se.danielkonsult.www.kvadratab.entities.MainPageWebData;
+import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 
 /**
  * Listener for data from a MainPageScraper.
  */
-public interface MainPageScraperListener {
-    void onResult(MainPageWebData[] webDatas);
+public interface ConsultantDataListener {
+    void onResult(ConsultantData[] consultants);
 
     void onError(int statusCode, String message);
 }

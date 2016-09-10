@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import se.danielkonsult.www.kvadratab.entities.OfficeData;
+import se.danielkonsult.www.kvadratab.entities.TagData;
+
 /**
  * Parses data on the summary page where the categories and
  * offices are listed.
@@ -17,10 +20,10 @@ public class SummaryPageParser {
 
     // Private methods
 
-    private static SummaryPageData.OfficeData[] getOfficeDatas(SummaryPageData summaryPageData, String text) {
+    private static OfficeData[] getOfficeDatas(SummaryPageData summaryPageData, String text) {
         final Pattern officeDivPattern = Pattern.compile("<div class=[\"|']filter-section[\"|'] id=[\"|']office-filter[\"|']>(.*?)</div>");
 
-        List<SummaryPageData.OfficeData> officeDatas = new ArrayList<>();
+        List<OfficeData> officeDatas = new ArrayList<>();
 
         // Look up office data
         Matcher matcher = officeDivPattern.matcher(text);
@@ -33,7 +36,7 @@ public class SummaryPageParser {
                 String name = matcher.group(2);
 
                 if (id > 0){
-                    SummaryPageData.OfficeData od = summaryPageData.new OfficeData();
+                    OfficeData od = new OfficeData();
                     od.Id = id;
                     od.Name = name;
 
@@ -41,16 +44,16 @@ public class SummaryPageParser {
                 }
             }
 
-            return officeDatas.toArray(new SummaryPageData.OfficeData[officeDatas.size()]);
+            return officeDatas.toArray(new OfficeData[officeDatas.size()]);
         }
         else
-            return new SummaryPageData.OfficeData[0];
+            return new OfficeData[0];
     }
 
-    private static SummaryPageData.TagData[] getTagDatas(SummaryPageData summaryPageData, String text) {
+    private static TagData[] getTagDatas(SummaryPageData summaryPageData, String text) {
         final Pattern tagDivPattern = Pattern.compile("<div class=[\"|']filter-section[\"|'] id=[\"|']tag-filter[\"|']>(.*?)</div>");
 
-        List<SummaryPageData.TagData> tagDatas = new ArrayList<>();
+        List<TagData> tagDatas = new ArrayList<>();
 
         // Look up tag data
         Matcher matcher = tagDivPattern.matcher(text);
@@ -63,7 +66,7 @@ public class SummaryPageParser {
                 String name = matcher.group(2);
 
                 if (id > 0){
-                    SummaryPageData.TagData td = summaryPageData.new TagData();
+                    TagData td = new TagData();
                     td.Id = id;
                     td.Name = name;
 
@@ -71,10 +74,10 @@ public class SummaryPageParser {
                 }
             }
 
-            return tagDatas.toArray(new SummaryPageData.TagData[tagDatas.size()]);
+            return tagDatas.toArray(new TagData[tagDatas.size()]);
         }
         else
-            return new SummaryPageData.TagData[0];
+            return new TagData[0];
     }
 
     /**

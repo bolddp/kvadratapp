@@ -11,6 +11,7 @@ import android.provider.BaseColumns;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 
 /**
@@ -20,6 +21,7 @@ import se.danielkonsult.www.kvadratab.entities.OfficeData;
 public class KvadratDb extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Kvadrat.db";
+
     private static final int DATABASE_VERSION = 1;
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
@@ -47,13 +49,25 @@ public class KvadratDb extends SQLiteOpenHelper {
                     ConsultantEntry.COLUMN_NAME_JOBROLE + TEXT_TYPE + COMMA_SEP +
                     ConsultantEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + " )";
 
-    private static final String SQL_DELETE_ENTRIES =
+    protected static final String SQL_DELETE_CONSULTANTS =
             "DROP TABLE IF EXISTS " + ConsultantEntry.TABLE_NAME;
 
+    // Protected methods
+
+    /**
+     * Drops the database by erasing all its contents.
+     */
+    protected void drop(SQLiteDatabase db){
+        // No code here, database should not be droppable
+    }
     // Constructor
 
-    public KvadratDb(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public KvadratDb() {
+        super(AppCtrl.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    protected KvadratDb(Context context, String databaseName){
+        super(context, databaseName, null, DATABASE_VERSION);
     }
 
     @Override
@@ -63,7 +77,7 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_DELETE_CONSULTANTS);
         onCreate(db);
     }
 
@@ -93,7 +107,7 @@ public class KvadratDb extends SQLiteOpenHelper {
 
             @Override
             protected void onPostExecute(Long id) {
-                if (id >= 0)
+                if (id >= -1)
                     listener.onResult(id);
                 else
                     listener.onError(errorMessage);

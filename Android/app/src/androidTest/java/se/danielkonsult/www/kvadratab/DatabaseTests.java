@@ -1,5 +1,6 @@
 package se.danielkonsult.www.kvadratab;
 
+import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
@@ -22,10 +23,14 @@ import se.danielkonsult.www.kvadratab.helpers.db.OfficeDataArrayListener;
 @RunWith(AndroidJUnit4.class)
 public class DatabaseTests {
 
+    // Private variables
+
     private static final String TAG = "DatabaseTests";
 
     private boolean operationSuccessful;
     private OfficeData[] assertOffices;
+
+    // Private methods
 
     /**
      * Test that an office can be written and read in the Kvadrat database.
@@ -37,11 +42,14 @@ public class DatabaseTests {
         oData.Id = 17;
         oData.Name = "Jönköping";
 
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        ctx.deleteDatabase(KvadratTestDb.DATABASE_NAME);
+
         final CountDownLatch signal = new CountDownLatch(1);
 
         // Insert the office
         operationSuccessful = false;
-        KvadratDb db = new KvadratDb(InstrumentationRegistry.getTargetContext());
+        KvadratTestDb db = new KvadratTestDb(ctx);
         db.insertOffice(oData, new DbOperationListener() {
             @Override
             public void onResult(long id) {
@@ -63,7 +71,7 @@ public class DatabaseTests {
 
         // Read it back
         assertOffices = null;
-        db = new KvadratDb(InstrumentationRegistry.getTargetContext());
+        db = new KvadratTestDb(ctx);
         db.getAllOffices(new OfficeDataArrayListener() {
             @Override
             public void onResult(OfficeData[] offices) {
@@ -82,7 +90,7 @@ public class DatabaseTests {
         boolean foundOffice = false;
 
         for (OfficeData office : assertOffices) {
-            if ((office.Id == oData.Id) && (office.Name == oData.Name))
+            if ((office.Id == oData.Id) && office.Name.equals(oData.Name))
                 foundOffice = true;
         }
         Assert.assertTrue(foundOffice);

@@ -1,7 +1,5 @@
 package se.danielkonsult.www.kvadratab.entities;
 
-import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageData;
-
 /**
  * Carries information from the main web page about one consultant.
  */

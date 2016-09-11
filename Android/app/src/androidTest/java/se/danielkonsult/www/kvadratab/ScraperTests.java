@@ -16,10 +16,10 @@ import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataParser;
 import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataListener;
 import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataScraper;
 import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataScraperConfig;
-import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageData;
-import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageListener;
-import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageParser;
-import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageScraper;
+import se.danielkonsult.www.kvadratab.services.scraper.SummaryData;
+import se.danielkonsult.www.kvadratab.services.scraper.SummaryDataListener;
+import se.danielkonsult.www.kvadratab.services.scraper.SummaryDataParser;
+import se.danielkonsult.www.kvadratab.services.scraper.SummaryDataScraper;
 
 /**
  * Tests of web page scraper functionality.
@@ -28,7 +28,7 @@ import se.danielkonsult.www.kvadratab.services.scraper.SummaryPageScraper;
 public class ScraperTests {
 
     static ConsultantData[] assertConsultantDatas;
-    static SummaryPageData assertSummaryPageData;
+    static SummaryData assertSummaryPageData;
 
     @Test
     public void shouldParseMainPageWebData(){
@@ -113,7 +113,7 @@ public class ScraperTests {
                 "\t\n" +
                 "</div>\n";
 
-        SummaryPageData pageData = SummaryPageParser.parse(testData);
+        SummaryData pageData = SummaryDataParser.parse(testData);
 
         Assert.assertNotNull(pageData);
         Assert.assertEquals(6, pageData.OfficeDatas.length);
@@ -164,9 +164,9 @@ public class ScraperTests {
         final CountDownLatch signal = new CountDownLatch(1);
 
         assertSummaryPageData = null;
-        SummaryPageScraper scraper = new SummaryPageScraper(new SummaryPageListener() {
+        SummaryDataScraper scraper = new SummaryDataScraper(new SummaryDataListener() {
             @Override
-            public void onResult(SummaryPageData data) {
+            public void onResult(SummaryData data) {
                 assertSummaryPageData = data;
                 signal.countDown();
             }

@@ -12,7 +12,7 @@ import se.danielkonsult.www.kvadratab.entities.TagData;
  * Parses data on the summary page where the categories and
  * offices are listed.
  */
-public class SummaryPageParser {
+public class SummaryDataParser {
 
     // Private fields
 
@@ -20,7 +20,7 @@ public class SummaryPageParser {
 
     // Private methods
 
-    private static OfficeData[] getOfficeDatas(SummaryPageData summaryPageData, String text) {
+    private static OfficeData[] getOfficeDatas(SummaryData summaryPageData, String text) {
         final Pattern officeDivPattern = Pattern.compile("<div class=[\"|']filter-section[\"|'] id=[\"|']office-filter[\"|']>(.*?)</div>");
 
         List<OfficeData> officeDatas = new ArrayList<>();
@@ -50,7 +50,7 @@ public class SummaryPageParser {
             return new OfficeData[0];
     }
 
-    private static TagData[] getTagDatas(SummaryPageData summaryPageData, String text) {
+    private static TagData[] getTagDatas(SummaryData summaryPageData, String text) {
         final Pattern tagDivPattern = Pattern.compile("<div class=[\"|']filter-section[\"|'] id=[\"|']tag-filter[\"|']>(.*?)</div>");
 
         List<TagData> tagDatas = new ArrayList<>();
@@ -85,13 +85,13 @@ public class SummaryPageParser {
      * @param text
      * @return
      */
-    public static SummaryPageData parse(String text){
+    public static SummaryData parse(String text){
 
         // Remove all newlines from the input
         text = text.replaceAll("\\r\\n|\\r|\\n", " ");
         text = text.replaceAll("\t", "");
 
-        SummaryPageData result = new SummaryPageData();
+        SummaryData result = new SummaryData();
         result.OfficeDatas = getOfficeDatas(result, text);
         result.TagDatas = getTagDatas(result, text);
 

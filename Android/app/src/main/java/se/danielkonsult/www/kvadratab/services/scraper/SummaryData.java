@@ -4,9 +4,10 @@ import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 
 /**
- * Created by Daniel on 2016-09-08.
+ * Carries data about the offices and tags that are available when
+ * selecting consultants to view.
  */
-public class SummaryPageData {
+public class SummaryData {
 
     // Fields
 

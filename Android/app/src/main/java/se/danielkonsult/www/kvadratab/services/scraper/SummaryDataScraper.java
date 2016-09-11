@@ -2,30 +2,28 @@ package se.danielkonsult.www.kvadratab.services.scraper;
 
 import android.os.AsyncTask;
 
-import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.helpers.Utils;
 
 /**
  * Requests info about consultants that belong to a specific office or tag.
  */
-public class SummaryPageScraper extends AsyncTask<Void, Integer, SummaryPageData> {
+public class SummaryDataScraper extends AsyncTask<Void, Integer, SummaryData> {
 
     private final String MAIN_PAGE_URL = "http://www.kvadrat.se/konsulter/konsulter/";
     private static final int STD_TIMEOUT = 20000;
     private static final String USER_AGENT = "KvadratApp/1.0";
     private static final String ACCEPT = "text/html";
-    private final SummaryPageListener _listener;
+    private final SummaryDataListener _listener;
 
     private int statusCode;
     private String errorMessage;
 
     @Override
-    protected SummaryPageData doInBackground(Void... params) {
+    protected SummaryData doInBackground(Void... params) {
         HttpURLConnection httpCon = null;
         InputStream is = null;
         try {
@@ -44,7 +42,7 @@ public class SummaryPageScraper extends AsyncTask<Void, Integer, SummaryPageData
             if (urlContents == null)
                 return null;
 
-            return SummaryPageParser.parse(urlContents);
+            return SummaryDataParser.parse(urlContents);
         }
         catch (Throwable e) {
             errorMessage = e.getMessage();
@@ -63,14 +61,14 @@ public class SummaryPageScraper extends AsyncTask<Void, Integer, SummaryPageData
     }
 
     @Override
-    protected void onPostExecute(SummaryPageData summaryPageData) {
+    protected void onPostExecute(SummaryData summaryPageData) {
         if (summaryPageData == null)
             _listener.onError(statusCode, errorMessage);
         else
             _listener.onResult(summaryPageData);
     }
 
-    public SummaryPageScraper(SummaryPageListener _listener) {
+    public SummaryDataScraper(SummaryDataListener _listener) {
         this._listener = _listener;
     }
 }

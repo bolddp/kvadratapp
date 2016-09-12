@@ -13,9 +13,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
+import se.danielkonsult.www.kvadratab.helpers.db.DbDataListener;
 import se.danielkonsult.www.kvadratab.helpers.db.DbOperationListener;
-import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
-import se.danielkonsult.www.kvadratab.helpers.db.OfficeDataArrayListener;
 
 /**
  * Tests aimed at the KvadratDb class.
@@ -72,7 +71,7 @@ public class DatabaseTests {
         // Read it back
         assertOffices = null;
         db = new KvadratTestDb(ctx);
-        db.getAllOffices(new OfficeDataArrayListener() {
+        db.getAllOffices(new DbDataListener<OfficeData[]>() {
             @Override
             public void onResult(OfficeData[] offices) {
                 assertOffices = offices;

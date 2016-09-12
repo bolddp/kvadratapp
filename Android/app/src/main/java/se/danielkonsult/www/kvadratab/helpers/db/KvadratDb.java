@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
+import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.repositories.office.DefaultOfficeDataRepository;
@@ -88,5 +89,13 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     public void insertTag(final TagData tag, final DbOperationListener listener) {
         getTagDataRepository().insert(tag, listener);
+    }
+
+    public void getConsultantById(final int id, DbDataListener<ConsultantData> listener){
+
+    }
+
+    public void insertConsultant(ConsultantData consultant, DbOperationListener listener){
+        
     }
 }

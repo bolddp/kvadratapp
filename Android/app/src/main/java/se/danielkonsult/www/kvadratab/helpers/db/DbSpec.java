@@ -25,6 +25,20 @@ public class DbSpec {
                 "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
+    public static class TagEntry implements BaseColumns {
+        public static final String TABLE_NAME = "tag";
+        public static final String COLUMN_NAME_ID = "webid";
+        public static final String COLUMN_NAME_NAME = "name";
+
+        public static final String SQL_CREATE =
+                "CREATE TABLE " + TABLE_NAME + " (" +
+                        _ID + " INTEGER PRIMARY KEY," +
+                        COLUMN_NAME_ID + INTEGER_TYPE + COMMA_SEP +
+                        COLUMN_NAME_NAME + TEXT_TYPE + " )";
+        public static final String SQL_DELETE =
+                "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
+
     public static class ConsultantEntry implements BaseColumns {
         public static final String TABLE_NAME = "consultant";
         public static final String COLUMN_NAME_ID = "webid";

@@ -6,8 +6,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
+import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.repositories.office.DefaultOfficeDataRepository;
 import se.danielkonsult.www.kvadratab.repositories.office.OfficeDataRepository;
+import se.danielkonsult.www.kvadratab.repositories.tag.DefaultTagDataRepository;
+import se.danielkonsult.www.kvadratab.repositories.tag.TagDataRepository;
 
 /**
  * Handles the database that stores data that is downloaded from the
@@ -19,6 +22,7 @@ public class KvadratDb extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     private OfficeDataRepository _officeDataRepository;
+    private DefaultTagDataRepository _tagDataRepository;
 
     // Protected methods
 
@@ -26,6 +30,12 @@ public class KvadratDb extends SQLiteOpenHelper {
         if (_officeDataRepository == null)
             _officeDataRepository = new DefaultOfficeDataRepository(this);
         return _officeDataRepository;
+    }
+
+    protected TagDataRepository getTagDataRepository(){
+        if (_tagDataRepository == null)
+            _tagDataRepository = new DefaultTagDataRepository(this);
+        return _tagDataRepository;
     }
 
     // Constructor
@@ -40,13 +50,15 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DbSpec.ConsultantEntry.SQL_CREATE);
         db.execSQL(DbSpec.OfficeEntry.SQL_CREATE);
+        db.execSQL(DbSpec.TagEntry.SQL_CREATE);
+        db.execSQL(DbSpec.ConsultantEntry.SQL_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(DbSpec.OfficeEntry.SQL_DELETE);
+        db.execSQL(DbSpec.TagEntry.SQL_DELETE);
         db.execSQL(DbSpec.ConsultantEntry.SQL_DELETE);
 
         onCreate(db);
@@ -54,7 +66,7 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     // Database operation methods
 
-    public void getById(int id, final DbDataListener<OfficeData> listener){
+    public void getOfficeById(int id, final DbDataListener<OfficeData> listener){
         getOfficeDataRepository().getById(id, listener);
     }
 
@@ -64,5 +76,17 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     public void insertOffice(final OfficeData office, final DbOperationListener listener) {
         getOfficeDataRepository().insert(office, listener);
+    }
+
+    public void getTagById(int id, final DbDataListener<TagData> listener){
+        getTagDataRepository().getById(id, listener);
+    }
+
+    public void getAllTags(final DbDataListener<TagData[]> listener) {
+        getTagDataRepository().getAll(listener);
+    }
+
+    public void insertTag(final TagData tag, final DbOperationListener listener) {
+        getTagDataRepository().insert(tag, listener);
     }
 }

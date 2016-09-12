@@ -1,6 +1,7 @@
 package se.danielkonsult.www.kvadratab.repositories.office;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
+import se.danielkonsult.www.kvadratab.helpers.Utils;
 import se.danielkonsult.www.kvadratab.helpers.db.DbDataListener;
 import se.danielkonsult.www.kvadratab.helpers.db.DbOperationListener;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
@@ -32,8 +34,49 @@ public class DefaultOfficeDataRepository implements OfficeDataRepository {
     // Public methods
 
     @Override
-    public void getById(DbDataListener<OfficeData> listener) {
+    public void getById(final int id, final DbDataListener<OfficeData> listener) {
+        AsyncTask<Void, Integer, OfficeData> task = new AsyncTask<Void, Integer, OfficeData>() {
+            private String errorMessage = null;
 
+            @Override
+            protected OfficeData doInBackground(Void... params) {
+                try {
+                    String[] projection = {
+                            DbSpec.OfficeEntry.COLUMN_NAME_ID,
+                            DbSpec.OfficeEntry.COLUMN_NAME_NAME,
+                    };
+                    String selection = DbSpec.OfficeEntry.COLUMN_NAME_ID + " = ?";
+                    String[] selectionArgs = {
+                            Integer.toString(id)
+                    };
+
+                    SQLiteDatabase db = _db.getReadableDatabase();
+                    Cursor c = db.query(DbSpec.OfficeEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null, null);
+                    if (c.moveToFirst()){
+                        OfficeData oData = new OfficeData();
+                        oData.Id = c.getInt(c.getColumnIndex(DbSpec.OfficeEntry.COLUMN_NAME_ID));
+                        oData.Name = c.getString(c.getColumnIndex(DbSpec.OfficeEntry.COLUMN_NAME_NAME));
+
+                        return oData;
+                    }
+
+                    return null;
+                }
+                catch (Throwable ex){
+                    errorMessage = ex.getMessage();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(OfficeData officeData) {
+                if (!Utils.isStringNullOrEmpty(errorMessage))
+                    listener.onError(errorMessage);
+                else
+                    listener.onResult(officeData);
+            }
+        };
+        task.execute();
     }
 
     @Override

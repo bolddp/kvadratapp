@@ -28,4 +28,7 @@ public class Utils {
         return out.toString();
     }
 
+    public static boolean isStringNullOrEmpty(String str) {
+        return (str == null) || (str.trim().length() == 0);
+    }
 }

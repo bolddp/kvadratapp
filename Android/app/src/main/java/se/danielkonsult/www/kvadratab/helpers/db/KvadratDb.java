@@ -54,11 +54,15 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     // Database operation methods
 
-    public void insertOffice(final OfficeData office, final DbOperationListener listener) {
-        getOfficeDataRepository().insert(office, listener);
+    public void getById(int id, final DbDataListener<OfficeData> listener){
+        getOfficeDataRepository().getById(id, listener);
     }
 
     public void getAllOffices(final DbDataListener<OfficeData[]> listener) {
         getOfficeDataRepository().getAll(listener);
+    }
+
+    public void insertOffice(final OfficeData office, final DbOperationListener listener) {
+        getOfficeDataRepository().insert(office, listener);
     }
 }

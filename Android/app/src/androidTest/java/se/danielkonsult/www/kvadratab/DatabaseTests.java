@@ -32,10 +32,10 @@ public class DatabaseTests {
     // Private methods
 
     /**
-     * Test that an office can be written and read in the Kvadrat database.
+     * Test that an office can be written and read in the app database.
      */
     @Test
-    public void shouldStoreOffice() throws InterruptedException {
+    public void shouldStoreAndReadBackOffice() throws InterruptedException {
 
         OfficeData oData = new OfficeData();
         oData.Id = 17;
@@ -68,7 +68,7 @@ public class DatabaseTests {
 
         final CountDownLatch signal2 = new CountDownLatch(1);
 
-        // Read it back
+        // Read it back all offices and make sure that the correct one is there
         assertOffices = null;
         db = new KvadratTestDb(ctx);
         db.getAllOffices(new DbDataListener<OfficeData[]>() {
@@ -87,11 +87,35 @@ public class DatabaseTests {
         signal2.await(10, TimeUnit.SECONDS);
         Assert.assertNotNull(assertOffices);
         boolean foundOffice = false;
-
         for (OfficeData office : assertOffices) {
             if ((office.Id == oData.Id) && office.Name.equals(oData.Name))
                 foundOffice = true;
         }
         Assert.assertTrue(foundOffice);
+
+        // Read it back by id
+        final CountDownLatch signal3 = new CountDownLatch(1);
+        assertOffices = null;
+        db = new KvadratTestDb(ctx);
+        db.getById(17, new DbDataListener<OfficeData>() {
+            @Override
+            public void onResult(OfficeData result) {
+                assertOffices = new OfficeData[]{
+                    result
+                };
+                signal3.countDown();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                signal3.countDown();
+            }
+        });
+
+        signal3.await(10, TimeUnit.SECONDS);
+        Assert.assertNotNull(assertOffices);
+        Assert.assertEquals(1, assertOffices.length);
+        OfficeData office = assertOffices[0];
+        Assert.assertTrue((office.Id == oData.Id) && office.Name.equals(oData.Name));
     }
 }

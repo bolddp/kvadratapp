@@ -91,39 +91,39 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     // Database operation methods
 
-    public void getOfficeById(int id, final DbDataListener<OfficeData> listener){
-        getOfficeDataRepository().getById(id, listener);
+    public OfficeData getOfficeById(int id){
+        return getOfficeDataRepository().getById(id);
     }
 
-    public void getAllOffices(final DbDataListener<OfficeData[]> listener) {
-        getOfficeDataRepository().getAll(listener);
+    public OfficeData[] getAllOffices() {
+        return getOfficeDataRepository().getAll();
     }
 
-    public void insertOffice(final OfficeData office, final DbOperationListener listener) {
-        getOfficeDataRepository().insert(office, listener);
+    public void insertOffice(final OfficeData office) {
+        getOfficeDataRepository().insert(office);
     }
 
-    public void getTagById(int id, final DbDataListener<TagData> listener){
-        getTagDataRepository().getById(id, listener);
+    public TagData getTagById(int id){
+        return getTagDataRepository().getById(id);
     }
 
-    public void getAllTags(final DbDataListener<TagData[]> listener) {
-        getTagDataRepository().getAll(listener);
+    public TagData[] getAllTags() {
+        return getTagDataRepository().getAll();
     }
 
-    public void insertTag(final TagData tag, final DbOperationListener listener) {
-        getTagDataRepository().insert(tag, listener);
+    public void insertTag(TagData tag) {
+        getTagDataRepository().insert(tag);
     }
 
-    public void getConsultantById(final int id, DbDataListener<ConsultantData> listener){
-
+    public ConsultantData getConsultantById(int id){
+        return getConsultantDataRepository().getById(id);
     }
 
-    public void getAllConsultants(DbDataListener<ConsultantData[]> listener){
-        getConsultantDataRepository().getAll(listener);
+    public ConsultantData[] getAllConsultants(){
+        return getConsultantDataRepository().getAll();
     }
 
-    public void insertConsultant(ConsultantData consultant, DbOperationListener listener){
-        getConsultantDataRepository().insert(consultant, listener);
+    public void insertConsultant(ConsultantData consultant){
+        getConsultantDataRepository().insert(consultant);
     }
 }

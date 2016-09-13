@@ -3,19 +3,13 @@ package se.danielkonsult.www.kvadratab.repositories.tag;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
-import se.danielkonsult.www.kvadratab.helpers.Utils;
-import se.danielkonsult.www.kvadratab.helpers.db.DbDataListener;
-import se.danielkonsult.www.kvadratab.helpers.db.DbOperationListener;
 import se.danielkonsult.www.kvadratab.helpers.db.DbSpec;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
-import se.danielkonsult.www.kvadratab.repositories.office.OfficeDataRepository;
 
 /**
  * Created by Daniel on 2016-09-11.
@@ -23,6 +17,11 @@ import se.danielkonsult.www.kvadratab.repositories.office.OfficeDataRepository;
 public class DefaultTagDataRepository implements TagDataRepository {
 
     // Private variables
+
+    private final String[] queryProjection = {
+            DbSpec.TagEntry.COLUMN_NAME_ID,
+            DbSpec.TagEntry.COLUMN_NAME_NAME,
+    };
 
     private KvadratDb _db;
 
@@ -35,126 +34,52 @@ public class DefaultTagDataRepository implements TagDataRepository {
     // Public methods
 
     @Override
-    public void getById(final int id, final DbDataListener<TagData> listener) {
-        AsyncTask<Void, Integer, TagData> task = new AsyncTask<Void, Integer, TagData>() {
-            private String errorMessage = null;
-
-            @Override
-            protected TagData doInBackground(Void... params) {
-                try {
-                    String[] projection = {
-                            DbSpec.TagEntry.COLUMN_NAME_ID,
-                            DbSpec.TagEntry.COLUMN_NAME_NAME,
-                    };
-                    String selection = DbSpec.TagEntry.COLUMN_NAME_ID + " = ?";
-                    String[] selectionArgs = {
-                            Integer.toString(id)
-                    };
-
-                    SQLiteDatabase db = _db.getReadableDatabase();
-                    Cursor c = db.query(DbSpec.TagEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null, null);
-                    if (c.moveToFirst()){
-                        TagData oData = new TagData();
-                        oData.Id = c.getInt(c.getColumnIndex(DbSpec.TagEntry.COLUMN_NAME_ID));
-                        oData.Name = c.getString(c.getColumnIndex(DbSpec.TagEntry.COLUMN_NAME_NAME));
-
-                        return oData;
-                    }
-
-                    return null;
-                }
-                catch (Throwable ex){
-                    errorMessage = ex.getMessage();
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(TagData TagData) {
-                if (!Utils.isStringNullOrEmpty(errorMessage))
-                    listener.onError(errorMessage);
-                else
-                    listener.onResult(TagData);
-            }
+    public TagData getById(int id) {
+        String selection = DbSpec.TagEntry.COLUMN_NAME_ID + " = ?";
+        String[] selectionArgs = {
+                Integer.toString(id)
         };
-        task.execute();
+
+        SQLiteDatabase db = _db.getReadableDatabase();
+        Cursor c = db.query(DbSpec.TagEntry.TABLE_NAME, queryProjection, selection, selectionArgs, null, null, null, null);
+        if (c.moveToFirst()){
+            return getFromCursor(c);
+        }
+
+        return null;
+    }
+
+    /**
+     * Reads a TagData object from a db cursor.
+     */
+    private TagData getFromCursor(Cursor c) {
+        TagData oData = new TagData();
+        oData.Id = c.getInt(c.getColumnIndex(DbSpec.TagEntry.COLUMN_NAME_ID));
+        oData.Name = c.getString(c.getColumnIndex(DbSpec.TagEntry.COLUMN_NAME_NAME));
+
+        return oData;
     }
 
     @Override
-    public void getAll(final DbDataListener<TagData[]> listener) {
-        AsyncTask<Void, Integer, TagData[]> task = new AsyncTask<Void, Integer, TagData[]>() {
-            private String errorMessage;
+    public TagData[] getAll() {
+        List<TagData> result = new ArrayList<>();
 
-            @Override
-            protected TagData[] doInBackground(Void... params) {
-                try {
-                    String[] projection = {
-                            DbSpec.TagEntry.COLUMN_NAME_ID,
-                            DbSpec.TagEntry.COLUMN_NAME_NAME,
-                    };
+        SQLiteDatabase db = _db.getReadableDatabase();
+        Cursor c = db.query(DbSpec.TagEntry.TABLE_NAME, queryProjection, null, null, null, null, null);
+        while (c.moveToNext()){
+            result.add(getFromCursor(c));
+        }
 
-                    List<TagData> result = new ArrayList<>();
-
-                    SQLiteDatabase db = _db.getReadableDatabase();
-                    Cursor c = db.query(DbSpec.TagEntry.TABLE_NAME, projection, null, null, null, null, null);
-                    while (c.moveToNext()){
-                        TagData tag = new TagData();
-                        tag.Id = c.getInt(c.getColumnIndex(DbSpec.TagEntry.COLUMN_NAME_ID));
-                        tag.Name = c.getString(c.getColumnIndex(DbSpec.TagEntry.COLUMN_NAME_NAME));
-
-                        result.add(tag);
-                    }
-
-                    return result.toArray(new TagData[result.size()]);
-                }
-                catch (Throwable ex){
-                    errorMessage = ex.getMessage();
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(TagData[] TagDatas) {
-                if (TagDatas == null)
-                    listener.onError(errorMessage);
-                else
-                    listener.onResult(TagDatas);
-            }
-        };
-        task.execute();
+        return result.toArray(new TagData[result.size()]);
     }
 
     @Override
-    public void insert(final TagData tag, final DbOperationListener listener) {
-        // Setup the task to perform the insertion
-        AsyncTask<Void, Integer, Long> task = new AsyncTask<Void, Integer, Long>() {
+    public void insert(TagData tag) {
+        SQLiteDatabase db = _db.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DbSpec.TagEntry.COLUMN_NAME_ID, tag.Id);
+        values.put(DbSpec.TagEntry.COLUMN_NAME_NAME, tag.Name);
 
-            private String errorMessage;
-
-            @Override
-            protected Long doInBackground(Void... params) {
-                try {
-                    SQLiteDatabase db = _db.getWritableDatabase();
-                    ContentValues values = new ContentValues();
-                    values.put(DbSpec.TagEntry.COLUMN_NAME_ID, tag.Id);
-                    values.put(DbSpec.TagEntry.COLUMN_NAME_NAME, tag.Name);
-
-                    return db.insertOrThrow(DbSpec.TagEntry.TABLE_NAME, null, values);
-                }
-                catch (Throwable ex){
-                    errorMessage = ex.getMessage();
-                    return (long) -1;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Long id) {
-                if (id >= -1)
-                    listener.onResult(id);
-                else
-                    listener.onError(errorMessage);
-            }
-        };
-        task.execute();
+        db.insertOrThrow(DbSpec.TagEntry.TABLE_NAME, null, values);
     }
 }

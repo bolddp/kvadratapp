@@ -3,16 +3,12 @@ package se.danielkonsult.www.kvadratab.repositories.consultant;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
-import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.helpers.Utils;
-import se.danielkonsult.www.kvadratab.helpers.db.DbDataListener;
-import se.danielkonsult.www.kvadratab.helpers.db.DbOperationListener;
 import se.danielkonsult.www.kvadratab.helpers.db.DbSpec;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 
@@ -23,7 +19,31 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
 
     // Private variables
 
+    private final String[] queryProjection = {
+            DbSpec.ConsultantEntry.COLUMN_NAME_ID,
+            DbSpec.ConsultantEntry.COLUMN_NAME_NAME,
+            DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE,
+            DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION,
+            DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID
+    };
+
     private KvadratDb _db;
+
+    // Private methods
+
+    /**
+     * Reads a ConsultantData object from a db cursor.
+     */
+    private ConsultantData getFromCursor(Cursor c) {
+        ConsultantData consultantData = new ConsultantData();
+        consultantData.Id = c.getInt(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_ID));
+        consultantData.Name = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_NAME));
+        consultantData.JobRole = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE));
+        consultantData.Description = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION));
+        consultantData.OfficeId = c.getInt(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID));
+
+        return consultantData;
+    }
 
     // Constructor
 
@@ -32,98 +52,51 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
     }
 
     @Override
-    public void getAll(final DbDataListener<ConsultantData[]> listener) {
-        AsyncTask<Void, Integer, ConsultantData[]> task = new AsyncTask<Void, Integer, ConsultantData[]>() {
-            private String errorMessage;
-
-            @Override
-            protected ConsultantData[] doInBackground(Void... params) {
-                try {
-                    String[] projection = {
-                            DbSpec.ConsultantEntry.COLUMN_NAME_ID,
-                            DbSpec.ConsultantEntry.COLUMN_NAME_NAME,
-                            DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE,
-                            DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION,
-                            DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID
-                    };
-
-                    List<ConsultantData> result = new ArrayList<>();
-
-                    SQLiteDatabase db = _db.getReadableDatabase();
-                    Cursor c = db.query(DbSpec.ConsultantEntry.TABLE_NAME, projection, null, null, null, null, null);
-                    while (c.moveToNext()){
-                        ConsultantData consultantData = new ConsultantData();
-                        consultantData.Id = c.getInt(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_ID));
-                        consultantData.Name = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_NAME));
-                        consultantData.JobRole = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE));
-                        consultantData.Description = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION));
-                        consultantData.OfficeId = c.getInt(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID));
-
-                        result.add(consultantData);
-                    }
-
-                    return result.toArray(new ConsultantData[result.size()]);
-                }
-                catch (Throwable ex){
-                    errorMessage = ex.getMessage();
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(ConsultantData[] consultantDatas) {
-                if (consultantDatas == null)
-                    listener.onError(errorMessage);
-                else
-                    listener.onResult(consultantDatas);
-            }
+    public ConsultantData getById(int id) {
+        String selection = DbSpec.ConsultantEntry.COLUMN_NAME_ID + " = ?";
+        String[] selectionArgs = {
+                Integer.toString(id)
         };
-        task.execute();
 
+        SQLiteDatabase db = _db.getReadableDatabase();
+        Cursor c = db.query(DbSpec.ConsultantEntry.TABLE_NAME, queryProjection, selection, selectionArgs, null, null, null, null);
+        if (c.moveToFirst()){
+            return getFromCursor(c);
+        }
+
+        return null;
     }
 
     @Override
-    public void insert(final ConsultantData consultant, final DbOperationListener listener) {
-        // Setup the task to perform the insertion
-        AsyncTask<Void, Integer, Long> task = new AsyncTask<Void, Integer, Long>() {
+    public ConsultantData[] getAll() {
+        List<ConsultantData> result = new ArrayList<>();
 
-            private String errorMessage;
+        SQLiteDatabase db = _db.getReadableDatabase();
+        Cursor c = db.query(DbSpec.ConsultantEntry.TABLE_NAME, queryProjection, null, null, null, null, null);
+        while (c.moveToNext()){
+            result.add(getFromCursor(c));
+        }
 
-            @Override
-            protected Long doInBackground(Void... params) {
-                try {
-                    SQLiteDatabase db = _db.getWritableDatabase();
-                    ContentValues values = new ContentValues();
-                    values.put(DbSpec.ConsultantEntry.COLUMN_NAME_ID, consultant.Id);
-                    values.put(DbSpec.ConsultantEntry.COLUMN_NAME_NAME, consultant.Name);
-                    if (!Utils.isStringNullOrEmpty(consultant.JobRole))
-                        values.put(DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE, consultant.JobRole);
-                    if (!Utils.isStringNullOrEmpty(consultant.Description))
-                        values.put(DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION, consultant.Description);
+        return result.toArray(new ConsultantData[result.size()]);
+    }
 
-                    // Insert office data
-                    if (consultant.OfficeId != 0)
-                        values.put(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID, consultant.OfficeId);
-                    else if ((consultant.Office != null) && (consultant.Office.Id != 0))
-                        values.put(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID, consultant.Office.Id);
+    @Override
+    public void insert(ConsultantData consultant) {
+        SQLiteDatabase db = _db.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DbSpec.ConsultantEntry.COLUMN_NAME_ID, consultant.Id);
+        values.put(DbSpec.ConsultantEntry.COLUMN_NAME_NAME, consultant.Name);
+        if (!Utils.isStringNullOrEmpty(consultant.JobRole))
+            values.put(DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE, consultant.JobRole);
+        if (!Utils.isStringNullOrEmpty(consultant.Description))
+            values.put(DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION, consultant.Description);
 
-                    return db.insertOrThrow(DbSpec.ConsultantEntry.TABLE_NAME, null, values);
-                }
-                catch (Throwable ex){
-                    errorMessage = ex.getMessage();
-                    return (long) -1;
-                }
-            }
+        // Insert office data
+        if (consultant.OfficeId != 0)
+            values.put(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID, consultant.OfficeId);
+        else if ((consultant.Office != null) && (consultant.Office.Id != 0))
+            values.put(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID, consultant.Office.Id);
 
-            @Override
-            protected void onPostExecute(Long id) {
-                if (id > 0)
-                    listener.onResult(id);
-                else
-                    listener.onError(errorMessage);
-            }
-        };
-        task.execute();
-
+        db.insertOrThrow(DbSpec.ConsultantEntry.TABLE_NAME, null, values);
     }
 }

@@ -63,6 +63,7 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("PRAGMA foreign_keys=ON;");
         db.execSQL(DbSpec.OfficeEntry.SQL_CREATE);
         db.execSQL(DbSpec.TagEntry.SQL_CREATE);
         db.execSQL(DbSpec.ConsultantEntry.SQL_CREATE);
@@ -77,6 +78,15 @@ public class KvadratDb extends SQLiteOpenHelper {
         db.execSQL(DbSpec.ConsultantTagEntry.SQL_DELETE);
 
         onCreate(db);
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (!db.isReadOnly()) {
+            // Enable foreign key constraints
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
     }
 
     // Database operation methods

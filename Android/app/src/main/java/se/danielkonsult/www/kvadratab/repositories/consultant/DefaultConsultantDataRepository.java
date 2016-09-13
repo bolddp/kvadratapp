@@ -107,7 +107,7 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
                     else if ((consultant.Office != null) && (consultant.Office.Id != 0))
                         values.put(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID, consultant.Office.Id);
 
-                    return db.insert(DbSpec.ConsultantEntry.TABLE_NAME, null, values);
+                    return db.insertOrThrow(DbSpec.ConsultantEntry.TABLE_NAME, null, values);
                 }
                 catch (Throwable ex){
                     errorMessage = ex.getMessage();
@@ -117,7 +117,7 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
 
             @Override
             protected void onPostExecute(Long id) {
-                if (id >= -1)
+                if (id > 0)
                     listener.onResult(id);
                 else
                     listener.onError(errorMessage);

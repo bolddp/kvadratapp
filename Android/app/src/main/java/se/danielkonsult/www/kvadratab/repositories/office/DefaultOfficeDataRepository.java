@@ -138,7 +138,7 @@ public class DefaultOfficeDataRepository implements OfficeDataRepository {
                     values.put(DbSpec.OfficeEntry.COLUMN_NAME_ID, office.Id);
                     values.put(DbSpec.OfficeEntry.COLUMN_NAME_NAME, office.Name);
 
-                    return db.insert(DbSpec.OfficeEntry.TABLE_NAME, null, values);
+                    return db.insertOrThrow(DbSpec.OfficeEntry.TABLE_NAME, null, values);
                 }
                 catch (Throwable ex){
                     errorMessage = ex.getMessage();

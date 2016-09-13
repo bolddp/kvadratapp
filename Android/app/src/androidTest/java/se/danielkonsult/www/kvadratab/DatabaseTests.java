@@ -9,7 +9,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.sql.Time;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +29,7 @@ public class DatabaseTests {
 
     private static final String TAG = "DatabaseTests";
 
-    private boolean operationSuccessful;
+    private boolean hadExpectedBehavior;
     private OfficeData[] assertOffices;
     private TagData[] assertTags;
     private ConsultantData[] assertConsultants;
@@ -83,12 +82,12 @@ public class DatabaseTests {
         final CountDownLatch signal = new CountDownLatch(1);
 
         // Insert the office
-        operationSuccessful = false;
+        hadExpectedBehavior = false;
         KvadratTestDb db = new KvadratTestDb(ctx);
         db.insertOffice(oData, new DbOperationListener() {
             @Override
             public void onResult(long id) {
-                operationSuccessful = true;
+                hadExpectedBehavior = true;
                 signal.countDown();
             }
 
@@ -100,7 +99,7 @@ public class DatabaseTests {
         });
 
         signal.await(10, TimeUnit.SECONDS);
-        Assert.assertTrue(operationSuccessful);
+        Assert.assertTrue(hadExpectedBehavior);
 
         final CountDownLatch signal2 = new CountDownLatch(1);
 
@@ -171,12 +170,12 @@ public class DatabaseTests {
         final CountDownLatch signal = new CountDownLatch(1);
 
         // Insert the Tag
-        operationSuccessful = false;
+        hadExpectedBehavior = false;
         KvadratTestDb db = new KvadratTestDb(ctx);
         db.insertTag(tagData, new DbOperationListener() {
             @Override
             public void onResult(long id) {
-                operationSuccessful = true;
+                hadExpectedBehavior = true;
                 signal.countDown();
             }
 
@@ -188,7 +187,7 @@ public class DatabaseTests {
         });
 
         signal.await(10, TimeUnit.SECONDS);
-        Assert.assertTrue(operationSuccessful);
+        Assert.assertTrue(hadExpectedBehavior);
 
         final CountDownLatch signal2 = new CountDownLatch(1);
         // Read it back all Tags and make sure that the correct one is there
@@ -276,13 +275,37 @@ public class DatabaseTests {
         consultantData.Name = "Daniel Persson";
         consultantData.JobRole = "Systemutväcklare";
         consultantData.Description = "Daniel är en glad och positiv kille, förstås, vad skulle vi annars skriva här?";
+        consultantData.OfficeId = 999; // Wrong!!
 
-        final CountDownLatch signal2 = new CountDownLatch(1);
-        operationSuccessful = false;
+        // First try to insert with faulty office ref
+        final CountDownLatch signal4 = new CountDownLatch(1);
+        hadExpectedBehavior = false;
         db.insertConsultant(consultantData, new DbOperationListener() {
             @Override
             public void onResult(long _id) {
-                operationSuccessful = true;
+                signal4.countDown();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                hadExpectedBehavior = true;
+                Log.e(TAG, errorMessage);
+                signal4.countDown();
+            }
+        });
+
+        signal4.await(10, TimeUnit.SECONDS);
+        Assert.assertTrue(hadExpectedBehavior);
+
+        // Then change the office link and try again
+        consultantData.OfficeId = officeData.Id;
+
+        final CountDownLatch signal2 = new CountDownLatch(1);
+        hadExpectedBehavior = false;
+        db.insertConsultant(consultantData, new DbOperationListener() {
+            @Override
+            public void onResult(long _id) {
+                hadExpectedBehavior = true;
                 signal2.countDown();
             }
 
@@ -293,7 +316,7 @@ public class DatabaseTests {
         });
 
         signal2.await(10, TimeUnit.SECONDS);
-        Assert.assertTrue(operationSuccessful);
+        Assert.assertTrue(hadExpectedBehavior);
 
         final CountDownLatch signal3 = new CountDownLatch(1);
         // Read back all consultants and make sure that the correct one is there

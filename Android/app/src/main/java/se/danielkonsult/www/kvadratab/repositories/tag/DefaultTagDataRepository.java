@@ -139,7 +139,7 @@ public class DefaultTagDataRepository implements TagDataRepository {
                     values.put(DbSpec.TagEntry.COLUMN_NAME_ID, tag.Id);
                     values.put(DbSpec.TagEntry.COLUMN_NAME_NAME, tag.Name);
 
-                    return db.insert(DbSpec.TagEntry.TABLE_NAME, null, values);
+                    return db.insertOrThrow(DbSpec.TagEntry.TABLE_NAME, null, values);
                 }
                 catch (Throwable ex){
                     errorMessage = ex.getMessage();

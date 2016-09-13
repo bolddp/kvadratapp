@@ -9,13 +9,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.sql.Time;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.DbDataListener;
 import se.danielkonsult.www.kvadratab.helpers.db.DbOperationListener;
+import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 
 /**
  * Tests aimed at the KvadratDb class.
@@ -30,8 +33,39 @@ public class DatabaseTests {
     private boolean operationSuccessful;
     private OfficeData[] assertOffices;
     private TagData[] assertTags;
+    private ConsultantData[] assertConsultants;
 
     // Private methods
+
+    private void insertTag(KvadratDb db,TagData tagData, final CountDownLatch signal) {
+        // Insert the Tag
+        db.insertTag(tagData, new DbOperationListener() {
+            @Override
+            public void onResult(long id) {
+                signal.countDown();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, errorMessage);
+            }
+        });
+    }
+
+    private void insertOffice(KvadratDb db,OfficeData officeData, final CountDownLatch signal) {
+        // Insert the office
+        db.insertOffice(officeData, new DbOperationListener() {
+            @Override
+            public void onResult(long id) {
+                signal.countDown();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, errorMessage);
+            }
+        });
+    }
 
     /**
      * Test that an office can be written and read in the app database.
@@ -157,7 +191,6 @@ public class DatabaseTests {
         Assert.assertTrue(operationSuccessful);
 
         final CountDownLatch signal2 = new CountDownLatch(1);
-
         // Read it back all Tags and make sure that the correct one is there
         assertTags = null;
         db = new KvadratTestDb(ctx);
@@ -207,5 +240,86 @@ public class DatabaseTests {
         Assert.assertEquals(1, assertTags.length);
         TagData tag = assertTags[0];
         Assert.assertTrue((tag.Id == tagData.Id) && tag.Name.equals(tagData.Name));
+    }
+
+
+    /**
+     * Test that a tag can be read and written to the database.
+     */
+    @Test
+    public void shouldStoreAndReadBackConsultant() throws InterruptedException {
+
+        // Clean out the testdatabase
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        ctx.deleteDatabase(KvadratTestDb.DATABASE_NAME);
+
+        KvadratDb db = new KvadratTestDb(ctx);
+        final CountDownLatch signal = new CountDownLatch(2);
+
+        // Create tag
+        TagData tagData = new TagData();
+        tagData.Id = 4;
+        tagData.Name = "Systemutveckling";
+        insertTag(db, tagData, signal);
+
+        // Create office
+        OfficeData officeData = new OfficeData();
+        officeData.Id = 17;
+        officeData.Name = "Jönköping";
+        insertOffice(db, officeData, signal);
+
+        signal.await(10, TimeUnit.SECONDS);
+        Assert.assertTrue(signal.getCount() == 0);
+
+        ConsultantData consultantData = new ConsultantData();
+        consultantData.Id = 6985;
+        consultantData.Name = "Daniel Persson";
+        consultantData.JobRole = "Systemutväcklare";
+        consultantData.Description = "Daniel är en glad och positiv kille, förstås, vad skulle vi annars skriva här?";
+
+        final CountDownLatch signal2 = new CountDownLatch(1);
+        operationSuccessful = false;
+        db.insertConsultant(consultantData, new DbOperationListener() {
+            @Override
+            public void onResult(long _id) {
+                operationSuccessful = true;
+                signal2.countDown();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, errorMessage);
+            }
+        });
+
+        signal2.await(10, TimeUnit.SECONDS);
+        Assert.assertTrue(operationSuccessful);
+
+        final CountDownLatch signal3 = new CountDownLatch(1);
+        // Read back all consultants and make sure that the correct one is there
+        assertConsultants = null;
+        db = new KvadratTestDb(ctx);
+        db.getAllConsultants(new DbDataListener<ConsultantData[]>() {
+            @Override
+            public void onResult(ConsultantData[] consultants) {
+                assertConsultants = consultants;
+                signal3.countDown();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                signal3.countDown();
+            }
+        });
+
+        signal3.await(10, TimeUnit.SECONDS);
+        Assert.assertNotNull(assertConsultants);
+        ConsultantData foundConsultant = null;
+        for (ConsultantData consultant : assertConsultants) {
+            if (consultant.Id == consultantData.Id)
+                foundConsultant = consultant;
+        }
+        Assert.assertNotNull(foundConsultant);
+        Assert.assertEquals(consultantData.Id, foundConsultant.Id);
     }
 }

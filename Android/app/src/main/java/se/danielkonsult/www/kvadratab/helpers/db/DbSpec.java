@@ -1,5 +1,6 @@
 package se.danielkonsult.www.kvadratab.helpers.db;
 
+import android.nfc.Tag;
 import android.provider.BaseColumns;
 
 /**
@@ -51,7 +52,30 @@ public class DbSpec {
                         COLUMN_NAME_ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP +
                         COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
                         COLUMN_NAME_JOBROLE + TEXT_TYPE + COMMA_SEP +
-                        COLUMN_NAME_DESCRIPTION + TEXT_TYPE + " )";
+                        COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+                        COLUMN_NAME_OFFICEID + INTEGER_TYPE + COMMA_SEP +
+                        "FOREIGN KEY(" + COLUMN_NAME_OFFICEID + ") REFERENCES " +
+                        OfficeEntry.TABLE_NAME + "(" + OfficeEntry.COLUMN_NAME_ID + "))";
+
+        public static final String SQL_DELETE =
+                "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
+
+    public static class ConsultantTagEntry{
+        public static final String TABLE_NAME = "consultant_tag";
+        public static final String COLUMN_NAME_CONSULTANT_ID = "consultant_id";
+        public static final String COLUMN_NAME_TAG_ID = "tag_id";
+
+        public static final String SQL_CREATE =
+                "CREATE TABLE " + TABLE_NAME + " (" +
+                        COLUMN_NAME_CONSULTANT_ID + " INTEGER,"+
+                        COLUMN_NAME_TAG_ID + " INTEGER," +
+                        "PRIMARY KEY(" + COLUMN_NAME_CONSULTANT_ID + ", " + COLUMN_NAME_TAG_ID + "),"+
+                        "FOREIGN KEY(" + COLUMN_NAME_CONSULTANT_ID + ") REFERENCES " +
+                        ConsultantEntry.TABLE_NAME + "(" + ConsultantEntry.COLUMN_NAME_ID + ")," +
+                        "FOREIGN KEY(" + COLUMN_NAME_TAG_ID + ") REFERENCES " +
+                        TagEntry.TABLE_NAME + "(" + TagEntry.COLUMN_NAME_ID + "))";
+
         public static final String SQL_DELETE =
                 "DROP TABLE IF EXISTS " + TABLE_NAME;
     }

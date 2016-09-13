@@ -8,6 +8,8 @@ import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
+import se.danielkonsult.www.kvadratab.repositories.consultant.ConsultantDataRepository;
+import se.danielkonsult.www.kvadratab.repositories.consultant.DefaultConsultantDataRepository;
 import se.danielkonsult.www.kvadratab.repositories.office.DefaultOfficeDataRepository;
 import se.danielkonsult.www.kvadratab.repositories.office.OfficeDataRepository;
 import se.danielkonsult.www.kvadratab.repositories.tag.DefaultTagDataRepository;
@@ -23,7 +25,8 @@ public class KvadratDb extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     private OfficeDataRepository _officeDataRepository;
-    private DefaultTagDataRepository _tagDataRepository;
+    private TagDataRepository _tagDataRepository;
+    private ConsultantDataRepository _consultantDataRepository;
 
     // Protected methods
 
@@ -38,6 +41,15 @@ public class KvadratDb extends SQLiteOpenHelper {
             _tagDataRepository = new DefaultTagDataRepository(this);
         return _tagDataRepository;
     }
+
+
+    protected ConsultantDataRepository getConsultantDataRepository() {
+        if (_consultantDataRepository == null)
+            _consultantDataRepository = new DefaultConsultantDataRepository(this);
+
+        return _consultantDataRepository;
+    }
+
 
     // Constructor
 
@@ -54,6 +66,7 @@ public class KvadratDb extends SQLiteOpenHelper {
         db.execSQL(DbSpec.OfficeEntry.SQL_CREATE);
         db.execSQL(DbSpec.TagEntry.SQL_CREATE);
         db.execSQL(DbSpec.ConsultantEntry.SQL_CREATE);
+        db.execSQL(DbSpec.ConsultantTagEntry.SQL_CREATE);
     }
 
     @Override
@@ -61,6 +74,7 @@ public class KvadratDb extends SQLiteOpenHelper {
         db.execSQL(DbSpec.OfficeEntry.SQL_DELETE);
         db.execSQL(DbSpec.TagEntry.SQL_DELETE);
         db.execSQL(DbSpec.ConsultantEntry.SQL_DELETE);
+        db.execSQL(DbSpec.ConsultantTagEntry.SQL_DELETE);
 
         onCreate(db);
     }
@@ -95,7 +109,11 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     }
 
+    public void getAllConsultants(DbDataListener<ConsultantData[]> listener){
+        getConsultantDataRepository().getAll(listener);
+    }
+
     public void insertConsultant(ConsultantData consultant, DbOperationListener listener){
-        
+        getConsultantDataRepository().insert(consultant, listener);
     }
 }

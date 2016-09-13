@@ -8,7 +8,10 @@ public class ConsultantData {
     public int Id;
 
     public String Name;
+    public String JobRole;
+    public String Description;
 
+    public int OfficeId;
     public OfficeData Office;
 
     public TagData[] Tags;

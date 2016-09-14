@@ -1,5 +1,6 @@
 package se.danielkonsult.www.kvadratab.activities;
 
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -35,12 +36,17 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
     }
 
     @Override
-    public void onConsultantAdded(ConsultantData consultant) {
+    public void onConsultantAdded(ConsultantData consultant, Bitmap bitmap) {
 
     }
 
     @Override
     public void onLoaded() {
+
+    }
+
+    @Override
+    public void onError(String module, String errorMessage) {
 
     }
 }

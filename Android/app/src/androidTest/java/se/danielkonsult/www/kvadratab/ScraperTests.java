@@ -1,12 +1,15 @@
 package se.danielkonsult.www.kvadratab;
 
 import android.graphics.Bitmap;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
@@ -14,7 +17,7 @@ import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataParser;
-import se.danielkonsult.www.kvadratab.helpers.scraper.ImageDownloader;
+import se.danielkonsult.www.kvadratab.helpers.scraper.ImageHelper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryData;
 import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryDataParser;
 
@@ -138,14 +141,40 @@ public class ScraperTests {
         }
     }
 
+    /**
+     * Tests that an image can be downloaded from the web page, saved to file
+     * and then read back from file.
+     */
     @Test
     public void shouldDownloadConsultantImage() throws IOException {
 
-        ImageDownloader downloader = new ImageDownloader();
-        Bitmap bitmap = downloader.downloadConsultantImageById(6985);
+        AppCtrl.setApplicationContext(InstrumentationRegistry.getTargetContext());
+
+        // Delete the image file if there is any
+        FilenameFilter imageFilter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                String lowercaseName = name.toLowerCase();
+                if (lowercaseName.startsWith("img_consultant")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+        File appDir = AppCtrl.getApplicationContext().getFilesDir();
+        File[] files = appDir.listFiles(imageFilter);
+        for (File file : files)
+            file.delete();
+
+        Bitmap bitmap = ImageHelper.downloadConsultantBitmapAndSaveToFile(6985);
 
         Assert.assertNotNull(bitmap);
         Assert.assertEquals(600, bitmap.getWidth());
         Assert.assertEquals(600, bitmap.getHeight());
+
+        Bitmap bitmap2 = ImageHelper.getConsultantBitmapFromFile(6985);
+        Assert.assertNotNull(bitmap2);
+        Assert.assertEquals(600, bitmap2.getWidth());
+        Assert.assertEquals(600, bitmap2.getHeight());
     }
 }

@@ -1,5 +1,7 @@
 package se.danielkonsult.www.kvadratab.services.data;
 
+import android.graphics.Bitmap;
+
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 
 /**
@@ -26,11 +28,18 @@ public interface DataServiceListener {
      * Indicates that a new consultant was found and fully loaded, either during initial load or
      * during a refresh of the database.
      */
-    void onConsultantAdded(ConsultantData consultant);
+    void onConsultantAdded(ConsultantData consultant, Bitmap bitmap);
 
     /**
      * Indicates that the data service has loaded, either after performing an initial load
      * or determining that all relevant data is available already.
      */
     void onLoaded();
+
+    /**
+     *
+     * @param module The module that the error occured in
+     * @param errorMessage The message for the error that occured.
+     */
+    void onError(String module, String errorMessage);
 }

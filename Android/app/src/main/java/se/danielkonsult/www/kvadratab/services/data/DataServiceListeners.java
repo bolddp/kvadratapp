@@ -1,6 +1,7 @@
 package se.danielkonsult.www.kvadratab.services.data;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Handler;
 
 import java.util.ArrayList;
@@ -60,17 +61,55 @@ public class DataServiceListeners implements DataServiceListener {
     }
 
     @Override
-    public void onInitialLoadProgress(int progressCount, int totalCount) {
+    public void onInitialLoadProgress(final int progressCount, final int totalCount) {
+        synchronized (_listeners){
+            for (final DataServiceListener listener : _listeners)
+                runOnUiThread(listener, new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onInitialLoadProgress(progressCount, totalCount);
+                    }
+                });
+        }
 
     }
 
     @Override
-    public void onConsultantAdded(ConsultantData consultant) {
-
+    public void onConsultantAdded(final ConsultantData consultant, final Bitmap bitmap) {
+        synchronized (_listeners){
+            for (final DataServiceListener listener : _listeners)
+                runOnUiThread(listener, new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onConsultantAdded(consultant, bitmap);
+                    }
+                });
+        }
     }
 
     @Override
     public void onLoaded() {
+        synchronized (_listeners){
+            for (final DataServiceListener listener : _listeners)
+                runOnUiThread(listener, new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onLoaded();
+                    }
+                });
+        }
+    }
 
+    @Override
+    public void onError(final String module, final String errorMessage) {
+        synchronized (_listeners){
+            for (final DataServiceListener listener : _listeners)
+                runOnUiThread(listener, new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onError(module, errorMessage);
+                    }
+                });
+        }
     }
 }

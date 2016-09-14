@@ -1,11 +1,13 @@
 package se.danielkonsult.www.kvadratab;
 
+import android.graphics.Bitmap;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -16,6 +18,7 @@ import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataParser;
 import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataListener;
 import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataScraper;
 import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataScraperConfig;
+import se.danielkonsult.www.kvadratab.services.scraper.ImageDownloader;
 import se.danielkonsult.www.kvadratab.services.scraper.SummaryData;
 import se.danielkonsult.www.kvadratab.services.scraper.SummaryDataListener;
 import se.danielkonsult.www.kvadratab.services.scraper.SummaryDataParser;
@@ -192,5 +195,16 @@ public class ScraperTests {
             Assert.assertTrue(tagData.Id > 0);
             Assert.assertTrue(tagData.Name != null && tagData.Name != "");
         }
+    }
+
+    @Test
+    public void shouldDownloadConsultantImage() throws IOException {
+
+        ImageDownloader downloader = new ImageDownloader();
+        Bitmap bitmap = downloader.downloadConsultantImageById(6985);
+
+        Assert.assertNotNull(bitmap);
+        Assert.assertEquals(600, bitmap.getWidth());
+        Assert.assertEquals(600, bitmap.getHeight());
     }
 }

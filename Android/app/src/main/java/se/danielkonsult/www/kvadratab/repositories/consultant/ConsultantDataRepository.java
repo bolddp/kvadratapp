@@ -15,4 +15,9 @@ public interface ConsultantDataRepository {
     int getCount();
 
     void insert(ConsultantData consultant);
+
+    /**
+     * Updates the office id of a specific consultant.
+     */
+    void updateOffice(int consultantId, int officeId);
 }

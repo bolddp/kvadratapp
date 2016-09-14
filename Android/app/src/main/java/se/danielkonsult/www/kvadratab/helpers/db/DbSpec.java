@@ -61,6 +61,8 @@ public class DbSpec {
                 "DROP TABLE IF EXISTS " + TABLE_NAME;
 
         public static final String SQL_COUNT_ALL = "SELECT COUNT(*) FROM " + TABLE_NAME;
+
+        public static final String SQL_UPDATE_OFFICE_ID = "UPDATE "+ TABLE_NAME +" SET "+COLUMN_NAME_OFFICEID + "= %d WHERE id = %d";
     }
 
     public static class ConsultantTagEntry{

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.helpers.Utils;
@@ -108,5 +109,13 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
             values.put(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID, consultant.Office.Id);
 
         db.insertOrThrow(DbSpec.ConsultantEntry.TABLE_NAME, null, values);
+    }
+
+    @Override
+    public void updateOffice(int consultantId, int officeId) {
+        SQLiteDatabase db = _db.getWritableDatabase();
+
+        String sql = String.format(DbSpec.ConsultantEntry.SQL_UPDATE_OFFICE_ID, officeId, consultantId);
+        db.execSQL(sql);
     }
 }

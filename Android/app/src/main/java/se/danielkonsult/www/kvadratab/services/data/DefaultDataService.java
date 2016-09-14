@@ -18,50 +18,6 @@ public class DefaultDataService implements DataService {
 
     private final DataServiceListeners _listeners = new DataServiceListeners();
 
-    /**
-     * Performs the initial load of data by scraping the web page and
-     * storing the found data in the database.
-     */
-    private void performInitialLoad() {
-
-        final String MODULE = "InitialLoad";
-
-        KvadratDb db = AppCtrl.getDb();
-
-        try {
-            // Notify listeners that the initial load has started
-            _listeners.onInitialLoadStarted();
-
-            int progress = 0;
-
-            // Scrape the web page for all consultants and loop them
-            ConsultantData[] consultants = WebPageScraper.scrapeConsultants(0,0);
-            _listeners.onInitialLoadProgress(progress, consultants.length);
-            for (ConsultantData cd : consultants){
-                // Save the consultant to database
-                db.insertConsultant(cd);
-                // Load the consultant image
-                Bitmap bitmap = ImageHelper.downloadConsultantBitmapAndSaveToFile(cd.Id);
-
-
-                progress++;
-                _listeners.onInitialLoadProgress(progress, consultants.length);
-            }
-
-            // One final progress notification...
-            _listeners.onInitialLoadProgress(consultants.length, consultants.length);
-        }
-        catch (Throwable ex){
-            // Notify listeners of the problem
-            _listeners.onError(MODULE, ex.getMessage());
-        }
-
-    }
-
-    private void performRefresh() {
-
-    }
-
     @Override
     public void registerListener(DataServiceListener listener) {
         _listeners.registerListener(listener);
@@ -83,10 +39,17 @@ public class DefaultDataService implements DataService {
                 int consultantCount = db.getConsultantCount();
 
                 if (consultantCount == 0) {
-                    performInitialLoad();
+                    InitialLoader loader = new InitialLoader(db, _listeners);
+                    loader.run();
                 }
-                else
-                    performRefresh();
+                else {
+                    // Signal that the data already is available, but also
+                    // check if it's time for a refresh of the data.
+                    _listeners.onLoaded();
+
+                    Refresher refresher = new Refresher(db, _listeners);
+                    refresher.run();
+                }
             }
         };
         AsyncTask.execute(startRunnable);

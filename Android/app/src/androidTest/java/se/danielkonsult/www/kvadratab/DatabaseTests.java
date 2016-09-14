@@ -122,11 +122,16 @@ public class DatabaseTests {
         tagData.Name = "Systemutveckling";
         db.insertTag(tagData);
 
-        // Create and insert office
+        // Create and insert 2 offices
         OfficeData officeData = new OfficeData();
         officeData.Id = 17;
         officeData.Name = "Jönköping";
         db.insertOffice(officeData);
+
+        OfficeData officeData2 = new OfficeData();
+        officeData2.Id = 6;
+        officeData2.Name = "Linköping";
+        db.insertOffice(officeData2);
 
         ConsultantData consultantData = new ConsultantData();
         consultantData.Id = 6985;
@@ -159,6 +164,15 @@ public class DatabaseTests {
         }
         Assert.assertNotNull(foundConsultant);
         Assert.assertEquals(consultantData.Id, foundConsultant.Id);
+        Assert.assertEquals(consultantData.OfficeId, foundConsultant.OfficeId);
+
+        // Update the office id of the consultant
+        db = new KvadratTestDb(ctx);
+        db.updateConsultantOffice(consultantData.Id, officeData2.Id);
+        // Assert the new office
+        db = new KvadratTestDb(ctx);
+        foundConsultant = db.getConsultantById(consultantData.Id);
+        Assert.assertEquals(officeData2.Id, foundConsultant.OfficeId);
 
         // End by counting the consultants to see that it works as well
         db = new KvadratTestDb(ctx);

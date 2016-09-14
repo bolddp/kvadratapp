@@ -133,4 +133,11 @@ public class KvadratDb extends SQLiteOpenHelper {
     public void insertConsultant(ConsultantData consultant){
         getConsultantDataRepository().insert(consultant);
     }
+
+    /**
+     * Updates the office of a consultant with a specific id.
+     */
+    public void updateConsultantOffice(int consultantId, int officeId) {
+        getConsultantDataRepository().updateOffice(consultantId, officeId);
+    }
 }

@@ -101,13 +101,13 @@ public class DataServiceListeners implements DataServiceListener {
     }
 
     @Override
-    public void onError(final String module, final String errorMessage) {
+    public void onError(final String tag, final String errorMessage) {
         synchronized (_listeners){
             for (final DataServiceListener listener : _listeners)
                 runOnUiThread(listener, new Runnable() {
                     @Override
                     public void run() {
-                        listener.onError(module, errorMessage);
+                        listener.onError(tag, errorMessage);
                     }
                 });
         }

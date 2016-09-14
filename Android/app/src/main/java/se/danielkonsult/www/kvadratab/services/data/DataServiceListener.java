@@ -38,8 +38,8 @@ public interface DataServiceListener {
 
     /**
      *
-     * @param module The module that the error occured in
+     * @param tag The module that the error occured in
      * @param errorMessage The message for the error that occured.
      */
-    void onError(String module, String errorMessage);
+    void onError(String tag, String errorMessage);
 }

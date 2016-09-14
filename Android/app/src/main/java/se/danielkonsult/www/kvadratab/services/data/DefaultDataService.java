@@ -23,8 +23,11 @@ public class DefaultDataService implements DataService {
      * storing the found data in the database.
      */
     private void performInitialLoad() {
-        // Notify listeners
+        // Notify listeners that the initial load has started
         _listeners.onInitialLoadStarted();
+
+        // Scrape the web page for all consultants
+
     }
 
     private void performRefresh() {

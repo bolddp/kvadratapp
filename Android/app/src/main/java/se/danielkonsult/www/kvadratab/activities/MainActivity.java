@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
 
     @Override
     public void onInitialLoadStarted() {
-        Toast.makeText(this, "Initial load started!", Toast.LENGTH_LONG).show();
     }
 
     @Override

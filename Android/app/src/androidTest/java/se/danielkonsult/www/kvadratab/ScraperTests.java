@@ -8,30 +8,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
+import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataParser;
-import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataListener;
-import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataScraper;
-import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataScraperConfig;
 import se.danielkonsult.www.kvadratab.helpers.scraper.ImageDownloader;
 import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryData;
-import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryDataListener;
 import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryDataParser;
-import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryDataScraper;
 
 /**
  * Tests of web page scraper functionality.
  */
 @RunWith(AndroidJUnit4.class)
 public class ScraperTests {
-
-    static ConsultantData[] assertConsultantDatas;
-    static SummaryData assertSummaryPageData;
 
     @Test
     public void shouldParseMainPageWebData(){
@@ -53,26 +44,10 @@ public class ScraperTests {
      */
     @Test
     public void shouldScrapeAllConsultantsFromWebPage() throws Throwable {
-        final CountDownLatch signal = new CountDownLatch(1);
 
-        assertConsultantDatas = null;
-        ConsultantDataScraper scraper = new ConsultantDataScraper(new ConsultantDataListener() {
-            @Override
-            public void onResult(ConsultantData[] consultants) {
-                assertConsultantDatas = consultants;
-                signal.countDown();
-            }
-
-            @Override
-            public void onError(int statusCode, String message) {
-                signal.countDown();
-            }
-        });
-        ConsultantDataScraperConfig cfg = new ConsultantDataScraperConfig(0,0);
-        scraper.execute(cfg);
-        signal.await(10, TimeUnit.SECONDS);
-
+        ConsultantData[] assertConsultantDatas = WebPageScraper.scrapeConsultants(0,0);
         Assert.assertNotNull(assertConsultantDatas);
+
         // Don't assert an exact number since the web page contents most likely will change
         Assert.assertTrue(String.format("Length: %d", assertConsultantDatas.length), assertConsultantDatas.length > 240);
         for (ConsultantData webData : assertConsultantDatas) {
@@ -130,26 +105,8 @@ public class ScraperTests {
      */
     @Test
     public void shouldScrapeOfficeConsultantsFromWebPage() throws Throwable {
-        final CountDownLatch signal = new CountDownLatch(1);
 
-        assertConsultantDatas = null;
-        ConsultantDataScraper scraper = new ConsultantDataScraper(new ConsultantDataListener() {
-            @Override
-            public void onResult(ConsultantData[] consultants) {
-                assertConsultantDatas = consultants;
-                signal.countDown();
-            }
-
-            @Override
-            public void onError(int statusCode, String message) {
-                signal.countDown();
-            }
-        });
-
-        ConsultantDataScraperConfig cfg = new ConsultantDataScraperConfig(17, 0);
-        scraper.execute(cfg);
-        signal.await(10, TimeUnit.SECONDS);
-
+        ConsultantData[] assertConsultantDatas = WebPageScraper.scrapeConsultants(17,0);
         Assert.assertNotNull(assertConsultantDatas);
         // Don't assert an exact number since the web page contents most likely will change
         Assert.assertTrue(String.format("Length: %d", assertConsultantDatas.length), (assertConsultantDatas.length > 12) && (assertConsultantDatas.length < 50));
@@ -163,27 +120,11 @@ public class ScraperTests {
      * Tests that the summary data (available offices and tags) can be scraped from the web page.
      */
     @Test
-    public void shouldScrapeSummaryDataFromWebPage() throws InterruptedException {
-        final CountDownLatch signal = new CountDownLatch(1);
+    public void shouldScrapeSummaryDataFromWebPage() throws Throwable {
 
-        assertSummaryPageData = null;
-        SummaryDataScraper scraper = new SummaryDataScraper(new SummaryDataListener() {
-            @Override
-            public void onResult(SummaryData data) {
-                assertSummaryPageData = data;
-                signal.countDown();
-            }
-
-            @Override
-            public void onError(int statusCode, String message) {
-                signal.countDown();
-            }
-        });
-
-        scraper.execute();
-        signal.await(10, TimeUnit.SECONDS);
-
+        SummaryData assertSummaryPageData = WebPageScraper.scrapeSummaryData();
         Assert.assertNotNull(assertSummaryPageData);
+
         // Don't assert an exact number since the web page contents most likely will change
         Assert.assertTrue(String.format("Offices length: %d", assertSummaryPageData.OfficeDatas.length), (assertSummaryPageData.OfficeDatas.length > 5) && (assertSummaryPageData.OfficeDatas.length < 10));
         for (OfficeData officeData : assertSummaryPageData.OfficeDatas) {

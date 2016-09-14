@@ -59,6 +59,8 @@ public class DbSpec {
 
         public static final String SQL_DELETE =
                 "DROP TABLE IF EXISTS " + TABLE_NAME;
+
+        public static final String SQL_COUNT_ALL = "SELECT COUNT(*) FROM " + TABLE_NAME;
     }
 
     public static class ConsultantTagEntry{

@@ -111,6 +111,11 @@ public class DatabaseTests {
 
         KvadratDb db = new KvadratTestDb(ctx);
 
+        // Start by checking that there are no consultants
+        db = new KvadratTestDb(ctx);
+        int consultantCount = db.getConsultantCount();
+        Assert.assertEquals(0, consultantCount);
+
         // Create and insert tag
         TagData tagData = new TagData();
         tagData.Id = 4;
@@ -154,5 +159,10 @@ public class DatabaseTests {
         }
         Assert.assertNotNull(foundConsultant);
         Assert.assertEquals(consultantData.Id, foundConsultant.Id);
+
+        // End by counting the consultants to see that it works as well
+        db = new KvadratTestDb(ctx);
+        consultantCount = db.getConsultantCount();
+        Assert.assertEquals(1, consultantCount);
     }
 }

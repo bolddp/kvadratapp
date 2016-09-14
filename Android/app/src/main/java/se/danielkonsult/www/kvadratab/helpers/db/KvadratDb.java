@@ -21,8 +21,8 @@ import se.danielkonsult.www.kvadratab.repositories.tag.TagDataRepository;
  */
 public class KvadratDb extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "Kvadrat.db";
-    private static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "Kvadrat.db";
+    public static final int DATABASE_VERSION = 1;
 
     private OfficeDataRepository _officeDataRepository;
     private TagDataRepository _tagDataRepository;
@@ -121,6 +121,13 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     public ConsultantData[] getAllConsultants(){
         return getConsultantDataRepository().getAll();
+    }
+
+    /**
+     * Gets the total number of consultant records in the database.
+     */
+    public int getConsultantCount() {
+        return getConsultantDataRepository().getCount();
     }
 
     public void insertConsultant(ConsultantData consultant){

@@ -9,5 +9,10 @@ public interface ConsultantDataRepository {
     ConsultantData getById(int id);
     ConsultantData[] getAll();
 
+    /**
+     * Gets the total number of consultants in the database.
+     */
+    int getCount();
+
     void insert(ConsultantData consultant);
 }

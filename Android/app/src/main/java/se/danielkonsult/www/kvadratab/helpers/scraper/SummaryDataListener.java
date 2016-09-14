@@ -1,4 +1,4 @@
-package se.danielkonsult.www.kvadratab.services.scraper;
+package se.danielkonsult.www.kvadratab.helpers.scraper;
 
 /**
  * Listener for data from a MainPageScraper.

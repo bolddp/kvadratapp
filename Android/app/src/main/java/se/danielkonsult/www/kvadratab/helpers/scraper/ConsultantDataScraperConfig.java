@@ -1,4 +1,4 @@
-package se.danielkonsult.www.kvadratab.services.scraper;
+package se.danielkonsult.www.kvadratab.helpers.scraper;
 
 /**
  * Created by Daniel on 2016-09-10.

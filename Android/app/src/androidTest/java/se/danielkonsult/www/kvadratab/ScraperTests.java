@@ -14,15 +14,15 @@ import java.util.concurrent.TimeUnit;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
-import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataParser;
-import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataListener;
-import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataScraper;
-import se.danielkonsult.www.kvadratab.services.scraper.ConsultantDataScraperConfig;
-import se.danielkonsult.www.kvadratab.services.scraper.ImageDownloader;
-import se.danielkonsult.www.kvadratab.services.scraper.SummaryData;
-import se.danielkonsult.www.kvadratab.services.scraper.SummaryDataListener;
-import se.danielkonsult.www.kvadratab.services.scraper.SummaryDataParser;
-import se.danielkonsult.www.kvadratab.services.scraper.SummaryDataScraper;
+import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataParser;
+import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataListener;
+import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataScraper;
+import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataScraperConfig;
+import se.danielkonsult.www.kvadratab.helpers.scraper.ImageDownloader;
+import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryData;
+import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryDataListener;
+import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryDataParser;
+import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryDataScraper;
 
 /**
  * Tests of web page scraper functionality.

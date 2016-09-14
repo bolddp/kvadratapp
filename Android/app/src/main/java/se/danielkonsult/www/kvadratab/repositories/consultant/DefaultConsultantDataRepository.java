@@ -81,6 +81,16 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
     }
 
     @Override
+    public int getCount() {
+        SQLiteDatabase db = _db.getReadableDatabase();
+        Cursor c = db.rawQuery(DbSpec.ConsultantEntry.SQL_COUNT_ALL, null);
+        if (c.moveToFirst()){
+            return c.getInt(0);
+        }
+        return -1;
+    }
+
+    @Override
     public void insert(ConsultantData consultant) {
         SQLiteDatabase db = _db.getWritableDatabase();
         ContentValues values = new ContentValues();

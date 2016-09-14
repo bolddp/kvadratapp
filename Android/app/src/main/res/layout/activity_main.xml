@@ -9,9 +9,52 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activities.MainActivity">
 
-    <TextView
-        android:id="@+id/tvMain"
-        android:scrollbars="vertical"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp">
+        <RelativeLayout
+            android:id="@+id/layoutConsultantImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible">
+            <ImageView
+                android:id="@+id/imgConsultant"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerInside"/>
+            <ProgressBar
+                android:id="@+id/progbarMain"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imgConsultant"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:progress="50"/>
+        </RelativeLayout>
+        <!-- Logo -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:scaleType="centerInside"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/activity_vertical_margin_dbl"
+            android:src="@drawable/logo"/>
+        <TextView
+            android:id="@+id/tvLoading"
+            style="@style/Text02"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textAlignment="center"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:text="Laddar världens lyckligaste yrkesmänniskor" />
+
+    </LinearLayout>
+
 </RelativeLayout>

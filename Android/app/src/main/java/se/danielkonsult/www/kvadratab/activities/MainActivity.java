@@ -1,21 +1,19 @@
 package se.danielkonsult.www.kvadratab.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.os.StrictMode;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.R;
@@ -27,18 +25,82 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
 
     // Private variables
 
+    private static final int IMAGE_UPDATE_INTERVAL = 1500;
+    private static final long IMAGE_FADE_DURATION = 100;
     private final Handler _handler = new Handler();
 
     private RelativeLayout _layoutConsultantImage;
     private ImageView _imgConsultant;
     private TextView _tvLoading;
     private ProgressBar _progbarMain;
+    private long pictureUpdateTimestamp = 0;
 
     // Private methods
 
-    private void fadeInLoadingViews() {
-        _layoutConsultantImage.setVisibility(View.VISIBLE);
-        _tvLoading.setVisibility(View.VISIBLE);
+    private void fadeInViews(final View[] views) {
+        final Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new AccelerateInterpolator());
+        fadeIn.setDuration(IMAGE_FADE_DURATION);
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            public void onAnimationEnd(Animation animation) {
+                for (View view: views){
+                    view.setVisibility(View.VISIBLE);
+                }
+            }
+
+            public void onAnimationRepeat(Animation animation) { }
+            public void onAnimationStart(Animation animation) { }
+        });
+
+        // Start the animations
+        for (View view: views){
+            view.startAnimation(fadeIn);
+        }
+    }
+
+    /**
+     * Updates the consultant image that is displayed during
+     * loading.
+     */
+    private void setConsultantImage(final Bitmap bitmap) {
+        final Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new AccelerateInterpolator());
+        fadeIn.setDuration(IMAGE_FADE_DURATION);
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            public void onAnimationEnd(Animation animation)
+            {
+                // Update the bitmap and start the fade in
+                _imgConsultant.setVisibility(View.VISIBLE);
+            }
+            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationStart(Animation animation) {}
+        });
+
+        Animation fadeOut = new AlphaAnimation(1, 0);
+        fadeOut.setInterpolator(new AccelerateInterpolator());
+        fadeOut.setDuration(IMAGE_FADE_DURATION);
+
+        fadeOut.setAnimationListener(new Animation.AnimationListener()
+        {
+            public void onAnimationEnd(Animation animation)
+            {
+                // Update the bitmap and start the fade in
+                _imgConsultant.setImageBitmap(bitmap);
+                _imgConsultant.setVisibility(View.INVISIBLE);
+                _imgConsultant.startAnimation(fadeIn);
+            }
+            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationStart(Animation animation) {}
+        });
+
+        // If there is an image since before, we need to both fade out and in,
+        // otherwise we just need to fade in
+        if (_imgConsultant.getDrawable() != null)
+            _imgConsultant.startAnimation(fadeOut);
+        else{
+            _imgConsultant.setImageBitmap(bitmap);
+            _imgConsultant.startAnimation(fadeIn);
+        }
     }
 
     @Override
@@ -53,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
         _progbarMain = (ProgressBar) findViewById(R.id.progbarMain);
         _progbarMain.setProgress(0);
 
-        this.deleteDatabase(KvadratDb.DATABASE_NAME);
+        // this.deleteDatabase(KvadratDb.DATABASE_NAME);
 
         AppCtrl.setApplicationContext(getApplicationContext());
 
@@ -71,7 +133,8 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
 
     @Override
     public void onInitialLoadStarted() {
-        fadeInLoadingViews();
+        // Fade in the "Loading..." text
+        fadeInViews(new View[] {_tvLoading });
     }
 
     @Override
@@ -81,12 +144,25 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
 
     @Override
     public void onConsultantAdded(ConsultantData consultant, Bitmap bitmap) {
-        _imgConsultant.setImageBitmap(bitmap);
+        // Is the progress bar still hidden?
+        if (_layoutConsultantImage.getVisibility() == View.INVISIBLE){
+            fadeInViews(new View[] { _layoutConsultantImage });
+        }
+
+        // Is it time to update the image?
+        if ((SystemClock.uptimeMillis() - IMAGE_UPDATE_INTERVAL) > pictureUpdateTimestamp){
+            setConsultantImage(bitmap);
+            pictureUpdateTimestamp = SystemClock.uptimeMillis();
+        }
     }
 
     @Override
     public void onLoaded() {
-
+        // Go on to the consultant list activity, removing this activity from the back stack
+        Intent intent = new Intent(this, ConsultantListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(0, 0);
     }
 
     @Override

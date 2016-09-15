@@ -5,13 +5,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.helpers.Utils;
 import se.danielkonsult.www.kvadratab.helpers.db.DbSpec;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
+import se.danielkonsult.www.kvadratab.repositories.office.DefaultOfficeDataRepository;
+import se.danielkonsult.www.kvadratab.repositories.office.OfficeDataRepository;
 
 /**
  * Handles database reading and writing of consultant data.
@@ -49,6 +53,23 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
         return consultantData;
     }
 
+    /**
+     * Loads offices and links them to the consultants
+     */
+    private void performOfficeJoin(List<ConsultantData> consultantDatas) {
+        // Load offices and create a hashmap for quick lookup
+        OfficeDataRepository officeDataRepository = new DefaultOfficeDataRepository(_db);
+        OfficeData[] officeDatas = officeDataRepository.getAll();
+        HashMap<Integer, OfficeData> officeDataHash = new HashMap<>();
+        for (OfficeData officeData : officeDatas)
+            officeDataHash.put(officeData.Id, officeData);
+
+        for (ConsultantData cd : consultantDatas){
+            if (cd.OfficeId > 0)
+                cd.Office = officeDataHash.get(cd.OfficeId);
+        }
+    }
+
     // Constructor
 
     public DefaultConsultantDataRepository(KvadratDb _db) {
@@ -56,29 +77,42 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
     }
 
     @Override
-    public ConsultantData getById(int id) {
+    public ConsultantData getById(int id, boolean joinOffice) {
         String selection = DbSpec.ConsultantEntry.COLUMN_NAME_ID + " = ?";
         String[] selectionArgs = {
                 Integer.toString(id)
         };
 
+        // Put the single hit in a result list if we need to join the office
+        List<ConsultantData> result = new ArrayList<>();
         SQLiteDatabase db = _db.getReadableDatabase();
         Cursor c = db.query(DbSpec.ConsultantEntry.TABLE_NAME, queryProjection, selection, selectionArgs, null, null, null, null);
         if (c.moveToFirst()){
-            return getFromCursor(c);
+            result.add(getFromCursor(c));
         }
+
+        if (joinOffice){
+            performOfficeJoin(result);
+        }
+
+        if (result.size() > 0)
+            return result.get(0);
 
         return null;
     }
 
     @Override
-    public ConsultantData[] getAll() {
+    public ConsultantData[] getAll(boolean joinOffices) {
         List<ConsultantData> result = new ArrayList<>();
 
         SQLiteDatabase db = _db.getReadableDatabase();
         Cursor c = db.query(DbSpec.ConsultantEntry.TABLE_NAME, queryProjection, null, null, null, null, orderBy);
         while (c.moveToNext()){
             result.add(getFromCursor(c));
+        }
+
+        if (joinOffices){
+            performOfficeJoin(result);
         }
 
         return result.toArray(new ConsultantData[result.size()]);

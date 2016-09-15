@@ -155,7 +155,7 @@ public class DatabaseTests {
         db.insertConsultant(consultantData);
 
         db = new KvadratTestDb(ctx);
-        ConsultantData[] assertConsultants = db.getAllConsultants();
+        ConsultantData[] assertConsultants = db.getAllConsultants(true);
         Assert.assertNotNull(assertConsultants);
 
         ConsultantData foundConsultant = null;
@@ -168,13 +168,15 @@ public class DatabaseTests {
         Assert.assertEquals(consultantData.OfficeId, foundConsultant.OfficeId);
         Assert.assertEquals(consultantData.FirstName, foundConsultant.FirstName);
         Assert.assertEquals(consultantData.LastName, foundConsultant.LastName);
+        // Verify that the office has been linked properly
+        Assert.assertEquals(officeData.Name, foundConsultant.Office.Name);
 
         // Update the office id of the consultant
         db = new KvadratTestDb(ctx);
         db.updateConsultantOffice(consultantData.Id, officeData2.Id);
         // Assert the new office
         db = new KvadratTestDb(ctx);
-        foundConsultant = db.getConsultantById(consultantData.Id);
+        foundConsultant = db.getConsultantById(consultantData.Id, false);
         Assert.assertEquals(officeData2.Id, foundConsultant.OfficeId);
 
         // Add two more consultants to check that sorting works properly
@@ -200,7 +202,7 @@ public class DatabaseTests {
 
         // Get the consultants back and make sure that they're sorted by last and then by first name
         db = new KvadratTestDb(ctx);
-        assertConsultants = db.getAllConsultants();
+        assertConsultants = db.getAllConsultants(false);
         Assert.assertEquals("Zäta", assertConsultants[0].FirstName);
         Assert.assertEquals("Anna", assertConsultants[1].FirstName);
         Assert.assertEquals("Daniel", assertConsultants[2].FirstName);

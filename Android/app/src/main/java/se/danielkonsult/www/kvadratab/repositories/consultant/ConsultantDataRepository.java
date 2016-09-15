@@ -6,8 +6,9 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
  * Created by Daniel on 2016-09-13.
  */
 public interface ConsultantDataRepository {
-    ConsultantData getById(int id);
-    ConsultantData[] getAll();
+    ConsultantData getById(int id, boolean joinOffice);
+
+    ConsultantData[] getAll(boolean joinOffices);
 
     /**
      * Gets the total number of consultants in the database.

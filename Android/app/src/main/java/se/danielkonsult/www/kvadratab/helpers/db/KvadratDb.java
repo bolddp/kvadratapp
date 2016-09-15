@@ -115,12 +115,15 @@ public class KvadratDb extends SQLiteOpenHelper {
         getTagDataRepository().insert(tag);
     }
 
-    public ConsultantData getConsultantById(int id){
-        return getConsultantDataRepository().getById(id);
+    public ConsultantData getConsultantById(int id, boolean joinOffice){
+        return getConsultantDataRepository().getById(id, joinOffice);
     }
 
-    public ConsultantData[] getAllConsultants(){
-        return getConsultantDataRepository().getAll();
+    /**
+     * Returns all consultants in the database, with attached Office data.
+     */
+    public ConsultantData[] getAllConsultants(boolean joinOffices){
+        return getConsultantDataRepository().getAll(joinOffices);
     }
 
     /**

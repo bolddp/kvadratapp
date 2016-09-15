@@ -37,7 +37,8 @@ public class ScraperTests {
         Assert.assertEquals(46, webDatas.length);
         for (ConsultantData webData : webDatas) {
             Assert.assertTrue(webData.Id > 0);
-            Assert.assertTrue(webData.Name != null && webData.Name != "");
+            Assert.assertTrue(webData.FirstName != null && webData.FirstName != "");
+            Assert.assertTrue(webData.LastName != null && webData.LastName != "");
         }
     }
 
@@ -51,12 +52,19 @@ public class ScraperTests {
         ConsultantData[] assertConsultantDatas = WebPageScraper.scrapeConsultants(0,0);
         Assert.assertNotNull(assertConsultantDatas);
 
+        boolean foundConsultant = false;
+
         // Don't assert an exact number since the web page contents most likely will change
         Assert.assertTrue(String.format("Length: %d", assertConsultantDatas.length), assertConsultantDatas.length > 240);
         for (ConsultantData webData : assertConsultantDatas) {
             Assert.assertTrue(webData.Id > 0);
-            Assert.assertTrue(webData.Name != null && webData.Name != "");
+            Assert.assertTrue(webData.FirstName != null && webData.FirstName != "");
+            Assert.assertTrue(webData.LastName != null && webData.LastName != "");
+            // Look for one specific consultant to verify parsing of names
+            if (webData.FirstName.equals("Sven") && webData.LastName.equals("Ehn"))
+                foundConsultant = true;
         }
+        Assert.assertTrue(foundConsultant);
     }
 
     @Test
@@ -115,7 +123,8 @@ public class ScraperTests {
         Assert.assertTrue(String.format("Length: %d", assertConsultantDatas.length), (assertConsultantDatas.length > 12) && (assertConsultantDatas.length < 50));
         for (ConsultantData webData : assertConsultantDatas) {
             Assert.assertTrue(webData.Id > 0);
-            Assert.assertTrue(webData.Name != null && webData.Name != "");
+            Assert.assertTrue(webData.FirstName != null && webData.FirstName != "");
+            Assert.assertTrue(webData.LastName != null && webData.LastName != "");
         }
     }
 

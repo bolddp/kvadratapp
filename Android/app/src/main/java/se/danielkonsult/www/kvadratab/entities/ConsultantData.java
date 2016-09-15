@@ -7,7 +7,8 @@ public class ConsultantData {
 
     public int Id;
 
-    public String Name;
+    public String FirstName;
+    public String LastName;
     public String JobRole;
     public String Description;
 

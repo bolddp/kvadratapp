@@ -13,6 +13,27 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
  */
 public class ConsultantDataParser {
 
+    // Private methods
+
+    private static void splitAndStoreName(ConsultantData consultantData, String fullName) {
+        // Special treatment of people who have their previous last name listed inside parenthesis
+        int index = fullName.indexOf("(");
+        if (index >= 0)
+            fullName = fullName.substring(0,index).trim();
+
+        index = fullName.lastIndexOf(" ");
+        if (index < 0) {
+            consultantData.LastName = fullName;
+            consultantData.FirstName = "-";
+        }
+        else {
+            consultantData.FirstName = fullName.substring(0,index).trim();
+            consultantData.LastName = fullName.substring(index).trim();
+        }
+    }
+
+    // Public methods
+
     public static ConsultantData[] parse(String urlContents){
         final Pattern pattern = Pattern.compile("<a.*?/profil/\\?id=(\\d*).*?<div class='full-name'>(.*?)<.*?<");
 
@@ -23,11 +44,12 @@ public class ConsultantDataParser {
             String id = matcher.group(1);
             String name = matcher.group(2);
 
-            ConsultantData mpwd = new ConsultantData();
-            mpwd.Id = Integer.parseInt(id);
-            mpwd.Name = name;
+            ConsultantData consultantData = new ConsultantData();
 
-            result.add(mpwd);
+            consultantData.Id = Integer.parseInt(id);
+            splitAndStoreName(consultantData, name);
+
+            result.add(consultantData);
         }
 
         // Convert the list to an array

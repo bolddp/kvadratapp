@@ -22,7 +22,8 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
 
     private final String[] queryProjection = {
             DbSpec.ConsultantEntry.COLUMN_NAME_ID,
-            DbSpec.ConsultantEntry.COLUMN_NAME_NAME,
+            DbSpec.ConsultantEntry.COLUMN_NAME_FIRSTNAME,
+            DbSpec.ConsultantEntry.COLUMN_NAME_LASTNAME,
             DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE,
             DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION,
             DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID
@@ -38,7 +39,8 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
     private ConsultantData getFromCursor(Cursor c) {
         ConsultantData consultantData = new ConsultantData();
         consultantData.Id = c.getInt(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_ID));
-        consultantData.Name = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_NAME));
+        consultantData.FirstName = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_FIRSTNAME));
+        consultantData.LastName = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_LASTNAME));
         consultantData.JobRole = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE));
         consultantData.Description = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION));
         consultantData.OfficeId = c.getInt(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID));
@@ -96,7 +98,8 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
         SQLiteDatabase db = _db.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DbSpec.ConsultantEntry.COLUMN_NAME_ID, consultant.Id);
-        values.put(DbSpec.ConsultantEntry.COLUMN_NAME_NAME, consultant.Name);
+        values.put(DbSpec.ConsultantEntry.COLUMN_NAME_FIRSTNAME, consultant.FirstName);
+        values.put(DbSpec.ConsultantEntry.COLUMN_NAME_LASTNAME, consultant.LastName);
         if (!Utils.isStringNullOrEmpty(consultant.JobRole))
             values.put(DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE, consultant.JobRole);
         if (!Utils.isStringNullOrEmpty(consultant.Description))

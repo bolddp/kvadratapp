@@ -42,7 +42,8 @@ public class DbSpec {
     public static class ConsultantEntry {
         public static final String TABLE_NAME = "consultant";
         public static final String COLUMN_NAME_ID = "id";
-        public static final String COLUMN_NAME_NAME = "name";
+        public static final String COLUMN_NAME_FIRSTNAME = "firstname";
+        public static final String COLUMN_NAME_LASTNAME = "lastname";
         public static final String COLUMN_NAME_OFFICEID = "office_id";
         public static final String COLUMN_NAME_JOBROLE = "jobrole";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
@@ -50,7 +51,8 @@ public class DbSpec {
         public static final String SQL_CREATE =
                 "CREATE TABLE " + TABLE_NAME + " (" +
                         COLUMN_NAME_ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP +
-                        COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
+                        COLUMN_NAME_FIRSTNAME + TEXT_TYPE + COMMA_SEP +
+                        COLUMN_NAME_LASTNAME + TEXT_TYPE + COMMA_SEP +
                         COLUMN_NAME_JOBROLE + TEXT_TYPE + COMMA_SEP +
                         COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                         COLUMN_NAME_OFFICEID + INTEGER_TYPE + COMMA_SEP +

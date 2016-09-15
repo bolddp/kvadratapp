@@ -135,7 +135,8 @@ public class DatabaseTests {
 
         ConsultantData consultantData = new ConsultantData();
         consultantData.Id = 6985;
-        consultantData.Name = "Daniel Persson";
+        consultantData.FirstName = "Daniel";
+        consultantData.LastName = "Persson";
         consultantData.JobRole = "Systemutväcklare";
         consultantData.Description = "Daniel är en glad och positiv kille, förstås, vad skulle vi annars skriva här?";
         consultantData.OfficeId = 999; // Wrong!!
@@ -165,6 +166,8 @@ public class DatabaseTests {
         Assert.assertNotNull(foundConsultant);
         Assert.assertEquals(consultantData.Id, foundConsultant.Id);
         Assert.assertEquals(consultantData.OfficeId, foundConsultant.OfficeId);
+        Assert.assertEquals(consultantData.FirstName, foundConsultant.FirstName);
+        Assert.assertEquals(consultantData.LastName, foundConsultant.LastName);
 
         // Update the office id of the consultant
         db = new KvadratTestDb(ctx);

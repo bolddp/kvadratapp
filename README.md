@@ -10,4 +10,4 @@ Möjliga framtida funktioner:
 
 Jag (Daniel P) har en del andra projekt på gång som pockar på uppmärksamhet, så mina möjligheter att lägga tid i detta projekt är svåröverskådliga. Därför har jag gjort det lätt för mig och lagt upp projektet som open source. Kom och hjälp till, vetja!
 
-Kolla under Releases efter installationsfil för Android-appen: [https://github.com/bolddp/kvadratapp/releases]
+Kolla under Releases efter installationsfil för Android-appen: https://github.com/bolddp/kvadratapp/releases

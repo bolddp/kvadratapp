@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Kvadrat AB</string>
+    <string name="logo_text">Världens lyckligaste yrkesmänniskor!</string>
+    <string name="loading_logo_text">Laddar... Världens lyckligaste yrkesmänniskor!</string>
 </resources>

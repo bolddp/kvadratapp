@@ -94,6 +94,10 @@ public class InitialLoader {
 
             linkOfficesToConsultants(summaryData.OfficeDatas);
 
+            // Make sure all consultants are available in the DataService
+            consultants = AppCtrl.getDb().getAllConsultants(true);
+            AppCtrl.getDataService().setConsultants(consultants);
+
             // All done for now, notify
             listeners.onLoaded();
         }

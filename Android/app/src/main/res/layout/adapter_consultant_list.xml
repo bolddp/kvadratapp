@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:padding="@dimen/activity_horizontal_margin"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/imgConsultant"
+        android:layout_width="120dp"
+        android:layout_height="120dp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:layout_weight="1">
+        <TextView
+            style="@style/Text02"
+            android:textStyle="bold"
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Daniel Persson"/>
+        <TextView
+            style="@style/Text02"
+            android:id="@+id/tvOffice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jönköping"/>
+    </LinearLayout>
+</LinearLayout>

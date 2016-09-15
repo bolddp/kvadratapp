@@ -6,7 +6,7 @@
     tools:context="se.danielkonsult.www.kvadratab.activities.ConsultantListActivity">
 
     <ListView
-        android:id="@+id/lvConsultants"
+        android:id="@+id/lvMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

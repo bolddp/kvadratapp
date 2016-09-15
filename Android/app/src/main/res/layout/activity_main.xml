@@ -51,11 +51,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:visibility="invisible"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:text="Laddar världens lyckligaste yrkesmänniskor" />
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp" />
 
     </LinearLayout>
 

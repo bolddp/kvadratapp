@@ -7,6 +7,7 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -108,9 +109,14 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Make sure the phone doesn't go black during prolonged loading
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         _layoutConsultantImage = (RelativeLayout) findViewById(R.id.layoutConsultantImage);
         _imgConsultant = (ImageView) findViewById(R.id.imgConsultant);
+
         _tvLoading = (TextView) findViewById(R.id.tvLoading);
+        _tvLoading.setText(R.string.logo_text);
 
         _progbarMain = (ProgressBar) findViewById(R.id.progbarMain);
         _progbarMain.setProgress(0);
@@ -134,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
     @Override
     public void onInitialLoadStarted() {
         // Fade in the "Loading..." text
-        fadeInViews(new View[] {_tvLoading });
+        _tvLoading.setText(R.string.loading_logo_text);
     }
 
     @Override

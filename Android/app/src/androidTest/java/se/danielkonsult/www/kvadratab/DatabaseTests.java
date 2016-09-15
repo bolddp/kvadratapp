@@ -177,9 +177,37 @@ public class DatabaseTests {
         foundConsultant = db.getConsultantById(consultantData.Id);
         Assert.assertEquals(officeData2.Id, foundConsultant.OfficeId);
 
+        // Add two more consultants to check that sorting works properly
+        ConsultantData consultantData2 = new ConsultantData();
+        consultantData2.Id = 12;
+        consultantData2.FirstName = "Anna";
+        consultantData2.LastName = "Persson";
+        consultantData2.JobRole = "Testare";
+        consultantData2.Description = "Anna är toppen!";
+        consultantData2.OfficeId = officeData.Id; // Jönköping
+
+        ConsultantData consultantData3 = new ConsultantData();
+        consultantData3.Id = 345;
+        consultantData3.FirstName = "Zäta";
+        consultantData3.LastName = "Bengtsson";
+        consultantData3.JobRole = "Managementkonsult";
+        consultantData3.Description = "Zäta är en lysande personlighet!";
+        consultantData3.OfficeId = officeData.Id; // Jönköping
+
+        db = new KvadratTestDb(ctx);
+        db.insertConsultant(consultantData2);
+        db.insertConsultant(consultantData3);
+
+        // Get the consultants back and make sure that they're sorted by last and then by first name
+        db = new KvadratTestDb(ctx);
+        assertConsultants = db.getAllConsultants();
+        Assert.assertEquals("Zäta", assertConsultants[0].FirstName);
+        Assert.assertEquals("Anna", assertConsultants[1].FirstName);
+        Assert.assertEquals("Daniel", assertConsultants[2].FirstName);
+
         // End by counting the consultants to see that it works as well
         db = new KvadratTestDb(ctx);
         consultantCount = db.getConsultantCount();
-        Assert.assertEquals(1, consultantCount);
+        Assert.assertEquals(3, consultantCount);
     }
 }

@@ -28,6 +28,7 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
             DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION,
             DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID
     };
+    private final String orderBy = DbSpec.ConsultantEntry.COLUMN_NAME_LASTNAME + "," + DbSpec.ConsultantEntry.COLUMN_NAME_FIRSTNAME;
 
     private KvadratDb _db;
 
@@ -75,7 +76,7 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
         List<ConsultantData> result = new ArrayList<>();
 
         SQLiteDatabase db = _db.getReadableDatabase();
-        Cursor c = db.query(DbSpec.ConsultantEntry.TABLE_NAME, queryProjection, null, null, null, null, null);
+        Cursor c = db.query(DbSpec.ConsultantEntry.TABLE_NAME, queryProjection, null, null, null, null, orderBy);
         while (c.moveToNext()){
             result.add(getFromCursor(c));
         }

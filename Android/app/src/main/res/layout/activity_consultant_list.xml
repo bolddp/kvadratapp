@@ -15,7 +15,7 @@
     </ListView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabOpenDrawer"
+        android:id="@+id/fabFilter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin"
@@ -24,5 +24,11 @@
         android:src="@drawable/ic_drawer"
         android:tint="@color/colorDrawerBackground"
         app:backgroundTint="@color/colorPrimaryDark" />
+
+    <FrameLayout
+        android:id="@+id/layoutFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

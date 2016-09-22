@@ -96,7 +96,8 @@ public class InitialLoader {
 
             // Make sure all consultants are available in the DataService
             consultants = AppCtrl.getDb().getAllConsultants(true);
-            AppCtrl.getDataService().setConsultants(consultants);
+            AppCtrl.getDataService().setAllConsultants(consultants);
+            AppCtrl.getDataService().setOffices(summaryData.OfficeDatas);
 
             // All done for now, notify
             listeners.onLoaded();

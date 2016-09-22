@@ -1,6 +1,7 @@
 package se.danielkonsult.www.kvadratab.services.data;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.OfficeData;
 
 /**
  * Created by Daniel on 2016-09-14.
@@ -18,12 +19,35 @@ public interface DataService {
     void start();
 
     /**
+     * Sets the offices that are cached by the data service.
+     */
+    void setOffices(OfficeData[] offices);
+
+    /**
+     * Gets a list of all offices.
+     * @return
+     */
+    OfficeData[] getOffices();
+
+    /**
      * Sets the consultants that are cached by the data service.
      */
-    void setConsultants(ConsultantData[] consultants);
+    void setAllConsultants(ConsultantData[] consultants);
+
+    ConsultantData[] getAllConsultants();
 
     /**
      * Gets a list of all consultants that is cached in the data service.
      */
-    ConsultantData[] getConsultants();
+    ConsultantData[] getFilteredConsultants();
+
+    /**
+     * Sets the filter that should be used to select displayed consultants.
+     */
+    void setFilter(ConsultantFilter filter);
+
+    /**
+     * Gets the current filter.
+     */
+    ConsultantFilter getFilter();
 }

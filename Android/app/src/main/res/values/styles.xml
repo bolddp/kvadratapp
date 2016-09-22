@@ -15,4 +15,13 @@
     <style name="Text02" parent="TextView">
         <item name="android:textSize">18sp</item>
     </style>
+
+    <style name="Text03" parent="TextView">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="FilterButton" parent="Base.Widget.AppCompat.Button">
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

@@ -2,10 +2,14 @@ package se.danielkonsult.www.kvadratab.services.data;
 
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.OfficeData;
+import se.danielkonsult.www.kvadratab.helpers.Utils;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
-import se.danielkonsult.www.kvadratab.helpers.scraper.ImageHelper;
 
 /**
  * Created by Daniel on 2016-09-14.
@@ -15,7 +19,10 @@ public class DefaultDataService implements DataService {
     // Private variables
 
     private final DataServiceListeners _listeners = new DataServiceListeners();
-    private static ConsultantData[] _consultantCache;
+    private static ConsultantData[] _allConsultants;
+    private static ConsultantData[] _filteredConsultants;
+    private static OfficeData[] _offices;
+    private ConsultantFilter _filter;
 
     /**
      * Loads the consultant images from disk and attaches them to the consultants.
@@ -25,6 +32,66 @@ public class DefaultDataService implements DataService {
 //            cd.Image = ImageHelper.getConsultantBitmapFromFile(cd.Id);
 //        }
 //    }
+
+
+    /**
+     * Uses the current filter to update the list of
+     * filtered consultants from all consultants.
+     */
+    private void applyFilter() {
+        List<ConsultantData> result = new ArrayList<>();
+        String namePiece1 = "";
+        String namePiece2 = "";
+        boolean shouldFilterByName = false;
+        // Is there any name filter? Then split it into first and last name
+        if (!Utils.isStringNullOrEmpty(_filter.getName().trim())){
+            shouldFilterByName = true;
+            int spaceIndex = _filter.getName().indexOf(" ");
+            if (spaceIndex < 0)
+                namePiece1 = _filter.getName().trim();
+            else {
+                namePiece1 = _filter.getName().substring(0,spaceIndex).trim();
+                namePiece2 = _filter.getName().substring(spaceIndex).trim();
+            }
+        }
+
+        for (ConsultantData cd : getAllConsultants()) {
+            boolean isSelected = true;
+
+            // Are there any specific offices in the filter?
+            if (_filter.getOfficeIds().size() > 0){
+                if (!_filter.getOfficeIds().contains(cd.OfficeId))
+                    isSelected = false;
+            }
+            // Should we filter by name?
+            if (isSelected && shouldFilterByName) {
+                isSelected = false;
+
+                // Is there only one name piece?
+                if (Utils.isStringNullOrEmpty(namePiece2) &&
+                        (cd.FirstName.startsWith(namePiece1) || cd.LastName.startsWith(namePiece1))){
+                    isSelected = true;
+                }
+                // Filter by both first and last name
+                else if (!Utils.isStringNullOrEmpty(namePiece2) &&
+                        cd.FirstName.startsWith(namePiece1) && cd.LastName.startsWith(namePiece2)) {
+                    isSelected = true;
+                }
+            }
+
+            // Is the consultant still selected?
+            if (isSelected)
+                result.add(cd);
+        }
+
+        _filteredConsultants = result.toArray(new ConsultantData[result.size()]);
+    }
+
+    // Constructor
+
+    public DefaultDataService() {
+        _filter = new ConsultantFilter();
+    }
 
     @Override
     public void registerListener(DataServiceListener listener) {
@@ -52,7 +119,8 @@ public class DefaultDataService implements DataService {
                 }
                 else {
                     // Prep by loading the consultants before saying we're finished
-                   setConsultants(db.getAllConsultants(true));
+                    setAllConsultants(db.getAllConsultants(true));
+                    setOffices(db.getAllOffices());
 
                     // Signal that the data already is available, but also
                     // check if it's time for a refresh of the data.
@@ -67,17 +135,43 @@ public class DefaultDataService implements DataService {
     }
 
     @Override
-    public void setConsultants(ConsultantData[] consultants) {
-        // Not viable, causes Out of memory error
-        // loadConsultantImages(consultants);
-
-        _consultantCache = consultants;
+    public void setOffices(OfficeData[] offices) {
+        _offices = offices;
     }
 
     @Override
-    public ConsultantData[] getConsultants() {
-        if (_consultantCache == null)
-            _consultantCache = AppCtrl.getDb().getAllConsultants(true);
-        return _consultantCache;
+    public OfficeData[] getOffices() {
+        if (_offices == null)
+            _offices = AppCtrl.getDb().getAllOffices();
+        return  _offices;
+    }
+
+    @Override
+    public void setAllConsultants(ConsultantData[] consultants) {
+        _allConsultants = consultants;
+        applyFilter();
+    }
+
+    @Override
+    public ConsultantData[] getAllConsultants() {
+        if (_allConsultants == null)
+            _allConsultants = AppCtrl.getDb().getAllConsultants(true);
+        return _allConsultants;
+    }
+
+    @Override
+    public ConsultantData[] getFilteredConsultants() {
+        return _filteredConsultants;
+    }
+
+    @Override
+    public void setFilter(ConsultantFilter filter) {
+        _filter = filter;
+        applyFilter();
+    }
+
+    @Override
+    public ConsultantFilter getFilter() {
+        return _filter;
     }
 }

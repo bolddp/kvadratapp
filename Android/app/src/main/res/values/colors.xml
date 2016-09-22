@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#aa1917</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorDrawerBackground">#ffffff</color>
+    <color name="filterBackground">#ffffff</color>
 </resources>

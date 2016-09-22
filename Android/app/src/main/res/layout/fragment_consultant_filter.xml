@@ -63,6 +63,7 @@
             android:background="@color/colorPrimary">
         </View>
         <EditText
+            android:id="@+id/editName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"

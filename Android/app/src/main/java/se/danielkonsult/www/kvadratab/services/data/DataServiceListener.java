@@ -31,10 +31,10 @@ public interface DataServiceListener {
     void onConsultantAdded(ConsultantData consultant, Bitmap bitmap);
 
     /**
-     * Indicates that the data service has loaded, either after performing an initial load
-     * or determining that all relevant data is available already.
+     * Indicates that the list of filtered consultants have been updated, e.g. due to
+     * loading or because of a new filter.
      */
-    void onLoaded();
+    void onConsultantsUpdated();
 
     /**
      *

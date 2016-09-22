@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
     }
 
     @Override
-    public void onLoaded() {
+    public void onConsultantsUpdated() {
         // Go on to the consultant list activity, removing this activity from the back stack
         Intent intent = new Intent(this, ConsultantListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

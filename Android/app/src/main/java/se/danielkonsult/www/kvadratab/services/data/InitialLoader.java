@@ -94,13 +94,14 @@ public class InitialLoader {
 
             linkOfficesToConsultants(summaryData.OfficeDatas);
 
+            AppCtrl.getDataService().setOffices(summaryData.OfficeDatas);
+
             // Make sure all consultants are available in the DataService
             consultants = AppCtrl.getDb().getAllConsultants(true);
             AppCtrl.getDataService().setAllConsultants(consultants);
-            AppCtrl.getDataService().setOffices(summaryData.OfficeDatas);
 
             // All done for now, notify
-            listeners.onLoaded();
+            listeners.onConsultantsUpdated();
         }
         catch (Throwable ex){
             // Notify listeners of the problem

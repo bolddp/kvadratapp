@@ -14,13 +14,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.google.android.flexbox.FlexboxLayout;
 
+import java.util.ArrayList;
+
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
+import se.danielkonsult.www.kvadratab.services.data.ConsultantFilter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +34,7 @@ public class ConsultantFilterFragment extends Fragment {
     // Private methods
 
     private Listener _listener;
+    private EditText _editName;
     private FlexboxLayout _layoutOfficeButtons;
 
     // Private methods
@@ -71,6 +76,7 @@ public class ConsultantFilterFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_consultant_filter, container, false);
         _layoutOfficeButtons = (FlexboxLayout) view.findViewById(R.id.layoutOfficeButtons);
+        _editName = (EditText) view.findViewById(R.id.editName);
 
         setupOfficeButtons();
 
@@ -79,6 +85,10 @@ public class ConsultantFilterFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        // Create an updated filter and give it to the data service
+        ConsultantFilter cf = new ConsultantFilter(new ArrayList<Integer>(), _editName.getText().toString());
+        AppCtrl.getDataService().setFilter(cf);
+
         super.onDestroyView();
         if (_listener != null)
             _listener.onClose();

@@ -24,15 +24,13 @@ public class DefaultDataService implements DataService {
     private static OfficeData[] _offices;
     private ConsultantFilter _filter;
 
-    /**
-     * Loads the consultant images from disk and attaches them to the consultants.
-     */
-//    private void loadConsultantImages(ConsultantData[] consultants) {
-//        for (ConsultantData cd : consultants){
-//            cd.Image = ImageHelper.getConsultantBitmapFromFile(cd.Id);
-//        }
-//    }
+    // Private methods
 
+    private void setFilteredConsultants(ConsultantData[] consultantDatas) {
+        _filteredConsultants = consultantDatas;
+        if (_listeners != null)
+            _listeners.onConsultantsUpdated();
+    }
 
     /**
      * Uses the current filter to update the list of
@@ -40,6 +38,17 @@ public class DefaultDataService implements DataService {
      */
     private void applyFilter() {
         List<ConsultantData> result = new ArrayList<>();
+
+        // Is the filter empty? Then copy all consultants and exit the function
+        if (Utils.isStringNullOrEmpty(_filter.getName().trim()) &&
+                _filter.getOfficeIds().size() == 0) {
+            for (ConsultantData cd: _allConsultants)
+                result.add(cd);
+
+            setFilteredConsultants(result.toArray(new ConsultantData[result.size()]));
+            return;
+        }
+
         String namePiece1 = "";
         String namePiece2 = "";
         boolean shouldFilterByName = false;
@@ -84,7 +93,7 @@ public class DefaultDataService implements DataService {
                 result.add(cd);
         }
 
-        _filteredConsultants = result.toArray(new ConsultantData[result.size()]);
+        setFilteredConsultants(result.toArray(new ConsultantData[result.size()]));
     }
 
     // Constructor
@@ -119,12 +128,12 @@ public class DefaultDataService implements DataService {
                 }
                 else {
                     // Prep by loading the consultants before saying we're finished
-                    setAllConsultants(db.getAllConsultants(true));
                     setOffices(db.getAllOffices());
+                    setAllConsultants(db.getAllConsultants(true));
 
                     // Signal that the data already is available, but also
                     // check if it's time for a refresh of the data.
-                    _listeners.onLoaded();
+                    _listeners.onConsultantsUpdated();
 
                     Refresher refresher = new Refresher(db, _listeners);
                     refresher.run();

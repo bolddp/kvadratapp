@@ -7,7 +7,6 @@ import android.os.Handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 
 /**
@@ -88,13 +87,13 @@ public class DataServiceListeners implements DataServiceListener {
     }
 
     @Override
-    public void onLoaded() {
+    public void onConsultantsUpdated() {
         synchronized (_listeners){
             for (final DataServiceListener listener : _listeners)
                 runOnUiThread(listener, new Runnable() {
                     @Override
                     public void run() {
-                        listener.onLoaded();
+                        listener.onConsultantsUpdated();
                     }
                 });
         }

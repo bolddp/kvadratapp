@@ -1,5 +1,6 @@
 package se.danielkonsult.www.kvadratab.activities;
 
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
@@ -14,8 +15,10 @@ import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.adapters.ConsultantListAdapter;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.fragments.ConsultantFilterFragment;
+import se.danielkonsult.www.kvadratab.services.data.DataServiceListener;
+import se.danielkonsult.www.kvadratab.services.data.DataServiceListeners;
 
-public class ConsultantListActivity extends AppCompatActivity implements ConsultantFilterFragment.Listener {
+public class ConsultantListActivity extends AppCompatActivity implements ConsultantFilterFragment.Listener, DataServiceListener {
 
     // Private variables
 
@@ -29,11 +32,6 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
     private ConsultantFilterFragment _fragmentConsultantFilter;
 
     // Private methods
-
-    private void setupConsultants() {
-        ConsultantData[] consultantDatas = AppCtrl.getDataService().getFilteredConsultants();
-        _lvMain.setAdapter(new ConsultantListAdapter(ConsultantListActivity.this, consultantDatas));
-    }
 
     /**
      * Hides or displays the consultant filter.
@@ -76,15 +74,12 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
             }
         });
 
-        // Initiate the loading of the consultants
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setupConsultants();
-            }
-        }, 100);
-    }
+        // Perform an initial update of the consultants list
+        onConsultantsUpdated();
 
+        // Register as data service listener
+        AppCtrl.getDataService().registerListener(this);
+    }
 
     // Methods (ConsultantFilterFragment.Listener)
 
@@ -92,5 +87,17 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
     public void onClose() {
         // Indicate that there is no longer any fragment to display
         toggleFilterView();
+    }
+
+    @Override
+    public void onInitialLoadStarted() { }
+    public void onInitialLoadProgress(int progressCount, int totalCount) { }
+    public void onConsultantAdded(ConsultantData consultant, Bitmap bitmap) { }
+    public void onError(String tag, String errorMessage) { }
+
+    @Override
+    public void onConsultantsUpdated() {
+        ConsultantData[] consultantDatas = AppCtrl.getDataService().getFilteredConsultants();
+        _lvMain.setAdapter(new ConsultantListAdapter(ConsultantListActivity.this, consultantDatas));
     }
 }

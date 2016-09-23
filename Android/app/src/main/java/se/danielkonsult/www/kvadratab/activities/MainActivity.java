@@ -125,8 +125,6 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
 
         AppCtrl.setApplicationContext(getApplicationContext());
 
-        AppCtrl.getDataService().registerListener(this);
-
         // Start the data service with a short delay
         _handler.postDelayed(new Runnable() {
             @Override
@@ -134,7 +132,18 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
                 AppCtrl.getDataService().start();
             }
         }, 3000);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppCtrl.getDataService().registerListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        AppCtrl.getDataService().unregisterListener(this);
+        super.onPause();
     }
 
     @Override

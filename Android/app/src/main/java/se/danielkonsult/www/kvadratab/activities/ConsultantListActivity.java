@@ -67,9 +67,19 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
 
         // Perform an initial update of the consultants list
         onConsultantsUpdated();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         // Register as data service listener
         AppCtrl.getDataService().registerListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        AppCtrl.getDataService().unregisterListener(this);
+        super.onPause();
     }
 
     @Override

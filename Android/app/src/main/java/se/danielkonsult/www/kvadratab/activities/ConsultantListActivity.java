@@ -15,6 +15,7 @@ import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.adapters.ConsultantListAdapter;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.fragments.ConsultantFilterFragment;
+import se.danielkonsult.www.kvadratab.services.data.ConsultantFilter;
 import se.danielkonsult.www.kvadratab.services.data.DataServiceListener;
 import se.danielkonsult.www.kvadratab.services.data.DataServiceListeners;
 
@@ -37,25 +38,12 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
      * Hides or displays the consultant filter.
      */
     private void toggleFilterView() {
-        FragmentManager fm = getSupportFragmentManager();
-        if (_fragmentConsultantFilter == null){
+        int currentVisibility = _fragmentConsultantFilter.getView().getVisibility();
+        int targetVisibility = currentVisibility == View.GONE ? View.VISIBLE : View.GONE;
 
-            _fabFilter.setVisibility(View.GONE);
+        _fragmentConsultantFilter.getView().setVisibility(targetVisibility);
 
-            // Display the fragment
-            _fragmentConsultantFilter = new ConsultantFilterFragment();
-            _fragmentConsultantFilter.setListener(this);
-
-            fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .add(R.id.layoutFragmentContainer, _fragmentConsultantFilter, TAG_FILTER)
-                    .addToBackStack("filter")
-                    .commit();
-        }
-        else {
-            // Filter has closed
-            _fragmentConsultantFilter = null;
-            _fabFilter.setVisibility(View.VISIBLE);
-        }
+        _fabFilter.setVisibility(currentVisibility);
     }
 
     // Public methods
@@ -74,6 +62,9 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
             }
         });
 
+        _fragmentConsultantFilter = (ConsultantFilterFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentFilter);
+        _fragmentConsultantFilter.setListener(this);
+
         // Perform an initial update of the consultants list
         onConsultantsUpdated();
 
@@ -81,15 +72,29 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
         AppCtrl.getDataService().registerListener(this);
     }
 
-    // Methods (ConsultantFilterFragment.Listener)
-
     @Override
-    public void onClose() {
-        // Indicate that there is no longer any fragment to display
-        toggleFilterView();
+    public void onBackPressed() {
+        // If the filter is visible, hide it
+        if (_fragmentConsultantFilter.getView().getVisibility() != View.VISIBLE)
+            super.onBackPressed();
+        else {
+            // Update the filter
+            ConsultantFilter newFilter = _fragmentConsultantFilter.getFilter();
+            AppCtrl.getDataService().setFilter(newFilter);
+            toggleFilterView();
+        }
     }
 
     @Override
+    protected void onDestroy() {
+        AppCtrl.getDataService().unregisterListener(this);
+        super.onDestroy();
+    }
+
+    // Methods (ConsultantFilterFragment.Listener)
+
+    @Override
+    public void onClose() { }
     public void onInitialLoadStarted() { }
     public void onInitialLoadProgress(int progressCount, int totalCount) { }
     public void onConsultantAdded(ConsultantData consultant, Bitmap bitmap) { }
@@ -97,7 +102,12 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
 
     @Override
     public void onConsultantsUpdated() {
-        ConsultantData[] consultantDatas = AppCtrl.getDataService().getFilteredConsultants();
-        _lvMain.setAdapter(new ConsultantListAdapter(ConsultantListActivity.this, consultantDatas));
+        _lvMain.setVisibility(View.INVISIBLE);
+        try {
+            ConsultantData[] consultantDatas = AppCtrl.getDataService().getFilteredConsultants();
+            _lvMain.setAdapter(new ConsultantListAdapter(ConsultantListActivity.this, consultantDatas));
+        } finally {
+            _lvMain.setVisibility(View.VISIBLE);
+        }
     }
 }

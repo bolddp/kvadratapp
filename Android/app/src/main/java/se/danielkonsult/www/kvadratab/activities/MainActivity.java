@@ -168,7 +168,6 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
         Intent intent = new Intent(this, ConsultantListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        overridePendingTransition(0, 0);
     }
 
     @Override

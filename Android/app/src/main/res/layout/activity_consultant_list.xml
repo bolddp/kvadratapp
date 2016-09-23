@@ -25,8 +25,9 @@
         android:tint="@color/colorDrawerBackground"
         app:backgroundTint="@color/colorPrimaryDark" />
 
-    <FrameLayout
-        android:id="@+id/layoutFragmentContainer"
+    <fragment
+        android:id="@+id/fragmentFilter"
+        android:name="se.danielkonsult.www.kvadratab.fragments.ConsultantFilterFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"/>

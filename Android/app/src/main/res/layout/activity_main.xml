@@ -26,7 +26,7 @@
                 android:layout_height="240dp"
                 android:layout_centerHorizontal="true"
                 android:visibility="invisible"
-                android:scaleType="centerInside"/>
+                android:scaleType="fitCenter"/>
             <ProgressBar
                 android:id="@+id/progbarMain"
                 style="@android:style/Widget.ProgressBar.Horizontal"

@@ -80,18 +80,15 @@ public class ConsultantFilterFragment extends Fragment {
 
         setupOfficeButtons();
 
+        view.setVisibility(View.GONE);
         return  view;
     }
 
-    @Override
-    public void onDestroyView() {
-        // Create an updated filter and give it to the data service
-        ConsultantFilter cf = new ConsultantFilter(new ArrayList<Integer>(), _editName.getText().toString());
-        AppCtrl.getDataService().setFilter(cf);
-
-        super.onDestroyView();
-        if (_listener != null)
-            _listener.onClose();
+    /**
+     * Gets a filter instance based on the current state of the fragment.
+     */
+    public ConsultantFilter getFilter(){
+        return new ConsultantFilter(new ArrayList<Integer>(), _editName.getText().toString());
     }
 
     public void setListener(Listener listener){
@@ -106,3 +103,4 @@ public class ConsultantFilterFragment extends Fragment {
     }
 
 }
+

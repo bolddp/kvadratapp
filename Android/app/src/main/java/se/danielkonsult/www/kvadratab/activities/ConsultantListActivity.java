@@ -34,6 +34,14 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
 
     // Private methods
 
+    private void applyFilter() {
+        // Only apply the filter if it has actually changed
+        if (_fragmentConsultantFilter.getIsFilterDirty()) {
+            ConsultantFilter newFilter = _fragmentConsultantFilter.getFilter();
+            AppCtrl.getDataService().setFilter(newFilter);
+        }
+    }
+
     /**
      * Hides or displays the consultant filter.
      */
@@ -88,9 +96,7 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
         if (_fragmentConsultantFilter.getView().getVisibility() != View.VISIBLE)
             super.onBackPressed();
         else {
-            // Update the filter
-            ConsultantFilter newFilter = _fragmentConsultantFilter.getFilter();
-            AppCtrl.getDataService().setFilter(newFilter);
+            applyFilter();
             toggleFilterView();
         }
     }
@@ -104,7 +110,12 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
     // Methods (ConsultantFilterFragment.Listener)
 
     @Override
-    public void onClose() { }
+    public void onShouldClose() {
+        // The consultant filter has signalled that it should be closed
+        applyFilter();
+        toggleFilterView();
+    }
+
     public void onInitialLoadStarted() { }
     public void onInitialLoadProgress(int progressCount, int totalCount) { }
     public void onConsultantAdded(ConsultantData consultant, Bitmap bitmap) { }

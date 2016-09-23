@@ -10,16 +10,17 @@ public class ConsultantFilter {
 
     // Private variables
 
-    private List<Integer> _officeIds = new ArrayList<>();
+    private List<Integer> _officeIds;
     private String _name = "";
 
     // Constructor
 
     public ConsultantFilter() {
+        this._officeIds = new ArrayList<>();
     }
 
     public ConsultantFilter(List<Integer> officeIds, String name) {
-        this._officeIds = officeIds;
+        this._officeIds = new ArrayList<>(officeIds);
         this._name = name;
     }
 

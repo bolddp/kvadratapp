@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.android.flexbox.FlexboxLayout;
 
@@ -43,14 +44,19 @@ public class ConsultantFilterFragment extends Fragment {
     private Listener _listener;
     private EditText _editName;
     private FlexboxLayout _layoutOfficeButtons;
+    private Button _btnClearText;
+
     private List<Integer> _officeIds = new ArrayList<>();
 
     // Private methods
 
     private void setupOfficeButtons() {
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+
         OfficeData[] offices = AppCtrl.getDataService().getOffices();
         for (OfficeData od : offices) {
-            Button btn = new Button(getActivity());
+            Button btn = (Button) inflater.inflate(R.layout.button_office_filter, null);
             btn.setText(od.Name);
             btn.setTag(od.Id);
             btn.setOnClickListener(new View.OnClickListener() {
@@ -60,16 +66,20 @@ public class ConsultantFilterFragment extends Fragment {
                     int listIndex = _officeIds.indexOf(officeId);
                     if (listIndex < 0) {
                         _officeIds.add(officeId);
-                        view.setPressed(true);
+                        view.setSelected(true);
                     }
                     else {
                         _officeIds.remove(listIndex);
-                        view.setPressed(false);
+                        view.setSelected(false);
                     }
                 }
             });
 
             _layoutOfficeButtons.addView(btn);
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) btn.getLayoutParams();
+            params.topMargin = (int) (8 * scale + 0.5f);
+            params.rightMargin = (int) (8 * scale + 0.5f);
         }
     }
 
@@ -138,6 +148,14 @@ public class ConsultantFilterFragment extends Fragment {
                     return false;
                 }
                 return false;
+            }
+        });
+
+        _btnClearText = (Button) view.findViewById(R.id.btnClearText);
+        _btnClearText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _editName.getText().clear();
             }
         });
 

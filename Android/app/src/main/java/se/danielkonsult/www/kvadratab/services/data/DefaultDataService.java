@@ -16,6 +16,9 @@ import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
  */
 public class DefaultDataService implements DataService {
 
+    // Refresh the database once a week
+    private static final int REFRESH_INTERVAL_HOURS = 7 * 24;
+
     // Private variables
 
     private final DataServiceListeners _listeners = new DataServiceListeners();
@@ -57,10 +60,10 @@ public class DefaultDataService implements DataService {
             shouldFilterByName = true;
             int spaceIndex = _filter.getName().indexOf(" ");
             if (spaceIndex < 0)
-                namePiece1 = _filter.getName().trim();
+                namePiece1 = _filter.getName().toLowerCase().trim();
             else {
-                namePiece1 = _filter.getName().substring(0,spaceIndex).trim();
-                namePiece2 = _filter.getName().substring(spaceIndex).trim();
+                namePiece1 = _filter.getName().toLowerCase().substring(0,spaceIndex).trim();
+                namePiece2 = _filter.getName().toLowerCase().substring(spaceIndex).trim();
             }
         }
 
@@ -78,12 +81,12 @@ public class DefaultDataService implements DataService {
 
                 // Is there only one name piece?
                 if (Utils.isStringNullOrEmpty(namePiece2) &&
-                        (cd.FirstName.startsWith(namePiece1) || cd.LastName.startsWith(namePiece1))){
+                        (cd.FirstName.toLowerCase().startsWith(namePiece1) || cd.LastName.toLowerCase().startsWith(namePiece1))){
                     isSelected = true;
                 }
                 // Filter by both first and last name
                 else if (!Utils.isStringNullOrEmpty(namePiece2) &&
-                        cd.FirstName.startsWith(namePiece1) && cd.LastName.startsWith(namePiece2)) {
+                        cd.FirstName.toLowerCase().startsWith(namePiece1) && cd.LastName.toLowerCase().startsWith(namePiece2)) {
                     isSelected = true;
                 }
             }
@@ -118,11 +121,23 @@ public class DefaultDataService implements DataService {
         Runnable startRunnable = new Runnable() {
             @Override
             public void run() {
-                // Do we have any consultants in the database yet?
+                // Do we have any consultants in the database yet? And how long is it since the last refresh?
                 KvadratDb db = AppCtrl.getDb();
                 int consultantCount = db.getConsultantCount();
 
-                if (consultantCount == 0) {
+                boolean isDataOld = false;
+                if (consultantCount > 0){
+                    // There are consultants, but how long since they were refreshed?
+                    int hoursSinceLastRefresh = AppCtrl.getPrefsService().getHoursSinceLastRefresh();
+                    if (hoursSinceLastRefresh > REFRESH_INTERVAL_HOURS){
+                        // Drop the database and then get a new handle to it
+                        AppCtrl.dropDatabase();
+                        db = AppCtrl.getDb();
+                        isDataOld = true;
+                    }
+                }
+
+                if ((consultantCount == 0) || isDataOld) {
                     InitialLoader loader = new InitialLoader(db, _listeners);
                     loader.run();
                 }
@@ -135,8 +150,8 @@ public class DefaultDataService implements DataService {
                     // check if it's time for a refresh of the data.
                     _listeners.onConsultantsUpdated();
 
-                    Refresher refresher = new Refresher(db, _listeners);
-                    refresher.run();
+//                    Refresher refresher = new Refresher(db, _listeners);
+//                    refresher.run();
                 }
             }
         };

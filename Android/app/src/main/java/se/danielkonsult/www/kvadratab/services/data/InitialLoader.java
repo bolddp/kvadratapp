@@ -100,6 +100,9 @@ public class InitialLoader {
             consultants = AppCtrl.getDb().getAllConsultants(true);
             AppCtrl.getDataService().setAllConsultants(consultants);
 
+            // Indicate that a complete refresh has been performed
+            AppCtrl.getPrefsService().setRefreshPerformed();
+
             // All done for now, notify
             listeners.onConsultantsUpdated();
         }

@@ -3,8 +3,6 @@ package se.danielkonsult.www.kvadratab.activities;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +15,6 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.fragments.ConsultantFilterFragment;
 import se.danielkonsult.www.kvadratab.services.data.ConsultantFilter;
 import se.danielkonsult.www.kvadratab.services.data.DataServiceListener;
-import se.danielkonsult.www.kvadratab.services.data.DataServiceListeners;
 
 public class ConsultantListActivity extends AppCompatActivity implements ConsultantFilterFragment.Listener, DataServiceListener {
 

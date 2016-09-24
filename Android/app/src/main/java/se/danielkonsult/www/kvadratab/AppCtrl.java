@@ -7,6 +7,8 @@ import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.services.data.DataService;
 import se.danielkonsult.www.kvadratab.services.data.DataServiceListeners;
 import se.danielkonsult.www.kvadratab.services.data.DefaultDataService;
+import se.danielkonsult.www.kvadratab.services.prefs.DefaultPrefsService;
+import se.danielkonsult.www.kvadratab.services.prefs.PrefsService;
 
 /**
  * Application-wide singleton with a responsibility to provide services
@@ -16,7 +18,8 @@ public class AppCtrl {
 
     private static Context _applicationContext;
     private static KvadratDb _db;
-    private static DefaultDataService _dataService;
+    private static DataService _dataService;
+    private static PrefsService _prefsService;
 
     /**
      * Returns the application context that has been set.
@@ -35,9 +38,24 @@ public class AppCtrl {
         return _db;
     }
 
+    /* Drops the database and forces a new copy to be created the next
+    time it is requested.
+     */
+    public static void dropDatabase() {
+        getApplicationContext().deleteDatabase(KvadratDb.DATABASE_NAME);
+        _db = null;
+    }
+
     public static DataService getDataService() {
         if (_dataService == null)
             _dataService = new DefaultDataService();
         return _dataService;
+    }
+
+    public static PrefsService getPrefsService() {
+        if (_prefsService == null)
+            _prefsService = new DefaultPrefsService();
+
+        return _prefsService;
     }
 }

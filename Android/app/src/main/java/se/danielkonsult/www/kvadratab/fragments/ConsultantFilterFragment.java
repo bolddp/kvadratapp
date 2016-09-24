@@ -1,26 +1,18 @@
 package se.danielkonsult.www.kvadratab.fragments;
 
 
-import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.google.android.flexbox.FlexboxLayout;
 
@@ -50,7 +42,9 @@ public class ConsultantFilterFragment extends Fragment {
 
     // Private methods
 
-    private void setupOfficeButtons() {
+    private void setupFragment() {
+        ConsultantFilter currentFilter = AppCtrl.getDataService().getFilter();
+
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final float scale = getContext().getResources().getDisplayMetrics().density;
 
@@ -59,6 +53,7 @@ public class ConsultantFilterFragment extends Fragment {
             Button btn = (Button) inflater.inflate(R.layout.button_office_filter, null);
             btn.setText(od.Name);
             btn.setTag(od.Id);
+            btn.setSelected(currentFilter.getOfficeIds().contains(od.Id));
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -81,6 +76,8 @@ public class ConsultantFilterFragment extends Fragment {
             params.topMargin = (int) (8 * scale + 0.5f);
             params.rightMargin = (int) (8 * scale + 0.5f);
         }
+
+        _editName.setText(currentFilter.getName());
     }
 
     /**
@@ -159,7 +156,7 @@ public class ConsultantFilterFragment extends Fragment {
             }
         });
 
-        setupOfficeButtons();
+        setupFragment();
 
         view.setVisibility(View.GONE);
         return  view;
@@ -175,13 +172,5 @@ public class ConsultantFilterFragment extends Fragment {
     public void setListener(Listener listener){
         _listener = listener;
     }
-
-    /**
-     * Updates the contents of the GUI to reflect the state of the filter.
-     */
-    public void refresh(){
-
-    }
-
 }
 

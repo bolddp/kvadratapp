@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.R;
@@ -31,12 +32,26 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
 
     // Private methods
 
-    private void applyFilter() {
+    /*
+     Makes an attempt to apply the filter and returns true if it succeeded.
+     Reasons it can fail: the filter excludes all consultants and the user
+     responds that the filter shouldn't be applied.
+     */
+    private void applyAndCloseFilter() {
         // Only apply the filter if it has actually changed
         if (_fragmentConsultantFilter.getIsFilterDirty()) {
             ConsultantFilter newFilter = _fragmentConsultantFilter.getFilter();
-            AppCtrl.getDataService().setFilter(newFilter);
+
+            if (AppCtrl.getDataService().tryFilter(newFilter) > 0)
+                AppCtrl.getDataService().useTriedFilter();
+            else {
+                Toast.makeText(this, R.string.msg_filter_no_hits, Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
+
+        // Close the filter view
+        toggleFilterView();
     }
 
     /**
@@ -93,8 +108,7 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
         if (_fragmentConsultantFilter.getView().getVisibility() != View.VISIBLE)
             super.onBackPressed();
         else {
-            applyFilter();
-            toggleFilterView();
+            applyAndCloseFilter();
         }
     }
 
@@ -109,8 +123,7 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
     @Override
     public void onShouldClose() {
         // The consultant filter has signalled that it should be closed
-        applyFilter();
-        toggleFilterView();
+        applyAndCloseFilter();
     }
 
     public void onInitialLoadStarted() { }

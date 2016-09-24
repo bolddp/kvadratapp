@@ -23,9 +23,14 @@ public class DefaultDataService implements DataService {
 
     private final DataServiceListeners _listeners = new DataServiceListeners();
     private static ConsultantData[] _allConsultants;
+
     private static ConsultantData[] _filteredConsultants;
-    private static OfficeData[] _offices;
+    private static ConsultantData[] _triedFilterConsultants;
+
     private ConsultantFilter _filter;
+    private ConsultantFilter _triedFilter;
+
+    private static OfficeData[] _offices;
 
     // Private methods
 
@@ -36,34 +41,31 @@ public class DefaultDataService implements DataService {
     }
 
     /**
-     * Uses the current filter to update the list of
-     * filtered consultants from all consultants.
+     * Tries a filter on all consultants and returns the ones that match.
      */
-    private void applyFilter() {
+    private ConsultantData[] applyFilter(ConsultantFilter filter) {
         List<ConsultantData> result = new ArrayList<>();
 
         // Is the filter empty? Then copy all consultants and exit the function
-        if (Utils.isStringNullOrEmpty(_filter.getName().trim()) &&
-                _filter.getOfficeIds().size() == 0) {
+        if (Utils.isStringNullOrEmpty(filter.getName().trim()) &&
+                filter.getOfficeIds().size() == 0) {
             for (ConsultantData cd: _allConsultants)
                 result.add(cd);
-
-            setFilteredConsultants(result.toArray(new ConsultantData[result.size()]));
-            return;
+            return result.toArray(new ConsultantData[result.size()]);
         }
 
         String namePiece1 = "";
         String namePiece2 = "";
         boolean shouldFilterByName = false;
         // Is there any name filter? Then split it into first and last name
-        if (!Utils.isStringNullOrEmpty(_filter.getName().trim())){
+        if (!Utils.isStringNullOrEmpty(filter.getName().trim())){
             shouldFilterByName = true;
-            int spaceIndex = _filter.getName().indexOf(" ");
+            int spaceIndex = filter.getName().indexOf(" ");
             if (spaceIndex < 0)
-                namePiece1 = _filter.getName().toLowerCase().trim();
+                namePiece1 = filter.getName().toLowerCase().trim();
             else {
-                namePiece1 = _filter.getName().toLowerCase().substring(0,spaceIndex).trim();
-                namePiece2 = _filter.getName().toLowerCase().substring(spaceIndex).trim();
+                namePiece1 = filter.getName().toLowerCase().substring(0,spaceIndex).trim();
+                namePiece2 = filter.getName().toLowerCase().substring(spaceIndex).trim();
             }
         }
 
@@ -71,8 +73,8 @@ public class DefaultDataService implements DataService {
             boolean isSelected = true;
 
             // Are there any specific offices in the filter?
-            if (_filter.getOfficeIds().size() > 0){
-                if (!_filter.getOfficeIds().contains(cd.OfficeId))
+            if (filter.getOfficeIds().size() > 0){
+                if (!filter.getOfficeIds().contains(cd.OfficeId))
                     isSelected = false;
             }
             // Should we filter by name?
@@ -96,11 +98,10 @@ public class DefaultDataService implements DataService {
                 result.add(cd);
         }
 
-        setFilteredConsultants(result.toArray(new ConsultantData[result.size()]));
+        return result.toArray(new ConsultantData[result.size()]);
     }
 
     // Constructor
-
     public DefaultDataService() {
         _filter = new ConsultantFilter();
     }
@@ -177,7 +178,7 @@ public class DefaultDataService implements DataService {
     @Override
     public void setAllConsultants(ConsultantData[] consultants) {
         _allConsultants = consultants;
-        applyFilter();
+        setFilteredConsultants(applyFilter(_filter));
     }
 
     @Override
@@ -193,9 +194,26 @@ public class DefaultDataService implements DataService {
     }
 
     @Override
+    public int tryFilter(ConsultantFilter filter) {
+        _triedFilter = filter;
+        _triedFilterConsultants = applyFilter(filter);
+        return _triedFilterConsultants.length;
+    }
+
+    @Override
+    public void useTriedFilter() {
+        if (_triedFilterConsultants != null){
+            _filter = _triedFilter;
+            setFilteredConsultants(_triedFilterConsultants);
+
+            _triedFilterConsultants = null;
+        }
+    }
+
+    @Override
     public void setFilter(ConsultantFilter filter) {
         _filter = filter;
-        applyFilter();
+        applyFilter(_filter);
     }
 
     @Override

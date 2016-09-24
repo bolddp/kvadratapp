@@ -42,6 +42,14 @@ public interface DataService {
     ConsultantData[] getFilteredConsultants();
 
     /**
+     * Tries a filter without applying it and returns the number of hits
+     * it would produce.
+     */
+    int tryFilter(ConsultantFilter filter);
+
+    void useTriedFilter();
+
+    /**
      * Sets the filter that should be used to select displayed consultants.
      */
     void setFilter(ConsultantFilter filter);

@@ -7,6 +7,8 @@ import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.services.data.DataService;
 import se.danielkonsult.www.kvadratab.services.data.DataServiceListeners;
 import se.danielkonsult.www.kvadratab.services.data.DefaultDataService;
+import se.danielkonsult.www.kvadratab.services.image.DefaultImageService;
+import se.danielkonsult.www.kvadratab.services.image.ImageService;
 import se.danielkonsult.www.kvadratab.services.prefs.DefaultPrefsService;
 import se.danielkonsult.www.kvadratab.services.prefs.PrefsService;
 
@@ -20,6 +22,7 @@ public class AppCtrl {
     private static KvadratDb _db;
     private static DataService _dataService;
     private static PrefsService _prefsService;
+    private static ImageService _imageService;
 
     /**
      * Returns the application context that has been set.
@@ -57,5 +60,12 @@ public class AppCtrl {
             _prefsService = new DefaultPrefsService();
 
         return _prefsService;
+    }
+
+    public static ImageService getImageService() {
+        if (_imageService == null)
+            _imageService = new DefaultImageService();
+
+        return _imageService;
     }
 }

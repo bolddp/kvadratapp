@@ -21,7 +21,6 @@ import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.helpers.Dialogs;
-import se.danielkonsult.www.kvadratab.helpers.scraper.ImageHelper;
 import se.danielkonsult.www.kvadratab.services.data.DataServiceListener;
 
 public class MainActivity extends AppCompatActivity implements DataServiceListener {
@@ -193,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
             _isDoingInitialLoading = false;
 
             AppCtrl.dropDatabase();
-            ImageHelper.deleteAllConsultantImages();
+            AppCtrl.getImageService().deleteAllConsultantImages();
 
             String message = String.format(getString(R.string.msg_initialload_error_template), errorMessage);
 

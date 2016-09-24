@@ -1,4 +1,4 @@
-package se.danielkonsult.www.kvadratab.helpers.scraper;
+package se.danielkonsult.www.kvadratab.services.image;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,7 +18,7 @@ import se.danielkonsult.www.kvadratab.AppCtrl;
 /**
  * Downloads images from the Kvadrat home page.
  */
-public class ImageHelper {
+public class DefaultImageService implements ImageService {
 
     private static final String CONSULTANT_IMAGE_URL_TEMPLATE = "http://www.kvadrat.se/wp-content/themes/blocks/consultant-image.php?id=%d";
     private static final String CONSULTANT_FILENAME_PREFIX = "img_consultant_";
@@ -30,14 +30,14 @@ public class ImageHelper {
     /**
      * Gets the filename that should be used for a particular consultant id.
      */
-    private static String getFileNameFromId(int id) {
+    private String getFileNameFromId(int id) {
         return CONSULTANT_FILENAME_PREFIX + Integer.toString(id);
     }
 
     /**
      * Converts an input stream to a byte array.
      */
-    private static byte[] getByteArrayFromStream(InputStream is) throws IOException {
+    private byte[] getByteArrayFromStream(InputStream is) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int nRead;
         byte[] data = new byte[16384];
@@ -53,7 +53,7 @@ public class ImageHelper {
     /**
      * Saves a byte array to file in the application's private directory
      */
-    private static void saveBytesToFile(byte[] bytes, String fileName) throws IOException {
+    private void saveBytesToFile(byte[] bytes, String fileName) throws IOException {
         File file = new File(AppCtrl.getApplicationContext().getFilesDir(), fileName);
         OutputStream output = new FileOutputStream(file);
         try {
@@ -72,7 +72,8 @@ public class ImageHelper {
      * Downloads a consultant image by its id, saves it to file
      * and returns it as a bitmap.
      */
-    public static Bitmap downloadConsultantBitmapAndSaveToFile(int id) throws IOException {
+    @Override
+    public Bitmap downloadConsultantBitmapAndSaveToFile(int id) throws IOException {
         HttpURLConnection httpCon = null;
         InputStream is = null;
         try {
@@ -100,7 +101,8 @@ public class ImageHelper {
         }
     }
 
-    public static Bitmap getConsultantBitmapFromFile(int id){
+    @Override
+    public Bitmap getConsultantBitmapFromFile(int id){
         File imgFile = new File(AppCtrl.getApplicationContext().getFilesDir(), getFileNameFromId(id));
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath(), bmOptions);
@@ -112,12 +114,13 @@ public class ImageHelper {
     Deletes all consultant images that can be found in the application directory,
     based on the file's prefix.
      */
-    public static void deleteAllConsultantImages() {
+    @Override
+    public void deleteAllConsultantImages() {
         // Delete the image file if there is any
         FilenameFilter imageFilter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 String lowercaseName = name.toLowerCase();
-                if (lowercaseName.startsWith("img_consultant")) {
+                if (lowercaseName.startsWith(CONSULTANT_FILENAME_PREFIX)) {
                     return true;
                 } else {
                     return false;

@@ -9,7 +9,6 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
-import se.danielkonsult.www.kvadratab.helpers.scraper.ImageHelper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryData;
 import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
 
@@ -83,7 +82,7 @@ public class InitialLoader {
                 // Save the consultant to database
                 db.insertConsultant(cd);
                 // Load the consultant image and save it to disk
-                Bitmap bitmap = ImageHelper.downloadConsultantBitmapAndSaveToFile(cd.Id);
+                Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmapAndSaveToFile(cd.Id);
 
                 // Notify listeners of this new glorious consultant
                 listeners.onConsultantAdded(cd, bitmap);

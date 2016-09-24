@@ -10,9 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
-import se.danielkonsult.www.kvadratab.helpers.scraper.ImageHelper;
 
 /**
  * Created by Daniel on 2016-09-15.
@@ -51,7 +51,7 @@ public class ConsultantListAdapter extends ArrayAdapter<ConsultantData> {
         tvName.setText(String.format("%s %s", item.FirstName, item.LastName));
         tvOffice.setText(officeText);
 
-        imgConsultant.setImageBitmap(ImageHelper.getConsultantBitmapFromFile(item.Id));
+        imgConsultant.setImageBitmap(AppCtrl.getImageService().getConsultantBitmapFromFile(item.Id));
 
         return convertView;
     }

@@ -5,4 +5,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error_header">Ett fel uppstod!</string>
+    <string name="btn_ok">OK</string>
+    <string name="msg_initialload_error_template">Det uppstod ett fel då konsultdata skulle laddas ner.\n\nFelmeddelande: %s</string>
 </resources>

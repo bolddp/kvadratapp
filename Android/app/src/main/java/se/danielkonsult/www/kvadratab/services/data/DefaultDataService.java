@@ -10,6 +10,7 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.helpers.Utils;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
+import se.danielkonsult.www.kvadratab.helpers.scraper.ImageHelper;
 
 /**
  * Created by Daniel on 2016-09-14.
@@ -133,6 +134,9 @@ public class DefaultDataService implements DataService {
                         // Drop the database and then get a new handle to it
                         AppCtrl.dropDatabase();
                         db = AppCtrl.getDb();
+                        // Delete all consultant images
+                        ImageHelper.deleteAllConsultantImages();
+
                         isDataOld = true;
                     }
                 }

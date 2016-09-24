@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,6 +21,8 @@ import se.danielkonsult.www.kvadratab.AppCtrl;
 public class ImageHelper {
 
     private static final String CONSULTANT_IMAGE_URL_TEMPLATE = "http://www.kvadrat.se/wp-content/themes/blocks/consultant-image.php?id=%d";
+    private static final String CONSULTANT_FILENAME_PREFIX = "img_consultant_";
+
     private static final int STD_TIMEOUT = 10000;
     private static final String USER_AGENT = "KvadratApp/1.0";
     private static final String ACCEPT = "image/*";
@@ -28,7 +31,7 @@ public class ImageHelper {
      * Gets the filename that should be used for a particular consultant id.
      */
     private static String getFileNameFromId(int id) {
-        return "img_consultant_" + Integer.toString(id);
+        return CONSULTANT_FILENAME_PREFIX + Integer.toString(id);
     }
 
     /**
@@ -103,5 +106,27 @@ public class ImageHelper {
         Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath(), bmOptions);
 
         return bitmap;
+    }
+
+    /*
+    Deletes all consultant images that can be found in the application directory,
+    based on the file's prefix.
+     */
+    public static void deleteAllConsultantImages() {
+        // Delete the image file if there is any
+        FilenameFilter imageFilter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                String lowercaseName = name.toLowerCase();
+                if (lowercaseName.startsWith("img_consultant")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+        File appDir = AppCtrl.getApplicationContext().getFilesDir();
+        File[] files = appDir.listFiles(imageFilter);
+        for (File file : files)
+            file.delete();
     }
 }

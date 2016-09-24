@@ -1,5 +1,6 @@
 package se.danielkonsult.www.kvadratab.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -19,7 +20,8 @@ import android.widget.TextView;
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
-import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
+import se.danielkonsult.www.kvadratab.helpers.Dialogs;
+import se.danielkonsult.www.kvadratab.helpers.scraper.ImageHelper;
 import se.danielkonsult.www.kvadratab.services.data.DataServiceListener;
 
 public class MainActivity extends AppCompatActivity implements DataServiceListener {
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
     private TextView _tvLoading;
     private ProgressBar _progbarMain;
     private long pictureUpdateTimestamp = 0;
+    private boolean _isDoingInitialLoading;
 
     // Private methods
 
@@ -148,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
 
     @Override
     public void onInitialLoadStarted() {
+        _isDoingInitialLoading = true;
         // Fade in the "Loading..." text
         _tvLoading.setText(R.string.loading_logo_text);
     }
@@ -173,6 +177,9 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
 
     @Override
     public void onConsultantsUpdated() {
+        // The initial downloading is complete (or it was just a refresh)
+        _isDoingInitialLoading = false;
+
         // Go on to the consultant list activity, removing this activity from the back stack
         Intent intent = new Intent(this, ConsultantListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -181,6 +188,22 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
 
     @Override
     public void onError(String tag, String errorMessage) {
+        // Notify the user
+        if (_isDoingInitialLoading){
+            _isDoingInitialLoading = false;
 
+            AppCtrl.dropDatabase();
+            ImageHelper.deleteAllConsultantImages();
+
+            String message = String.format(getString(R.string.msg_initialload_error_template), errorMessage);
+
+            Dialogs.displayError(this, getString(R.string.error_header), message, getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Finish the activity
+                    MainActivity.this.finish();
+                }
+            });
+        }
     }
 }

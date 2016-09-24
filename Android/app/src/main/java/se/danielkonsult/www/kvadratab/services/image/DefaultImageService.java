@@ -22,6 +22,7 @@ public class DefaultImageService implements ImageService {
 
     private static final String CONSULTANT_IMAGE_URL_TEMPLATE = "http://www.kvadrat.se/wp-content/themes/blocks/consultant-image.php?id=%d";
     private static final String CONSULTANT_FILENAME_PREFIX = "img_consultant_";
+    private static final int BITMAP_TARGET_SIZE = 600;
 
     private static final int STD_TIMEOUT = 10000;
     private static final String USER_AGENT = "KvadratApp/1.0";
@@ -68,9 +69,20 @@ public class DefaultImageService implements ImageService {
         }
     }
 
+    /**
+     * Takes a Bitmap and scales it down if it's too large.
+     */
+    private Bitmap getScaledDownBitmap(Bitmap bitmap, int targetSize) {
+        if (bitmap.getWidth() <= targetSize)
+            return bitmap;
+        else {
+            return Bitmap.createScaledBitmap(bitmap, targetSize, targetSize, false);
+        }
+    }
+
     /***
-     * Downloads a consultant image by its id, saves it to file
-     * and returns it as a bitmap.
+     * Downloads a consultant image by its id, resizes it if necessary,
+     * saves it to file as a JPG and returns it as a Bitmap object.
      */
     @Override
     public Bitmap downloadConsultantBitmapAndSaveToFile(int id) throws IOException {
@@ -85,10 +97,20 @@ public class DefaultImageService implements ImageService {
 
             is = httpCon.getInputStream();
 
+            // Get the bytes and convert it to a bitmap
             byte[] bytes = getByteArrayFromStream(is);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0, bytes.length);
+
+            bitmap = getScaledDownBitmap(bitmap, BITMAP_TARGET_SIZE);
+
+            // Convert it to JPG
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream);
+            bytes = stream.toByteArray();
+
             saveBytesToFile(bytes, getFileNameFromId(id));
 
-            return BitmapFactory.decodeByteArray(bytes,0, bytes.length);
+            return bitmap;
         } finally {
             try {
                 if (httpCon != null)

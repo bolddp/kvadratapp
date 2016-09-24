@@ -174,13 +174,13 @@ public class ScraperTests {
         for (File file : files)
             file.delete();
 
-        Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmapAndSaveToFile(6985);
+        Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmapAndSaveToFile(7829);
 
         Assert.assertNotNull(bitmap);
         Assert.assertEquals(600, bitmap.getWidth());
         Assert.assertEquals(600, bitmap.getHeight());
 
-        Bitmap bitmap2 = AppCtrl.getImageService().getConsultantBitmapFromFile(6985);
+        Bitmap bitmap2 = AppCtrl.getImageService().getConsultantBitmapFromFile(7829);
         Assert.assertNotNull(bitmap2);
         Assert.assertEquals(600, bitmap2.getWidth());
         Assert.assertEquals(600, bitmap2.getHeight());

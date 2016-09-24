@@ -1,0 +1,10 @@
+android {
+    signingConfigs { 
+        release {
+            storeFile file("../idim.keystore")
+            storePassword "DummyValue"
+            keyAlias "DummyValue"
+            keyPassword "DummyValue"
+        }
+    }
+}

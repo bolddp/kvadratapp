@@ -21,9 +21,7 @@ public class DefaultDataService implements DataService {
 
     // Private variables
 
-    private final DataServiceListeners _listeners = new DataServiceListeners();
     private static ConsultantData[] _allConsultants;
-
     private static ConsultantData[] _filteredConsultants;
     private static ConsultantData[] _triedFilterConsultants;
 
@@ -31,13 +29,14 @@ public class DefaultDataService implements DataService {
     private ConsultantFilter _triedFilter;
 
     private static OfficeData[] _offices;
+    private DataServiceListener _listener;
 
     // Private methods
 
     private void setFilteredConsultants(ConsultantData[] consultantDatas) {
         _filteredConsultants = consultantDatas;
-        if (_listeners != null)
-            _listeners.onConsultantsUpdated();
+        if (_listener != null)
+            _listener.onFilteredConsultantsUpdated();
     }
 
     /**
@@ -107,61 +106,56 @@ public class DefaultDataService implements DataService {
     }
 
     @Override
-    public void registerListener(DataServiceListener listener) {
-        _listeners.registerListener(listener);
+    public void setListener(DataServiceListener listener) {
+        _listener = listener;
     }
 
-    @Override
-    public void unregisterListener(DataServiceListener listener) {
-        _listeners.unregisterListener(listener);
-    }
-
-    @Override
-    public void start() {
-        // Start on a separate thread to not lock up GUI
-        Runnable startRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // Do we have any consultants in the database yet? And how long is it since the last refresh?
-                KvadratDb db = AppCtrl.getDb();
-                int consultantCount = db.getConsultantCount();
-
-                boolean isDataOld = false;
-                if (consultantCount > 0){
-                    // There are consultants, but how long since they were refreshed?
-                    int hoursSinceLastRefresh = AppCtrl.getPrefsService().getHoursSinceLastRefresh();
-                    if (hoursSinceLastRefresh > REFRESH_INTERVAL_HOURS){
-                        // Drop the database and then get a new handle to it
-                        AppCtrl.dropDatabase();
-                        db = AppCtrl.getDb();
-
-                        // Delete all consultant images
-                        AppCtrl.getImageService().deleteAllConsultantImages();
-
-                        isDataOld = true;
-                    }
-                }
-
-                if ((consultantCount == 0) || isDataOld) {
-                    InitialLoader loader = new InitialLoader(db, _listeners);
-                    loader.run();
-                }
-                else {
-                    // Prep by loading the consultants before saying we're finished
-                    setOffices(db.getAllOffices());
-                    setAllConsultants(db.getAllConsultants(true));
-
-                    // Signal that the data already is available, but also
-                    // check if it's time for a refresh of the data.
-                    _listeners.onConsultantsUpdated();
-
-//                    Refresher refresher = new Refresher(db, _listeners);
-//                    refresher.run();
-                }
-            }
-        };
-        AsyncTask.execute(startRunnable);
-    }
+//    @Override
+//    public void start() {
+//        // Start on a separate thread to not lock up GUI
+//        Runnable startRunnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                // Do we have any consultants in the database yet? And how long is it since the last refresh?
+//                KvadratDb db = AppCtrl.getDb();
+//                int consultantCount = db.getConsultantCount();
+//
+//                boolean isDataOld = false;
+//                if (consultantCount > 0){
+//                    // There are consultants, but how long since they were refreshed?
+//                    int hoursSinceLastRefresh = AppCtrl.getPrefsService().getHoursSinceLastRefresh();
+//                    if (hoursSinceLastRefresh > REFRESH_INTERVAL_HOURS){
+//                        // Drop the database and then get a new handle to it
+//                        AppCtrl.dropDatabase();
+//                        db = AppCtrl.getDb();
+//
+//                        // Delete all consultant images
+//                        AppCtrl.getImageService().deleteAllConsultantImages();
+//
+//                        isDataOld = true;
+//                    }
+//                }
+//
+//                if ((consultantCount == 0) || isDataOld) {
+//                    InitialLoader loader = new InitialLoader(db, _listeners);
+//                    loader.run();
+//                }
+//                else {
+//                    // Prep by loading the consultants before saying we're finished
+//                    setOffices(db.getAllOffices());
+//                    setAllConsultants(db.getAllConsultants(true));
+//
+//                    // Signal that the data already is available, but also
+//                    // check if it's time for a refresh of the data.
+//                    _listeners.onFilteredConsultantsUpdated();
+//
+////                    Refresher refresher = new Refresher(db, _listeners);
+////                    refresher.run();
+//                }
+//            }
+//        };
+//        AsyncTask.execute(startRunnable);
+//    }
 
     @Override
     public void setOffices(OfficeData[] offices) {

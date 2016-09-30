@@ -8,15 +8,13 @@ import se.danielkonsult.www.kvadratab.entities.OfficeData;
  */
 public interface DataService {
 
-    void registerListener(DataServiceListener listener);
-
-    void unregisterListener(DataServiceListener listener);
+    void setListener(DataServiceListener listener);
 
     /**
      * Starts the data service, triggering it into starting to notify
      * listeners of the current state of the database.
      */
-    void start();
+    // void start();
 
     /**
      * Sets the offices that are cached by the data service.

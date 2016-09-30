@@ -21,15 +21,17 @@ import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.helpers.Dialogs;
-import se.danielkonsult.www.kvadratab.services.data.DataServiceListener;
+import se.danielkonsult.www.kvadratab.services.initialloader.LoaderService;
+import se.danielkonsult.www.kvadratab.services.initialloader.LoaderServiceListener;
 
-public class MainActivity extends AppCompatActivity implements DataServiceListener {
+public class MainActivity extends AppCompatActivity implements LoaderServiceListener {
 
     // Private variables
 
     private static final int IMAGE_UPDATE_INTERVAL = 1500;
     private static final long IMAGE_FADE_DURATION = 100;
-    private final Handler _handler = new Handler();
+
+    private Handler _handler = new Handler();
 
     private RelativeLayout _layoutConsultantImage;
     private ImageView _imgConsultant;
@@ -106,6 +108,12 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
         }
     }
 
+    private void gotoConsultantListActivity() {
+        Intent intent = new Intent(this, ConsultantListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,82 +135,102 @@ public class MainActivity extends AppCompatActivity implements DataServiceListen
 
         AppCtrl.setApplicationContext(getApplicationContext());
 
-        // Start the data service with a short delay
+        // Start initial loading or goto consultant list activity
         _handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                AppCtrl.getDataService().start();
+                // Make sure the refresher background worker is running as well
+                AppCtrl.getRefresher().ensureStarted();
+
+                // Do we need to perform an initial load?
+                LoaderService loaderService = AppCtrl.getInitialLoader();
+                if (loaderService.isInitialLoadNeeded())
+                    loaderService.run(MainActivity.this);
+                else
+                    gotoConsultantListActivity();
             }
-        }, 3000);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        AppCtrl.getDataService().registerListener(this);
-    }
-
-    @Override
-    protected void onPause() {
-        AppCtrl.getDataService().unregisterListener(this);
-        super.onPause();
+        }, 1500);
     }
 
     @Override
     public void onInitialLoadStarted() {
-        _isDoingInitialLoading = true;
-        // Fade in the "Loading..." text
-        _tvLoading.setText(R.string.loading_logo_text);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                _isDoingInitialLoading = true;
+                // Fade in the "Loading..." text
+                _tvLoading.setText(R.string.loading_logo_text);
+            }
+        });
     }
 
     @Override
-    public void onInitialLoadProgress(int progressCount, int totalCount) {
-        _progbarMain.setProgress((int)((progressCount * 100.0) / totalCount));
+    public void onInitialLoadProgress(final int progressCount, final int totalCount) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                _progbarMain.setProgress((int)((progressCount * 100.0) / totalCount));
+            }
+        });
     }
 
     @Override
-    public void onConsultantAdded(ConsultantData consultant, Bitmap bitmap) {
-        // Is the progress bar still hidden?
-        if (_layoutConsultantImage.getVisibility() == View.INVISIBLE){
-            fadeInViews(new View[] { _layoutConsultantImage });
-        }
-
-        // Is it time to update the image?
-        if ((SystemClock.uptimeMillis() - IMAGE_UPDATE_INTERVAL) > pictureUpdateTimestamp){
-            setConsultantImage(bitmap);
-            pictureUpdateTimestamp = SystemClock.uptimeMillis();
-        }
-    }
-
-    @Override
-    public void onConsultantsUpdated() {
-        // The initial downloading is complete (or it was just a refresh)
-        _isDoingInitialLoading = false;
-
-        // Go on to the consultant list activity, removing this activity from the back stack
-        Intent intent = new Intent(this, ConsultantListActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onError(String tag, String errorMessage) {
-        // Notify the user
-        if (_isDoingInitialLoading){
-            _isDoingInitialLoading = false;
-
-            AppCtrl.dropDatabase();
-            AppCtrl.getImageService().deleteAllConsultantImages();
-
-            String message = String.format(getString(R.string.msg_initialload_error_template), errorMessage);
-
-            Dialogs.displayError(this, getString(R.string.error_header), message, getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // Finish the activity
-                    MainActivity.this.finish();
+    public void onConsultantAdded(ConsultantData consultant, final Bitmap bitmap) {
+        // Run it on the UI thread
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Is the progress bar still hidden?
+                if (_layoutConsultantImage.getVisibility() == View.INVISIBLE){
+                    fadeInViews(new View[] { _layoutConsultantImage });
                 }
-            });
-        }
+
+                // Is it time to update the image?
+                if ((SystemClock.uptimeMillis() - IMAGE_UPDATE_INTERVAL) > pictureUpdateTimestamp){
+                    setConsultantImage(bitmap);
+                    pictureUpdateTimestamp = SystemClock.uptimeMillis();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onInitialLoadingCompleted() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // The initial downloading is complete (or it was just a refresh)
+                _isDoingInitialLoading = false;
+                // Go on to the consultant list activity, removing this activity from the back stack
+                gotoConsultantListActivity();
+            }
+        });
+    }
+
+    @Override
+    public void onError(String tag, final String errorMessage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Notify the user
+                if (_isDoingInitialLoading){
+                    _isDoingInitialLoading = false;
+
+                    AppCtrl.dropDatabase();
+                    AppCtrl.getImageService().deleteAllConsultantImages();
+
+                    String message = String.format(getString(R.string.msg_initialload_error_template), errorMessage);
+
+                    Dialogs.displayError(MainActivity.this, getString(R.string.error_header), message, getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Finish the activity
+                            MainActivity.this.finish();
+                        }
+                    });
+                }
+
+            }
+        });
     }
 }

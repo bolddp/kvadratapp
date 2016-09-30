@@ -1,16 +1,18 @@
 package se.danielkonsult.www.kvadratab;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.services.data.DataService;
-import se.danielkonsult.www.kvadratab.services.data.DataServiceListeners;
 import se.danielkonsult.www.kvadratab.services.data.DefaultDataService;
+import se.danielkonsult.www.kvadratab.services.initialloader.DefaultLoaderService;
+import se.danielkonsult.www.kvadratab.services.initialloader.LoaderService;
+import se.danielkonsult.www.kvadratab.services.refresher.DefaultRefresherService;
 import se.danielkonsult.www.kvadratab.services.image.DefaultImageService;
 import se.danielkonsult.www.kvadratab.services.image.ImageService;
 import se.danielkonsult.www.kvadratab.services.prefs.DefaultPrefsService;
 import se.danielkonsult.www.kvadratab.services.prefs.PrefsService;
+import se.danielkonsult.www.kvadratab.services.refresher.RefresherService;
 
 /**
  * Application-wide singleton with a responsibility to provide services
@@ -19,10 +21,12 @@ import se.danielkonsult.www.kvadratab.services.prefs.PrefsService;
 public class AppCtrl {
 
     private static Context _applicationContext;
+    private static LoaderService _initialLoader;
     private static KvadratDb _db;
     private static DataService _dataService;
     private static PrefsService _prefsService;
     private static ImageService _imageService;
+    private static RefresherService _refresherService;
 
     /**
      * Returns the application context that has been set.
@@ -67,5 +71,19 @@ public class AppCtrl {
             _imageService = new DefaultImageService();
 
         return _imageService;
+    }
+
+    public static LoaderService getInitialLoader() {
+        if (_initialLoader == null)
+            _initialLoader = new DefaultLoaderService(getDb());
+
+        return _initialLoader;
+    }
+
+    public static RefresherService getRefresher() {
+        if (_refresherService == null)
+            _refresherService = new DefaultRefresherService(getDb());
+
+        return _refresherService;
     }
 }

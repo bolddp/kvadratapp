@@ -1,4 +1,4 @@
-package se.danielkonsult.www.kvadratab.services.data;
+package se.danielkonsult.www.kvadratab.services.refresher;
 
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 
@@ -8,21 +8,20 @@ import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
  * Also responsible for checking whether enough time has passed
  * since the last refresh was performed.
  */
-public class Refresher {
+public class DefaultRefresherService implements RefresherService {
 
     // Private variables
 
     private KvadratDb _db;
-    private DataServiceListeners _listeners;
 
     // Constructor
 
-    public Refresher(KvadratDb db, DataServiceListeners listeners) {
+    public DefaultRefresherService(KvadratDb db) {
         this._db = db;
-        this._listeners = listeners;
     }
 
-    public void run() {
+    @Override
+    public void ensureStarted() {
 
     }
 }

@@ -86,19 +86,19 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
         _fragmentConsultantFilter.setListener(this);
 
         // Perform an initial update of the consultants list
-        onConsultantsUpdated();
+        onFilteredConsultantsUpdated();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         // Register as data service listener
-        AppCtrl.getDataService().registerListener(this);
+        AppCtrl.getDataService().setListener(this);
     }
 
     @Override
     protected void onPause() {
-        AppCtrl.getDataService().unregisterListener(this);
+        AppCtrl.getDataService().setListener(null);
         super.onPause();
     }
 
@@ -112,12 +112,6 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        AppCtrl.getDataService().unregisterListener(this);
-        super.onDestroy();
-    }
-
     // Methods (ConsultantFilterFragment.Listener)
 
     @Override
@@ -126,13 +120,8 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
         applyAndCloseFilter();
     }
 
-    public void onInitialLoadStarted() { }
-    public void onInitialLoadProgress(int progressCount, int totalCount) { }
-    public void onConsultantAdded(ConsultantData consultant, Bitmap bitmap) { }
-    public void onError(String tag, String errorMessage) { }
-
     @Override
-    public void onConsultantsUpdated() {
+    public void onFilteredConsultantsUpdated() {
         _lvMain.setVisibility(View.INVISIBLE);
         try {
             ConsultantData[] consultantDatas = AppCtrl.getDataService().getFilteredConsultants();

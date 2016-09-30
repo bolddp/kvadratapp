@@ -12,34 +12,8 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 public interface DataServiceListener {
 
     /**
-     * Called when the Kvadrat db has been determined to be empty and initial
-     * loading of data scraping has started.
-     */
-    void onInitialLoadStarted();
-
-    /**
-     * Called when it has been determined how many consultants are available,
-     * and each time a new consultant has been fully loaded (e.g. the consultant
-     * image since the rest of the data is pretty general).
-     */
-    void onInitialLoadProgress(int progressCount, int totalCount);
-
-    /**
-     * Indicates that a new consultant was found and fully loaded, either during initial load or
-     * during a refresh of the database.
-     */
-    void onConsultantAdded(ConsultantData consultant, Bitmap bitmap);
-
-    /**
      * Indicates that the list of filtered consultants have been updated, e.g. due to
      * loading or because of a new filter.
      */
-    void onConsultantsUpdated();
-
-    /**
-     *
-     * @param tag The module that the error occured in
-     * @param errorMessage The message for the error that occured.
-     */
-    void onError(String tag, String errorMessage);
+    void onFilteredConsultantsUpdated();
 }

@@ -10,16 +10,6 @@ import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
  */
 public class DefaultRefresherService implements RefresherService {
 
-    // Private variables
-
-    private KvadratDb _db;
-
-    // Constructor
-
-    public DefaultRefresherService(KvadratDb db) {
-        this._db = db;
-    }
-
     @Override
     public void ensureStarted() {
 

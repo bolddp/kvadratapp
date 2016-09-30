@@ -13,25 +13,18 @@ public class DefaultPrefsService implements PrefsService {
 
     // Private variables
 
-    private static final String PREF_LASTREFRESH_EPOCH = "pref_lastrefresh_epoch";
+    private static final String PREF_INITIAL_LOAD_PERFORMED = "pref_initial_load_performed";
 
     private SharedPreferences _prefs = PreferenceManager.getDefaultSharedPreferences(AppCtrl.getApplicationContext());
 
     // Public methods
 
     @Override
-    public int getHoursSinceLastRefresh() {
-        long lastRefreshEpoch = _prefs.getLong(PREF_LASTREFRESH_EPOCH, 0);
-        long currentTimeEpoch = System.currentTimeMillis()/1000;
-
-        long secondsSinceLastRefresh = (currentTimeEpoch - lastRefreshEpoch);
-
-        return (int) (secondsSinceLastRefresh / 3600);
+    public boolean getHasInitialLoadingBeenPerformed() {
+        return _prefs.getBoolean(PREF_INITIAL_LOAD_PERFORMED, false);
     }
 
-    @Override
-    public void setRefreshPerformed() {
-        long currentTimeEpoch = System.currentTimeMillis()/1000;
-        _prefs.edit().putLong(PREF_LASTREFRESH_EPOCH, currentTimeEpoch).commit();
+    public void setHasInitialLoadingBeenPerformed(boolean value){
+        _prefs.edit().putBoolean(PREF_INITIAL_LOAD_PERFORMED, value).commit();
     }
 }

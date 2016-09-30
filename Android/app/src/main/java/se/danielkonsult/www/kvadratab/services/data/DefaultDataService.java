@@ -48,7 +48,7 @@ public class DefaultDataService implements DataService {
         // Is the filter empty? Then copy all consultants and exit the function
         if (Utils.isStringNullOrEmpty(filter.getName().trim()) &&
                 filter.getOfficeIds().size() == 0) {
-            for (ConsultantData cd: _allConsultants)
+            for (ConsultantData cd: getAllConsultants())
                 result.add(cd);
             return result.toArray(new ConsultantData[result.size()]);
         }
@@ -158,21 +158,10 @@ public class DefaultDataService implements DataService {
 //    }
 
     @Override
-    public void setOffices(OfficeData[] offices) {
-        _offices = offices;
-    }
-
-    @Override
     public OfficeData[] getOffices() {
         if (_offices == null)
             _offices = AppCtrl.getDb().getAllOffices();
         return  _offices;
-    }
-
-    @Override
-    public void setAllConsultants(ConsultantData[] consultants) {
-        _allConsultants = consultants;
-        setFilteredConsultants(applyFilter(_filter));
     }
 
     @Override
@@ -184,6 +173,9 @@ public class DefaultDataService implements DataService {
 
     @Override
     public ConsultantData[] getFilteredConsultants() {
+        if (_filteredConsultants == null)
+            _filteredConsultants = applyFilter(_filter);
+
         return _filteredConsultants;
     }
 

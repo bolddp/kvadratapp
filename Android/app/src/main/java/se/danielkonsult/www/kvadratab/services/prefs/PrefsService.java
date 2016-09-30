@@ -5,14 +5,8 @@ package se.danielkonsult.www.kvadratab.services.prefs;
  */
 public interface PrefsService {
 
-    /**
-     * Returns how many hours it was since the last refresh of data
-     * was performed.
-     */
-    int getHoursSinceLastRefresh();
+    boolean getHasInitialLoadingBeenPerformed();
 
-    /**
-     * Indicates that a refresh of the app data was just performed.
-     */
-    void setRefreshPerformed();
+    void setHasInitialLoadingBeenPerformed(boolean value);
+
 }

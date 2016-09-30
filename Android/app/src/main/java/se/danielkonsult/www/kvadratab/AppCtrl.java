@@ -50,7 +50,7 @@ public class AppCtrl {
      */
     public static void dropDatabase() {
         getApplicationContext().deleteDatabase(KvadratDb.DATABASE_NAME);
-        _db = null;
+        _db = new KvadratDb();
     }
 
     public static DataService getDataService() {
@@ -75,14 +75,14 @@ public class AppCtrl {
 
     public static LoaderService getInitialLoader() {
         if (_initialLoader == null)
-            _initialLoader = new DefaultLoaderService(getDb());
+            _initialLoader = new DefaultLoaderService();
 
         return _initialLoader;
     }
 
     public static RefresherService getRefresher() {
         if (_refresherService == null)
-            _refresherService = new DefaultRefresherService(getDb());
+            _refresherService = new DefaultRefresherService();
 
         return _refresherService;
     }

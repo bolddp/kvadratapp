@@ -21,7 +21,6 @@ public class DefaultLoaderService implements LoaderService {
     // Private variables
 
     private final String TAG = "InitialLoader";
-    private KvadratDb _db;
 
     /**
      * Loads the summary data (offices and tags) and adds it to the database.
@@ -30,10 +29,10 @@ public class DefaultLoaderService implements LoaderService {
         SummaryData summaryData = WebPageScraper.scrapeSummaryData();
 
         for (OfficeData od : summaryData.OfficeDatas)
-            _db.insertOffice(od);
+            AppCtrl.getDb().insertOffice(od);
 
         for (TagData td : summaryData.TagDatas)
-            _db.insertTag(td);
+            AppCtrl.getDb().insertTag(td);
 
         return summaryData;
     }
@@ -46,15 +45,9 @@ public class DefaultLoaderService implements LoaderService {
         for (OfficeData od: offices){
             ConsultantData[] consultants = WebPageScraper.scrapeConsultants(od.Id, 0);
             for (ConsultantData cd : consultants){
-                _db.updateConsultantOffice(cd.Id, od.Id);
+                AppCtrl.getDb().updateConsultantOffice(cd.Id, od.Id);
             }
         }
-    }
-
-    // Constructor
-
-    public DefaultLoaderService(KvadratDb db) {
-        this._db = db;
     }
 
     // Public methods
@@ -65,10 +58,23 @@ public class DefaultLoaderService implements LoaderService {
      */
     @Override
     public boolean isInitialLoadNeeded() {
+        // Check the number of consultants
         KvadratDb db = AppCtrl.getDb();
         int consultantCount = db.getConsultantCount();
 
-        return consultantCount == 0;
+        // Then also check the preferences flag that signals that initial
+        // loading has been correctly performed
+        boolean hasInitialLoadingBeenPerformed = AppCtrl.getPrefsService().getHasInitialLoadingBeenPerformed();
+
+        // Is there a discrepancy? Then start over
+        if ((consultantCount > 0) && !hasInitialLoadingBeenPerformed){
+            AppCtrl.dropDatabase();
+            AppCtrl.getImageService().deleteAllConsultantImages();
+
+            return true;
+        }
+
+        return !hasInitialLoadingBeenPerformed;
     }
 
     /**
@@ -109,14 +115,8 @@ public class DefaultLoaderService implements LoaderService {
 
                     linkOfficesToConsultants(summaryData.OfficeDatas);
 
-                    AppCtrl.getDataService().setOffices(summaryData.OfficeDatas);
-
-                    // Make sure all consultants are available in the DataService
-                    consultants = AppCtrl.getDb().getAllConsultants(true);
-                    AppCtrl.getDataService().setAllConsultants(consultants);
-
-                    // Indicate that a complete refresh has been performed
-                    AppCtrl.getPrefsService().setRefreshPerformed();
+                    // Indicate that a complete initial load has been performed
+                    AppCtrl.getPrefsService().setHasInitialLoadingBeenPerformed(true);
 
                     // All done for now, notify
                     listener.onInitialLoadingCompleted();

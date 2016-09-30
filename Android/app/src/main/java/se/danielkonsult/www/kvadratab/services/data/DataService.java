@@ -11,26 +11,10 @@ public interface DataService {
     void setListener(DataServiceListener listener);
 
     /**
-     * Starts the data service, triggering it into starting to notify
-     * listeners of the current state of the database.
-     */
-    // void start();
-
-    /**
-     * Sets the offices that are cached by the data service.
-     */
-    void setOffices(OfficeData[] offices);
-
-    /**
      * Gets a list of all offices.
      * @return
      */
     OfficeData[] getOffices();
-
-    /**
-     * Sets the consultants that are cached by the data service.
-     */
-    void setAllConsultants(ConsultantData[] consultants);
 
     ConsultantData[] getAllConsultants();
 

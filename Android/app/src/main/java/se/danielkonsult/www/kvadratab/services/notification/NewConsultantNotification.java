@@ -11,15 +11,15 @@ public class NewConsultantNotification extends Notification {
     public NewConsultantNotification() {
     }
 
-    public NewConsultantNotification(int id, String name, String office) {
-        Id = id;
+    public NewConsultantNotification(int consultantId, String name, String office) {
+        ConsultantId = consultantId;
         Name = name;
         Office = office;
     }
 
     // Public fields
 
-    public int Id;
+    public int ConsultantId;
     public String Name;
     public String Office;
 }

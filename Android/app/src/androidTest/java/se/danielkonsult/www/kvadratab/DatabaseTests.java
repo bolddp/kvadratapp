@@ -13,6 +13,7 @@ import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.services.notification.NewConsultantNotification;
+import se.danielkonsult.www.kvadratab.services.notification.NewOfficeNotification;
 import se.danielkonsult.www.kvadratab.services.notification.Notification;
 
 /**
@@ -210,7 +211,7 @@ public class DatabaseTests {
     }
 
     @Test
-    public void shouldWriteAndReadNotifications(){
+    public void shouldWriteAndReadNotifications() throws InterruptedException {
         // Clean out the testdatabase
         Context ctx = InstrumentationRegistry.getTargetContext();
         ctx.deleteDatabase(KvadratTestDb.DATABASE_NAME);
@@ -221,23 +222,27 @@ public class DatabaseTests {
 
         Assert.assertEquals(0, notifications.length);
 
-        // Create a new notification
-        NewConsultantNotification nd = new NewConsultantNotification(6978, "Daniel Persson", "Jönköping");
+        // Create new notifications (with a delay to ensure different timestamps)
+        NewConsultantNotification ncn = new NewConsultantNotification(6978, "Daniel Persson", "Jönköping");
+        Thread.sleep(200);
+        NewOfficeNotification non = new NewOfficeNotification(90, "Vetlanda");
 
-        // Insert it
+        // Insert them
         db = new KvadratTestDb(ctx);
-        db.insertNotification(nd);
+        db.insertNotification(ncn);
+        db.insertNotification(non);
 
         // Read it back
         db = new KvadratTestDb(ctx);
         notifications = db.getAllNotifications();
-        Assert.assertEquals(1, notifications.length);
-        Assert.assertTrue(notifications[0] instanceof NewConsultantNotification);
+        Assert.assertEquals(2, notifications.length);
+        Assert.assertTrue(notifications[0] instanceof NewOfficeNotification);
+        Assert.assertTrue(notifications[1] instanceof NewConsultantNotification);
 
-        NewConsultantNotification existing = (NewConsultantNotification) notifications[0];
-        Assert.assertEquals(nd.Id, existing.Id);
-        Assert.assertEquals(nd.Timestamp, existing.Timestamp);
-        Assert.assertEquals(nd.Name, existing.Name);
-        Assert.assertEquals(nd.Office, existing.Office);
+        NewConsultantNotification existing = (NewConsultantNotification) notifications[1];
+        Assert.assertEquals(ncn.ConsultantId, existing.ConsultantId);
+        Assert.assertEquals(ncn.Timestamp, existing.Timestamp);
+        Assert.assertEquals(ncn.Name, existing.Name);
+        Assert.assertEquals(ncn.Office, existing.Office);
     }
 }

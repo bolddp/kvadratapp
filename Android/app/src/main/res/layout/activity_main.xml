@@ -32,7 +32,7 @@
                 style="@android:style/Widget.ProgressBar.Horizontal"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/imgConsultant"
+                android:layout_below="@+consultantId/imgConsultant"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:progressDrawable="@drawable/progress_bar"

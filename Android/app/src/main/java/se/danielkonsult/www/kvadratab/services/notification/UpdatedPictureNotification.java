@@ -5,7 +5,7 @@ package se.danielkonsult.www.kvadratab.services.notification;
  * picture has been updated.
  */
 public class UpdatedPictureNotification {
-    public int Id;
+    public int ConsultantId;
     public String Name;
     public String Office;
 }

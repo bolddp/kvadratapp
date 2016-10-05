@@ -72,7 +72,7 @@ public class DefaultNotificationRepository implements NotificationRepository {
 
         SQLiteDatabase db = _db.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DbSpec.NotificationEntry.COLUMN_NAME_ID, nd.Id);
+        // values.put(DbSpec.NotificationEntry.COLUMN_NAME_ID, nd.Id);
         values.put(DbSpec.NotificationEntry.COLUMN_NAME_TIMESTAMP, nd.Timestamp);
         values.put(DbSpec.NotificationEntry.COLUMN_NAME_TYPE, nd.Type);
         values.put(DbSpec.NotificationEntry.COLUMN_NAME_DATA, nd.Data);

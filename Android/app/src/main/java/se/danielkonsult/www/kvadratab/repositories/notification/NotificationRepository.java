@@ -12,5 +12,11 @@ public interface NotificationRepository {
      * Gets all or a specified maximum count of notification data entities from the database.
      * @param maxCount The maximum number of notifications to return. 0 = return all.
      */
-    NotificationData[] getNotifications(int maxCount);
+    Notification[] getNotifications(int maxCount);
+
+    /**
+     * Inserts a new notification in the database.
+     * @param notification
+     */
+    void insert(Notification notification);
 }

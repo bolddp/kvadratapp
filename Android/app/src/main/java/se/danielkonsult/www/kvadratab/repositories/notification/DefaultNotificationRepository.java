@@ -1,16 +1,18 @@
 package se.danielkonsult.www.kvadratab.repositories.notification;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.NotificationData;
+import se.danielkonsult.www.kvadratab.helpers.Utils;
 import se.danielkonsult.www.kvadratab.helpers.db.DbSpec;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.services.notification.Notification;
+import se.danielkonsult.www.kvadratab.services.notification.NotificationDataConverter;
 
 /**
  * Created by Daniel on 2016-10-05.
@@ -32,8 +34,6 @@ public class DefaultNotificationRepository implements NotificationRepository {
     // Private methods
 
     private NotificationData getFromCursor(Cursor c) {
-        String type = c.getString(c.getColumnIndex(DbSpec.NotificationEntry.COLUMN_NAME_TYPE));
-
         NotificationData notification = new NotificationData();
         notification.Id = c.getInt(c.getColumnIndex(DbSpec.NotificationEntry.COLUMN_NAME_ID));
         notification.Timestamp = c.getLong(c.getColumnIndex(DbSpec.NotificationEntry.COLUMN_NAME_TIMESTAMP));
@@ -50,15 +50,33 @@ public class DefaultNotificationRepository implements NotificationRepository {
     }
 
     @Override
-    public NotificationData[] getNotifications(int maxCount) {
-        List<NotificationData> result = new ArrayList<>();
+    public Notification[] getNotifications(int maxCount) {
 
+        // Read out the relevant NotificationData instances
+        List<Notification> result = new ArrayList<>();
         SQLiteDatabase db = _db.getReadableDatabase();
         Cursor c = db.query(DbSpec.NotificationEntry.TABLE_NAME, queryProjection, null, null, null, null, orderBy);
         while (c.moveToNext() && ((maxCount == 0) || (result.size() < maxCount))) {
-            result.add(getFromCursor(c));
+            NotificationData nd = getFromCursor(c);
+            Notification notification = NotificationDataConverter.toNotification(nd);
+
+            result.add(notification);
         }
 
-        return result.toArray(new NotificationData[result.size()]);
+        return result.toArray(new Notification[result.size()]);
+    }
+
+    @Override
+    public void insert(Notification notification) {
+        NotificationData nd = NotificationDataConverter.toNotificationData(notification);
+
+        SQLiteDatabase db = _db.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DbSpec.NotificationEntry.COLUMN_NAME_ID, nd.Id);
+        values.put(DbSpec.NotificationEntry.COLUMN_NAME_TIMESTAMP, nd.Timestamp);
+        values.put(DbSpec.NotificationEntry.COLUMN_NAME_TYPE, nd.Type);
+        values.put(DbSpec.NotificationEntry.COLUMN_NAME_DATA, nd.Data);
+
+        db.insertOrThrow(DbSpec.NotificationEntry.TABLE_NAME, null, values);
     }
 }

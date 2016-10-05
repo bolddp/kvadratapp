@@ -159,7 +159,11 @@ public class KvadratDb extends SQLiteOpenHelper {
         getConsultantDataRepository().updateOffice(consultantId, officeId);
     }
 
-    public NotificationData[] getAllNotifications() {
+    public Notification[] getAllNotifications() {
         return getNotificationRepository().getNotifications(0);
+    }
+
+    public void insertNotification(Notification notification) {
+        getNotificationRepository().insert(notification);
     }
 }

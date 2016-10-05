@@ -3,20 +3,16 @@ package se.danielkonsult.www.kvadratab;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
-import se.danielkonsult.www.kvadratab.entities.NotificationData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
+import se.danielkonsult.www.kvadratab.services.notification.NewConsultantNotification;
 import se.danielkonsult.www.kvadratab.services.notification.Notification;
 
 /**
@@ -221,10 +217,27 @@ public class DatabaseTests {
 
         // Make sure that there are no notifications
         KvadratDb db = new KvadratTestDb(ctx);
-        NotificationData[] notifications = db.getAllNotifications();
+        Notification[] notifications = db.getAllNotifications();
 
         Assert.assertEquals(0, notifications.length);
 
-        
+        // Create a new notification
+        NewConsultantNotification nd = new NewConsultantNotification(6978, "Daniel Persson", "Jönköping");
+
+        // Insert it
+        db = new KvadratTestDb(ctx);
+        db.insertNotification(nd);
+
+        // Read it back
+        db = new KvadratTestDb(ctx);
+        notifications = db.getAllNotifications();
+        Assert.assertEquals(1, notifications.length);
+        Assert.assertTrue(notifications[0] instanceof NewConsultantNotification);
+
+        NewConsultantNotification existing = (NewConsultantNotification) notifications[0];
+        Assert.assertEquals(nd.Id, existing.Id);
+        Assert.assertEquals(nd.Timestamp, existing.Timestamp);
+        Assert.assertEquals(nd.Name, existing.Name);
+        Assert.assertEquals(nd.Office, existing.Office);
     }
 }

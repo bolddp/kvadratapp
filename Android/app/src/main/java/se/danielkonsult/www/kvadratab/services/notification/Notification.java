@@ -8,10 +8,10 @@ public abstract class Notification {
     // Constructor
 
     public Notification() {
-        TimestampMillis = System.currentTimeMillis();
+        Timestamp = System.currentTimeMillis();
     }
 
     // Fields
 
-    public final long TimestampMillis;
+    public long Timestamp;
 }

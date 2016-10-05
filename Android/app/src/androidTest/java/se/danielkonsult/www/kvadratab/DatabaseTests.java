@@ -13,9 +13,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.NotificationData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
+import se.danielkonsult.www.kvadratab.services.notification.Notification;
 
 /**
  * Tests aimed at the KvadratDb class.
@@ -109,10 +111,8 @@ public class DatabaseTests {
         Context ctx = InstrumentationRegistry.getTargetContext();
         ctx.deleteDatabase(KvadratTestDb.DATABASE_NAME);
 
-        KvadratDb db = new KvadratTestDb(ctx);
-
         // Start by checking that there are no consultants
-        db = new KvadratTestDb(ctx);
+        KvadratDb db = new KvadratTestDb(ctx);
         int consultantCount = db.getConsultantCount();
         Assert.assertEquals(0, consultantCount);
 
@@ -211,5 +211,20 @@ public class DatabaseTests {
         db = new KvadratTestDb(ctx);
         consultantCount = db.getConsultantCount();
         Assert.assertEquals(3, consultantCount);
+    }
+
+    @Test
+    public void shouldWriteAndReadNotifications(){
+        // Clean out the testdatabase
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        ctx.deleteDatabase(KvadratTestDb.DATABASE_NAME);
+
+        // Make sure that there are no notifications
+        KvadratDb db = new KvadratTestDb(ctx);
+        NotificationData[] notifications = db.getAllNotifications();
+
+        Assert.assertEquals(0, notifications.length);
+
+        
     }
 }

@@ -85,4 +85,24 @@ public class DbSpec {
         public static final String SQL_DELETE =
                 "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
+
+    public static class NotificationEntry {
+        public static final String TABLE_NAME = "notification";
+        public static final String COLUMN_NAME_ID = "id";
+        public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
+        public static final String COLUMN_NAME_TYPE = "type";
+        public static final String COLUMN_NAME_DATA = "data";
+
+        public static final String SQL_CREATE =
+                "CREATE TABLE " + TABLE_NAME + " (" +
+                        COLUMN_NAME_ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP +
+                        COLUMN_NAME_TIMESTAMP + INTEGER_TYPE + COMMA_SEP +
+                        COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
+                        COLUMN_NAME_DATA + TEXT_TYPE + ")";
+
+        public static final String SQL_DELETE =
+                "DROP TABLE IF EXISTS " + TABLE_NAME;
+
+
+    }
 }

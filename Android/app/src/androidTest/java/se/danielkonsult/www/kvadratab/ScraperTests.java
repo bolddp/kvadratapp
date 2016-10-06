@@ -46,7 +46,7 @@ public class ScraperTests {
      * @throws Throwable
      */
     @Test
-    public void shouldScrapeAllConsultantsFromWebPage() throws Throwable {
+    public void shouldScrapeAllConsultantsFromWebPage() throws IOException {
 
         ConsultantData[] assertConsultantDatas = WebPageScraper.scrapeConsultants(0,0);
         Assert.assertNotNull(assertConsultantDatas);
@@ -64,6 +64,24 @@ public class ScraperTests {
                 foundConsultant = true;
         }
         Assert.assertTrue(foundConsultant);
+    }
+
+    /**
+     * Tests that the details of a consultant can be scraped from the web page.
+     */
+    @Test
+    public void shouldScrapeConsultantDetailsFromWeb() throws IOException {
+        ConsultantData consultant = WebPageScraper.scrapeConsultantDetails(5833);
+
+        // Assert the competences
+        Assert.assertEquals("Ledarskaps-/Kommunikationskonsult", consultant.CompetenceAreas[0]);
+        Assert.assertEquals("Föreläsare/inspiratör", consultant.CompetenceAreas[1]);
+        Assert.assertEquals("Utbildare/kursledare", consultant.CompetenceAreas[2]);
+        Assert.assertEquals("Workshopledare/Facilitator", consultant.CompetenceAreas[3]);
+
+        // Assert bits and pieces of Overview and Overview2
+        Assert.assertTrue(consultant.Overview.contains("Stellan har många bra referenser"));
+        Assert.assertTrue(consultant.Overview2.contains("Med sin humor, värme och medmänsklighet"));
     }
 
     @Test

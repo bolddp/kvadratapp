@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
@@ -21,6 +22,8 @@ public class WebPageScraper {
 
     private static final String SCRAPE_ALLCONSULTANTS_URL = "http://www.kvadrat.se/wp-content/themes/blocks/ext/consultdata_new.php";
     private static final String SCRAPE_SUMMARYDATA_URL = "http://www.kvadrat.se/konsulter/konsulter/";
+    private static final String SCRAPE_CONSULTANTDETAILS_URL = "http://www.kvadrat.se/profil/?id=%d";
+
     private static final int STD_TIMEOUT = 10000;
     private static final String USER_AGENT = "KvadratApp/1.0";
     private static final String ACCEPT = "text/html";
@@ -91,6 +94,37 @@ public class WebPageScraper {
                 return null;
 
             return SummaryDataParser.parse(urlContents);
+        }
+        finally {
+            try {
+                if (httpCon != null)
+                    httpCon.disconnect();
+                if (is != null)
+                    is.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static ConsultantData scrapeConsultantDetails(int consultantId) throws IOException {
+        HttpURLConnection httpCon = null;
+        InputStream is = null;
+        try {
+            URL url = new URL(String.format(SCRAPE_CONSULTANTDETAILS_URL, consultantId));
+            httpCon = (HttpURLConnection) url.openConnection();
+            httpCon.setConnectTimeout(STD_TIMEOUT);
+            httpCon.setRequestProperty("User-Agent", USER_AGENT);
+            httpCon.setRequestProperty("Accept", ACCEPT);
+
+            is = httpCon.getInputStream();
+
+            // Try to read the contents of the URL as a string
+            String urlContents = Utils.getStringFromStream(is);
+            if (urlContents == null)
+                return null;
+
+            return ConsultantDetailsParser.parse(urlContents);
         }
         finally {
             try {

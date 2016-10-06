@@ -86,6 +86,20 @@ public class DbSpec {
                 "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
+    public static class ConsultantCompetenceEntry {
+        public static final String TABLE_NAME = "consultant_competence";
+        public static final String COLUMN_NAME_CONSULTANT_ID = "consultant_id";
+        public static final String COLUMN_NAME_COMPETENCE = "competence";
+
+        public static final String SQL_CREATE =
+                "CREATE TABLE " + TABLE_NAME + " (" +
+                        COLUMN_NAME_CONSULTANT_ID + INTEGER_TYPE + COMMA_SEP +
+                        COLUMN_NAME_COMPETENCE + TEXT_TYPE + COMMA_SEP +
+                        "PRIMARY KEY(" + COLUMN_NAME_CONSULTANT_ID + ", " + COLUMN_NAME_COMPETENCE + "),"+
+                        "FOREIGN KEY(" + COLUMN_NAME_CONSULTANT_ID + ") REFERENCES " +
+                        ConsultantEntry.TABLE_NAME + "(" + ConsultantEntry.COLUMN_NAME_ID + "))";
+    }
+
     public static class NotificationEntry {
         public static final String TABLE_NAME = "notification";
         public static final String COLUMN_NAME_ID = "id";

@@ -36,36 +36,6 @@ public class KvadratDb extends SQLiteOpenHelper {
     private ConsultantDataRepository _consultantDataRepository;
     private NotificationRepository _notificationRepository;
 
-    // Protected methods
-
-    protected OfficeDataRepository getOfficeDataRepository() {
-        if (_officeDataRepository == null)
-            _officeDataRepository = new DefaultOfficeDataRepository(this);
-        return _officeDataRepository;
-    }
-
-    protected TagDataRepository getTagDataRepository(){
-        if (_tagDataRepository == null)
-            _tagDataRepository = new DefaultTagDataRepository(this);
-        return _tagDataRepository;
-    }
-
-
-    protected ConsultantDataRepository getConsultantDataRepository() {
-        if (_consultantDataRepository == null)
-            _consultantDataRepository = new DefaultConsultantDataRepository(this);
-
-        return _consultantDataRepository;
-    }
-
-    protected NotificationRepository getNotificationRepository(){
-        if (_notificationRepository == null)
-            _notificationRepository = new DefaultNotificationRepository(this);
-
-        return _notificationRepository;
-    }
-
-
     // Constructor
 
     public KvadratDb() {
@@ -83,6 +53,7 @@ public class KvadratDb extends SQLiteOpenHelper {
         db.execSQL(DbSpec.TagEntry.SQL_CREATE);
         db.execSQL(DbSpec.ConsultantEntry.SQL_CREATE);
         db.execSQL(DbSpec.ConsultantTagEntry.SQL_CREATE);
+        db.execSQL(DbSpec.ConsultantCompetenceEntry.SQL_CREATE);
         db.execSQL(DbSpec.NotificationEntry.SQL_CREATE);
     }
 
@@ -91,6 +62,7 @@ public class KvadratDb extends SQLiteOpenHelper {
         for (int version = oldVersion;version < newVersion-1;version++){
             if (version == 1){
                 db.execSQL(DbSpec.NotificationEntry.SQL_CREATE);
+                db.execSQL(DbSpec.ConsultantCompetenceEntry.SQL_CREATE);
             }
         }
     }
@@ -104,66 +76,32 @@ public class KvadratDb extends SQLiteOpenHelper {
         }
     }
 
-    // Database operation methods
+    // Protected methods
 
-    public OfficeData getOfficeById(int id){
-        return getOfficeDataRepository().getById(id);
+    public OfficeDataRepository getOfficeDataRepository() {
+        if (_officeDataRepository == null)
+            _officeDataRepository = new DefaultOfficeDataRepository(this);
+        return _officeDataRepository;
     }
 
-    public OfficeData[] getAllOffices() {
-        return getOfficeDataRepository().getAll();
+    public TagDataRepository getTagDataRepository(){
+        if (_tagDataRepository == null)
+            _tagDataRepository = new DefaultTagDataRepository(this);
+        return _tagDataRepository;
     }
 
-    public void insertOffice(final OfficeData office) {
-        getOfficeDataRepository().insert(office);
+
+    public ConsultantDataRepository getConsultantDataRepository() {
+        if (_consultantDataRepository == null)
+            _consultantDataRepository = new DefaultConsultantDataRepository(this);
+
+        return _consultantDataRepository;
     }
 
-    public TagData getTagById(int id){
-        return getTagDataRepository().getById(id);
-    }
+    public NotificationRepository getNotificationRepository(){
+        if (_notificationRepository == null)
+            _notificationRepository = new DefaultNotificationRepository(this);
 
-    public TagData[] getAllTags() {
-        return getTagDataRepository().getAll();
-    }
-
-    public void insertTag(TagData tag) {
-        getTagDataRepository().insert(tag);
-    }
-
-    public ConsultantData getConsultantById(int id, boolean joinOffice){
-        return getConsultantDataRepository().getById(id, joinOffice);
-    }
-
-    /**
-     * Returns all consultants in the database, with attached Office data.
-     */
-    public ConsultantData[] getAllConsultants(boolean joinOffices){
-        return getConsultantDataRepository().getAll(joinOffices);
-    }
-
-    /**
-     * Gets the total number of consultant records in the database.
-     */
-    public int getConsultantCount() {
-        return getConsultantDataRepository().getCount();
-    }
-
-    public void insertConsultant(ConsultantData consultant){
-        getConsultantDataRepository().insert(consultant);
-    }
-
-    /**
-     * Updates the office of a consultant with a specific id.
-     */
-    public void updateConsultantOffice(int consultantId, int officeId) {
-        getConsultantDataRepository().updateOffice(consultantId, officeId);
-    }
-
-    public Notification[] getAllNotifications() {
-        return getNotificationRepository().getNotifications(0);
-    }
-
-    public void insertNotification(Notification notification) {
-        getNotificationRepository().insert(notification);
+        return _notificationRepository;
     }
 }

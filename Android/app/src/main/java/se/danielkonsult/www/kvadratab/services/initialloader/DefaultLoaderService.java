@@ -29,10 +29,10 @@ public class DefaultLoaderService implements LoaderService {
         SummaryData summaryData = WebPageScraper.scrapeSummaryData();
 
         for (OfficeData od : summaryData.OfficeDatas)
-            AppCtrl.getDb().insertOffice(od);
+            AppCtrl.getDb().getOfficeDataRepository().insert(od);
 
         for (TagData td : summaryData.TagDatas)
-            AppCtrl.getDb().insertTag(td);
+            AppCtrl.getDb().getTagDataRepository().insert(td);
 
         return summaryData;
     }
@@ -45,7 +45,7 @@ public class DefaultLoaderService implements LoaderService {
         for (OfficeData od: offices){
             ConsultantData[] consultants = WebPageScraper.scrapeConsultants(od.Id, 0);
             for (ConsultantData cd : consultants){
-                AppCtrl.getDb().updateConsultantOffice(cd.Id, od.Id);
+                AppCtrl.getDb().getConsultantDataRepository().updateOffice(cd.Id, od.Id);
             }
         }
     }
@@ -60,7 +60,7 @@ public class DefaultLoaderService implements LoaderService {
     public boolean isInitialLoadNeeded() {
         // Check the number of consultants
         KvadratDb db = AppCtrl.getDb();
-        int consultantCount = db.getConsultantCount();
+        int consultantCount = db.getConsultantDataRepository().getCount();
 
         // Then also check the preferences flag that signals that initial
         // loading has been correctly performed
@@ -102,7 +102,7 @@ public class DefaultLoaderService implements LoaderService {
                     listener.onInitialLoadProgress(progress, consultants.length);
                     for (ConsultantData cd : consultants){
                         // Save the consultant to database
-                        db.insertConsultant(cd);
+                        db.getConsultantDataRepository().insert(cd);
                         // Load the consultant image and save it to disk
                         Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmapAndSaveToFile(cd.Id);
 

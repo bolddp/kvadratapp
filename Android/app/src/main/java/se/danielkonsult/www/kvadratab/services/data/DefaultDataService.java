@@ -160,14 +160,14 @@ public class DefaultDataService implements DataService {
     @Override
     public OfficeData[] getOffices() {
         if (_offices == null)
-            _offices = AppCtrl.getDb().getAllOffices();
+            _offices = AppCtrl.getDb().getOfficeDataRepository().getAll();
         return  _offices;
     }
 
     @Override
     public ConsultantData[] getAllConsultants() {
         if (_allConsultants == null)
-            _allConsultants = AppCtrl.getDb().getAllConsultants(true);
+            _allConsultants = AppCtrl.getDb().getConsultantDataRepository().getAll(true);
         return _allConsultants;
     }
 

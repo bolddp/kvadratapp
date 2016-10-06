@@ -1,5 +1,9 @@
 package se.danielkonsult.www.kvadratab.services.refresher;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 
 /**
@@ -10,8 +14,25 @@ import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
  */
 public class DefaultRefresherService implements RefresherService {
 
+    // Private variables
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+    private Runnable refreshRunnable = new Runnable() {
+        @Override
+        public void run() {
+            performRefresh();
+        }
+    };
+
+    // Private methods
+
+    private void performRefresh(){
+        // TBD
+    }
+
     @Override
     public void ensureStarted() {
-
+        // TBD
     }
 }

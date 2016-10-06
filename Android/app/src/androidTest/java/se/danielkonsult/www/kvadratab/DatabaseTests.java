@@ -42,11 +42,11 @@ public class DatabaseTests {
         ctx.deleteDatabase(KvadratTestDb.DATABASE_NAME);
 
         KvadratTestDb db = new KvadratTestDb(ctx);
-        db.insertOffice(oData);
+        db.getOfficeDataRepository().insert(oData);
 
         // Read it back all offices and make sure that the correct one is there
         db = new KvadratTestDb(ctx);
-        OfficeData[] assertOffices = db.getAllOffices();
+        OfficeData[] assertOffices = db.getOfficeDataRepository().getAll();
         Assert.assertNotNull(assertOffices);
 
         boolean foundOffice = false;
@@ -58,7 +58,7 @@ public class DatabaseTests {
 
         // Read it back by id
         db = new KvadratTestDb(ctx);
-        OfficeData assertOffice = db.getOfficeById(17);
+        OfficeData assertOffice = db.getOfficeDataRepository().getById(oData.Id);
         Assert.assertNotNull(assertOffice);
         Assert.assertTrue((assertOffice.Id == oData.Id) && assertOffice.Name.equals(oData.Name));
     }
@@ -77,11 +77,11 @@ public class DatabaseTests {
 
         // Insert the Tag
         KvadratTestDb db = new KvadratTestDb(ctx);
-        db.insertTag(tagData);
+        db.getTagDataRepository().insert(tagData);
 
         // Read it back all Tags and make sure that the correct one is there
         db = new KvadratTestDb(ctx);
-        TagData[] assertTags = db.getAllTags();
+        TagData[] assertTags = db.getTagDataRepository().getAll();
         Assert.assertNotNull(assertTags);
         boolean foundTag = false;
         for (TagData Tag : assertTags) {
@@ -92,7 +92,7 @@ public class DatabaseTests {
 
         // Read it back by id
         db = new KvadratTestDb(ctx);
-        TagData assertTag = db.getTagById(4);
+        TagData assertTag = db.getTagDataRepository().getById(tagData.Id);
         Assert.assertNotNull(assertTag);
         Assert.assertTrue((assertTag.Id == tagData.Id) && assertTag.Name.equals(tagData.Name));
     }
@@ -110,25 +110,25 @@ public class DatabaseTests {
 
         // Start by checking that there are no consultants
         KvadratDb db = new KvadratTestDb(ctx);
-        int consultantCount = db.getConsultantCount();
+        int consultantCount = db.getConsultantDataRepository().getCount();
         Assert.assertEquals(0, consultantCount);
 
         // Create and insert tag
         TagData tagData = new TagData();
         tagData.Id = 4;
         tagData.Name = "Systemutveckling";
-        db.insertTag(tagData);
+        db.getTagDataRepository().insert(tagData);
 
         // Create and insert 2 offices
         OfficeData officeData = new OfficeData();
         officeData.Id = 17;
         officeData.Name = "Jönköping";
-        db.insertOffice(officeData);
+        db.getOfficeDataRepository().insert(officeData);
 
         OfficeData officeData2 = new OfficeData();
         officeData2.Id = 6;
         officeData2.Name = "Linköping";
-        db.insertOffice(officeData2);
+        db.getOfficeDataRepository().insert(officeData2);
 
         ConsultantData consultantData = new ConsultantData();
         consultantData.Id = 6985;
@@ -140,7 +140,7 @@ public class DatabaseTests {
 
         db = new KvadratTestDb(ctx);
         try {
-            db.insertConsultant(consultantData);
+            db.getConsultantDataRepository().insert(consultantData);
             Assert.fail("Insert with invalid office id succeeded!");
         }
         catch (Throwable ex){
@@ -149,10 +149,10 @@ public class DatabaseTests {
 
         // Then change the office link and try again
         consultantData.OfficeId = officeData.Id;
-        db.insertConsultant(consultantData);
+        db.getConsultantDataRepository().insert(consultantData);
 
         db = new KvadratTestDb(ctx);
-        ConsultantData[] assertConsultants = db.getAllConsultants(true);
+        ConsultantData[] assertConsultants = db.getConsultantDataRepository().getAll(true);
         Assert.assertNotNull(assertConsultants);
 
         ConsultantData foundConsultant = null;
@@ -170,10 +170,10 @@ public class DatabaseTests {
 
         // Update the office id of the consultant
         db = new KvadratTestDb(ctx);
-        db.updateConsultantOffice(consultantData.Id, officeData2.Id);
+        db.getConsultantDataRepository().updateOffice(consultantData.Id, officeData2.Id);
         // Assert the new office
         db = new KvadratTestDb(ctx);
-        foundConsultant = db.getConsultantById(consultantData.Id, false);
+        foundConsultant = db.getConsultantDataRepository().getById(consultantData.Id, false);
         Assert.assertEquals(officeData2.Id, foundConsultant.OfficeId);
 
         // Add two more consultants to check that sorting works properly
@@ -194,19 +194,19 @@ public class DatabaseTests {
         consultantData3.OfficeId = officeData.Id; // Jönköping
 
         db = new KvadratTestDb(ctx);
-        db.insertConsultant(consultantData2);
-        db.insertConsultant(consultantData3);
+        db.getConsultantDataRepository().insert(consultantData2);
+        db.getConsultantDataRepository().insert(consultantData3);
 
         // Get the consultants back and make sure that they're sorted by last and then by first name
         db = new KvadratTestDb(ctx);
-        assertConsultants = db.getAllConsultants(false);
+        assertConsultants = db.getConsultantDataRepository().getAll(false);
         Assert.assertEquals("Zäta", assertConsultants[0].FirstName);
         Assert.assertEquals("Anna", assertConsultants[1].FirstName);
         Assert.assertEquals("Daniel", assertConsultants[2].FirstName);
 
         // End by counting the consultants to see that it works as well
         db = new KvadratTestDb(ctx);
-        consultantCount = db.getConsultantCount();
+        consultantCount = db.getConsultantDataRepository().getCount();
         Assert.assertEquals(3, consultantCount);
     }
 
@@ -218,7 +218,7 @@ public class DatabaseTests {
 
         // Make sure that there are no notifications
         KvadratDb db = new KvadratTestDb(ctx);
-        Notification[] notifications = db.getAllNotifications();
+        Notification[] notifications = db.getNotificationRepository().getNotifications(0);
 
         Assert.assertEquals(0, notifications.length);
 
@@ -229,12 +229,12 @@ public class DatabaseTests {
 
         // Insert them
         db = new KvadratTestDb(ctx);
-        db.insertNotification(ncn);
-        db.insertNotification(non);
+        db.getNotificationRepository().insert(ncn);
+        db.getNotificationRepository().insert(non);
 
         // Read it back
         db = new KvadratTestDb(ctx);
-        notifications = db.getAllNotifications();
+        notifications = db.getNotificationRepository().getNotifications(0);
         Assert.assertEquals(2, notifications.length);
         Assert.assertTrue(notifications[0] instanceof NewOfficeNotification);
         Assert.assertTrue(notifications[1] instanceof NewConsultantNotification);

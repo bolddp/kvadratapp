@@ -13,15 +13,17 @@ public class ConsultantData {
     public String LastName;
     public String JobRole;
     public String Description;
-
     public int OfficeId;
-    public OfficeData Office;
-
-    public TagData[] Tags;
 
     /**
-     * The image of the consultant, linked at runtime and
-     * not stored in the database but in separate file.
+     * The timestamp when the details of the consultant
+     * was last loaded. 0 = not previously loaded
      */
-    // public Bitmap Image;
+    public long DetailsTimstamp;
+
+    // Relation properties
+
+    public OfficeData Office;
+    public TagData[] Tags;
+    public String[] CompetenceAreas;
 }

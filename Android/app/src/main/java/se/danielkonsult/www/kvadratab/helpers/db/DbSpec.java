@@ -47,6 +47,8 @@ public class DbSpec {
         public static final String COLUMN_NAME_OFFICEID = "office_id";
         public static final String COLUMN_NAME_JOBROLE = "jobrole";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
+        public static final String COLUMN_NAME_OVERVIEW = "overview";
+        public static final String COLUMN_NAME_OVERVIEW2 = "overview2";
 
         public static final String SQL_CREATE =
                 "CREATE TABLE " + TABLE_NAME + " (" +
@@ -56,15 +58,24 @@ public class DbSpec {
                         COLUMN_NAME_JOBROLE + TEXT_TYPE + COMMA_SEP +
                         COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                         COLUMN_NAME_OFFICEID + INTEGER_TYPE + COMMA_SEP +
+                        COLUMN_NAME_OVERVIEW + TEXT_TYPE + COMMA_SEP +
+                        COLUMN_NAME_OVERVIEW2 + TEXT_TYPE + COMMA_SEP +
                         "FOREIGN KEY(" + COLUMN_NAME_OFFICEID + ") REFERENCES " +
                         OfficeEntry.TABLE_NAME + "(" + OfficeEntry.COLUMN_NAME_ID + "))";
+
+        public static final String SQL_ADD_COLUMN_OVERVIEW = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_OVERVIEW + TEXT_TYPE;
+        public static final String SQL_ADD_COLUMN_OVERVIEW2 = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_OVERVIEW2 + TEXT_TYPE;
 
         public static final String SQL_DELETE =
                 "DROP TABLE IF EXISTS " + TABLE_NAME;
 
         public static final String SQL_COUNT_ALL = "SELECT COUNT(*) FROM " + TABLE_NAME;
 
-        public static final String SQL_UPDATE_OFFICE_ID = "UPDATE "+ TABLE_NAME +" SET "+COLUMN_NAME_OFFICEID + "= %d WHERE id = %d";
+        public static final String SQL_UPDATE_OFFICE_ID = "UPDATE " + TABLE_NAME +
+                " SET " + COLUMN_NAME_OFFICEID + "= %d WHERE id = %d";
+        public static final String SQL_UPDATE_OVERVIEWS = "UPDATE " + TABLE_NAME +
+                " SET " + COLUMN_NAME_OVERVIEW + " = '%s'" + COMMA_SEP + COLUMN_NAME_OVERVIEW2 + " = '%s'" +
+                " WHERE " + COLUMN_NAME_ID + " = %d";
     }
 
     public static class ConsultantTagEntry{
@@ -89,15 +100,24 @@ public class DbSpec {
     public static class ConsultantCompetenceEntry {
         public static final String TABLE_NAME = "consultant_competence";
         public static final String COLUMN_NAME_CONSULTANT_ID = "consultant_id";
+        public static final String COLUMN_NAME_INDEX = "indx";
         public static final String COLUMN_NAME_COMPETENCE = "competence";
 
         public static final String SQL_CREATE =
                 "CREATE TABLE " + TABLE_NAME + " (" +
                         COLUMN_NAME_CONSULTANT_ID + INTEGER_TYPE + COMMA_SEP +
+                        COLUMN_NAME_INDEX + INTEGER_TYPE + COMMA_SEP +
                         COLUMN_NAME_COMPETENCE + TEXT_TYPE + COMMA_SEP +
                         "PRIMARY KEY(" + COLUMN_NAME_CONSULTANT_ID + ", " + COLUMN_NAME_COMPETENCE + "),"+
                         "FOREIGN KEY(" + COLUMN_NAME_CONSULTANT_ID + ") REFERENCES " +
                         ConsultantEntry.TABLE_NAME + "(" + ConsultantEntry.COLUMN_NAME_ID + "))";
+
+        public static final String SQL_CLEAR_BY_CONSULTANT_ID = "DELETE FROM " + TABLE_NAME +
+                " WHERE " + COLUMN_NAME_CONSULTANT_ID + " = %d" ;
+        public static final String SQL_INSERT = "INSERT INTO " + TABLE_NAME + " (" +
+                COLUMN_NAME_CONSULTANT_ID + COMMA_SEP +
+                COLUMN_NAME_INDEX + COMMA_SEP +
+                COLUMN_NAME_COMPETENCE + ") VALUES (%d, %d, '%s')";
     }
 
     public static class NotificationEntry {

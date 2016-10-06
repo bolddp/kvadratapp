@@ -6,6 +6,9 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
  * Created by Daniel on 2016-09-13.
  */
 public interface ConsultantDataRepository {
+
+    // Methods
+
     ConsultantData getById(int id, boolean joinOffice);
 
     ConsultantData[] getAll(boolean joinOffices);
@@ -15,10 +18,18 @@ public interface ConsultantDataRepository {
      */
     int getCount();
 
+    /**
+     * Inserts a new consultant.
+     */
     void insert(ConsultantData consultant);
 
     /**
      * Updates the office id of a specific consultant.
      */
     void updateOffice(int consultantId, int officeId);
+
+    /**
+     * Updated the details of the consultant.
+     */
+    void updateDetails(int consultantId, String[] competenceAreas, String overview, String properties);
 }

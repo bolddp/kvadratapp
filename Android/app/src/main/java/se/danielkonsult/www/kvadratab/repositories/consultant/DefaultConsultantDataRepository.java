@@ -30,7 +30,9 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
             DbSpec.ConsultantEntry.COLUMN_NAME_LASTNAME,
             DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE,
             DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION,
-            DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID
+            DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID,
+            DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW,
+            DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW2
     };
     private final String orderBy = DbSpec.ConsultantEntry.COLUMN_NAME_LASTNAME + "," + DbSpec.ConsultantEntry.COLUMN_NAME_FIRSTNAME;
 
@@ -49,6 +51,8 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
         consultantData.JobRole = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE));
         consultantData.Description = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION));
         consultantData.OfficeId = c.getInt(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID));
+        consultantData.Overview = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW));
+        consultantData.Overview2 = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW2));
 
         return consultantData;
     }
@@ -88,7 +92,9 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
         SQLiteDatabase db = _db.getReadableDatabase();
         Cursor c = db.query(DbSpec.ConsultantEntry.TABLE_NAME, queryProjection, selection, selectionArgs, null, null, null, null);
         if (c.moveToFirst()){
-            result.add(getFromCursor(c));
+            ConsultantData cd = getFromCursor(c);
+            cd.CompetenceAreas = _db.getConsultantCompetenceRepository().getById(cd.Id);
+            result.add(cd);
         }
 
         if (joinOffice){
@@ -154,6 +160,17 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
         SQLiteDatabase db = _db.getWritableDatabase();
 
         String sql = String.format(DbSpec.ConsultantEntry.SQL_UPDATE_OFFICE_ID, officeId, consultantId);
+        db.execSQL(sql);
+    }
+
+    @Override
+    public void updateDetails(int consultantId, String[] competenceAreas, String overview, String overview2) {
+        SQLiteDatabase db = _db.getWritableDatabase();
+
+        _db.getConsultantCompetenceRepository().update(consultantId, competenceAreas);
+
+        // Update overview values
+        String sql = String.format(DbSpec.ConsultantEntry.SQL_UPDATE_OVERVIEWS, overview, overview2, consultantId);
         db.execSQL(sql);
     }
 }

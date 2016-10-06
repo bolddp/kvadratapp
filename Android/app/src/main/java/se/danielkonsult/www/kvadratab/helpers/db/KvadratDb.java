@@ -9,7 +9,9 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.NotificationData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
+import se.danielkonsult.www.kvadratab.repositories.consultant.ConsultantCompetenceRepository;
 import se.danielkonsult.www.kvadratab.repositories.consultant.ConsultantDataRepository;
+import se.danielkonsult.www.kvadratab.repositories.consultant.DefaultConsultantCompetenceRepository;
 import se.danielkonsult.www.kvadratab.repositories.consultant.DefaultConsultantDataRepository;
 import se.danielkonsult.www.kvadratab.repositories.notification.DefaultNotificationRepository;
 import se.danielkonsult.www.kvadratab.repositories.notification.NotificationRepository;
@@ -27,14 +29,13 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "Kvadrat.db";
     // public static final int DATABASE_VERSION = 1;
-    // Table Notification added
     public static final int DATABASE_VERSION = 2;
-
 
     private OfficeDataRepository _officeDataRepository;
     private TagDataRepository _tagDataRepository;
     private ConsultantDataRepository _consultantDataRepository;
     private NotificationRepository _notificationRepository;
+    private ConsultantCompetenceRepository _consultantCompetenceRepository;
 
     // Constructor
 
@@ -61,7 +62,13 @@ public class KvadratDb extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         for (int version = oldVersion;version < newVersion-1;version++){
             if (version == 1){
+                // Update consultant table
+                db.execSQL(DbSpec.ConsultantEntry.SQL_ADD_COLUMN_OVERVIEW);
+                db.execSQL(DbSpec.ConsultantEntry.SQL_ADD_COLUMN_OVERVIEW2);
+
+                // Create notification table
                 db.execSQL(DbSpec.NotificationEntry.SQL_CREATE);
+
                 db.execSQL(DbSpec.ConsultantCompetenceEntry.SQL_CREATE);
             }
         }
@@ -103,5 +110,12 @@ public class KvadratDb extends SQLiteOpenHelper {
             _notificationRepository = new DefaultNotificationRepository(this);
 
         return _notificationRepository;
+    }
+
+    public ConsultantCompetenceRepository getConsultantCompetenceRepository() {
+        if (_consultantCompetenceRepository == null)
+            _consultantCompetenceRepository = new DefaultConsultantCompetenceRepository(this);
+
+        return _consultantCompetenceRepository;
     }
 }

@@ -37,14 +37,16 @@ public class ConsultantDetailsParser {
         final Pattern overviewPattern = Pattern.compile("<h2 class='small-heading'>Översikt</h2><p class='small-text'>(.*?)</p>");
         Matcher overviewMatcher = overviewPattern.matcher(urlContents);
         if (overviewMatcher.find()){
-            result.Overview = overviewMatcher.group(1);
+            String overview = overviewMatcher.group(1);
+            result.Overview = overview.replace("<br>", "\n");
         }
 
         // Overview2 pattern
         final Pattern overview2Pattern = Pattern.compile("<h2 class='small-heading'>Egenskaper</h2><p class='small-text'>(.*?)</p>");
         Matcher overview2Matcher = overview2Pattern.matcher(urlContents);
         if (overview2Matcher.find()){
-            result.Overview2 = overview2Matcher.group(1);
+            String overview2 = overview2Matcher.group(1);
+            result.Overview2 = overview2.replace("<br>", "\n");
         }
 
         return result;

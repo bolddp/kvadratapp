@@ -18,7 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ConsultantListActivity"></activity>
+        <activity android:name=".activities.ConsultantListActivity" />
+        <activity android:name=".activities.ConsultantDetailsActivity"></activity>
     </application>
 
 </manifest>

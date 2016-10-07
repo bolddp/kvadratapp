@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="se.danielkonsult.www.kvadratab.activities.ConsultantDetailsActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgConsultant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"/>
+
+            <ListView
+                android:id="@+id/lvCompetences"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </ListView>
+            <!-- Description -->
+            <TextView
+                style="@style/Text02"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Översikt">
+            </TextView>
+            <View android:layout_height="2dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin_xsml"
+                android:layout_width="match_parent"
+                android:background="@color/colorPrimary">
+            </View>
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <!-- Overview -->
+            <TextView
+                style="@style/Text02"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Egenskaper">
+            </TextView>
+            <View android:layout_height="2dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin_xsml"
+                android:layout_width="match_parent"
+                android:background="@color/colorPrimary">
+            </View>
+            <TextView
+                android:id="@+id/tvOverview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

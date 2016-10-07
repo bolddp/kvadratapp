@@ -211,17 +211,17 @@ public class DatabaseTests {
 
         // Update the details
         String[] competences = new String[] { ".NET-utvecklare", "Android-utvecklareåäö" };
-        String overview = "Det här är overview 1";
-        String overview2 = "Det här är overview 2!";
+        String description = "Det här är description!";
+        String overview = "Det här är overview";
         db = new KvadratTestDb(ctx);
         db.getConsultantDataRepository().updateDetails(consultantData3.Id,
-                competences, overview, overview2);
+                competences, description, overview);
 
         // Read it back
         db = new KvadratTestDb(ctx);
         foundConsultant = db.getConsultantDataRepository().getById(consultantData3.Id, true);
+        Assert.assertEquals(foundConsultant.Description, description);
         Assert.assertEquals(foundConsultant.Overview, overview);
-        Assert.assertEquals(foundConsultant.Overview2, overview2);
         Assert.assertEquals(competences.length, foundConsultant.CompetenceAreas.length);
 
         for (int a = 0;a < competences.length;a++){

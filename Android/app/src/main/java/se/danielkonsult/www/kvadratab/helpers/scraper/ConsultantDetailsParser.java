@@ -7,13 +7,13 @@ import java.util.regex.Pattern;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 
-/**
- * Created by Daniel on 2016-10-06.
- */
 public class ConsultantDetailsParser {
 
     // Methods
 
+    /**
+     * Parses the contents of a consultant details web page.
+     */
     public static ConsultantData parse(String urlContents) {
         ConsultantData result = new ConsultantData();
 
@@ -33,20 +33,20 @@ public class ConsultantDetailsParser {
         }
         result.CompetenceAreas = competences.toArray(new String[competences.size()]);
 
+        // Description pattern
+        final Pattern descriptionPattern = Pattern.compile("<h2 class='small-heading'>Översikt</h2><p class='small-text'>(.*?)</p>");
+        Matcher descriptionMatcher = descriptionPattern.matcher(urlContents);
+        if (descriptionMatcher.find()){
+            String description = descriptionMatcher.group(1);
+            result.Description = description.replace("<br>", "\n");
+        }
+
         // Overview pattern
-        final Pattern overviewPattern = Pattern.compile("<h2 class='small-heading'>Översikt</h2><p class='small-text'>(.*?)</p>");
+        final Pattern overviewPattern = Pattern.compile("<h2 class='small-heading'>Egenskaper</h2><p class='small-text'>(.*?)</p>");
         Matcher overviewMatcher = overviewPattern.matcher(urlContents);
         if (overviewMatcher.find()){
             String overview = overviewMatcher.group(1);
             result.Overview = overview.replace("<br>", "\n");
-        }
-
-        // Overview2 pattern
-        final Pattern overview2Pattern = Pattern.compile("<h2 class='small-heading'>Egenskaper</h2><p class='small-text'>(.*?)</p>");
-        Matcher overview2Matcher = overview2Pattern.matcher(urlContents);
-        if (overview2Matcher.find()){
-            String overview2 = overview2Matcher.group(1);
-            result.Overview2 = overview2.replace("<br>", "\n");
         }
 
         return result;

@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
@@ -32,7 +31,6 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
             DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION,
             DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID,
             DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW,
-            DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW2
     };
     private final String orderBy = DbSpec.ConsultantEntry.COLUMN_NAME_LASTNAME + "," + DbSpec.ConsultantEntry.COLUMN_NAME_FIRSTNAME;
 
@@ -52,7 +50,6 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
         consultantData.Description = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION));
         consultantData.OfficeId = c.getInt(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID));
         consultantData.Overview = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW));
-        consultantData.Overview2 = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW2));
 
         return consultantData;
     }
@@ -164,13 +161,13 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
     }
 
     @Override
-    public void updateDetails(int consultantId, String[] competenceAreas, String overview, String overview2) {
+    public void updateDetails(int consultantId, String[] competenceAreas, String description, String overview) {
         SQLiteDatabase db = _db.getWritableDatabase();
 
         _db.getConsultantCompetenceRepository().update(consultantId, competenceAreas);
 
         // Update overview values
-        String sql = String.format(DbSpec.ConsultantEntry.SQL_UPDATE_OVERVIEWS, overview, overview2, consultantId);
+        String sql = String.format(DbSpec.ConsultantEntry.SQL_UPDATE_DETAILS, description, overview, consultantId);
         db.execSQL(sql);
     }
 }

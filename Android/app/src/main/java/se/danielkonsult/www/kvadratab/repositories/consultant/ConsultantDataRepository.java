@@ -31,5 +31,5 @@ public interface ConsultantDataRepository {
     /**
      * Updated the details of the consultant.
      */
-    void updateDetails(int consultantId, String[] competenceAreas, String overview, String properties);
+    void updateDetails(int consultantId, String[] competenceAreas, String description, String overview);
 }

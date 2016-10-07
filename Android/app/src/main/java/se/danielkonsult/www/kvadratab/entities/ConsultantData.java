@@ -15,7 +15,6 @@ public class ConsultantData {
     public String Description;
     public int OfficeId;
     public String Overview;
-    public String Overview2;
 
     /**
      * The timestamp when the details of the consultant

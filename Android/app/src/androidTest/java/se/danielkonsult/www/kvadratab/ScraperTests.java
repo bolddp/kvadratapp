@@ -79,9 +79,9 @@ public class ScraperTests {
         Assert.assertEquals("Utbildare/kursledare", consultant.CompetenceAreas[2]);
         Assert.assertEquals("Workshopledare/Facilitator", consultant.CompetenceAreas[3]);
 
-        // Assert bits and pieces of Overview and Overview2
-        Assert.assertTrue(consultant.Overview.contains("Stellan har många bra referenser"));
-        Assert.assertTrue(consultant.Overview2.contains("Med sin humor, värme och medmänsklighet"));
+        // Assert bits and pieces of Description and Overview
+        Assert.assertTrue(consultant.Description.contains("Stellan har många bra referenser"));
+        Assert.assertTrue(consultant.Overview.contains("Med sin humor, värme och medmänsklighet"));
     }
 
     @Test

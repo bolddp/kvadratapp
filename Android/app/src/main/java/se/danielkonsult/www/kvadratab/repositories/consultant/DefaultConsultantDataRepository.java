@@ -32,6 +32,7 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
             DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION,
             DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID,
             DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW,
+            DbSpec.ConsultantEntry.COLUMN_NAME_DETAILSTIMESTAMP
     };
     private final String orderBy = DbSpec.ConsultantEntry.COLUMN_NAME_LASTNAME + "," + DbSpec.ConsultantEntry.COLUMN_NAME_FIRSTNAME;
 
@@ -51,6 +52,7 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
         consultantData.Description = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION));
         consultantData.OfficeId = c.getInt(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID));
         consultantData.Overview = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW));
+        consultantData.DetailsTimstamp = c.getLong(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_DETAILSTIMESTAMP));
 
         return consultantData;
     }

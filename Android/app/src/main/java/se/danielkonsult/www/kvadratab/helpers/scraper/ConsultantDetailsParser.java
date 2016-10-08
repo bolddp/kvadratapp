@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
+import se.danielkonsult.www.kvadratab.helpers.Utils;
 
 public class ConsultantDetailsParser {
 
@@ -29,7 +30,10 @@ public class ConsultantDetailsParser {
             Matcher itemMatcher = itemPattern.matcher(competenceData);
 
             while (itemMatcher.find()){
-                competences.add(itemMatcher.group(1));
+                String competence = itemMatcher.group(1);
+                if (!Utils.isStringNullOrEmpty(competence)) {
+                    competences.add(competence);
+                }
             }
         }
         result.CompetenceAreas = competences.toArray(new String[competences.size()]);

@@ -110,7 +110,7 @@ public class DbSpec {
                         COLUMN_NAME_CONSULTANT_ID + INTEGER_TYPE + COMMA_SEP +
                         COLUMN_NAME_INDEX + INTEGER_TYPE + COMMA_SEP +
                         COLUMN_NAME_COMPETENCE + TEXT_TYPE + COMMA_SEP +
-                        "PRIMARY KEY(" + COLUMN_NAME_CONSULTANT_ID + ", " + COLUMN_NAME_COMPETENCE + "),"+
+                        "PRIMARY KEY(" + COLUMN_NAME_CONSULTANT_ID + ", " + COLUMN_NAME_INDEX + "),"+
                         "FOREIGN KEY(" + COLUMN_NAME_CONSULTANT_ID + ") REFERENCES " +
                         ConsultantEntry.TABLE_NAME + "(" + ConsultantEntry.COLUMN_NAME_ID + "))";
 

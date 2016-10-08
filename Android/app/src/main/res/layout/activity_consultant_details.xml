@@ -6,19 +6,29 @@
     tools:context="se.danielkonsult.www.kvadratab.activities.ConsultantDetailsActivity">
 
     <ScrollView
+        android:id="@+id/layoutMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="@dimen/activity_horizontal_margin"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/imgConsultant"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="280dp"
                 android:scaleType="fitCenter"/>
+            <TextView
+                style="@style/Text02"
+                android:id="@+id/tvNameAndOffice"
+                android:layout_marginTop="@dimen/activity_vertical_margin_xsml"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <ListView
                 android:id="@+id/lvCompetences"
@@ -30,6 +40,7 @@
                 style="@style/Text02"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="@dimen/activity_vertical_margin_dbl"
                 android:text="Översikt">
             </TextView>
             <View android:layout_height="2dp"
@@ -38,7 +49,10 @@
                 android:background="@color/colorPrimary">
             </View>
             <TextView
+                style="@style/Text03"
                 android:id="@+id/tvDescription"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <!-- Overview -->
@@ -46,6 +60,7 @@
                 style="@style/Text02"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="@dimen/activity_vertical_margin_dbl"
                 android:text="Egenskaper">
             </TextView>
             <View android:layout_height="2dp"
@@ -54,9 +69,12 @@
                 android:background="@color/colorPrimary">
             </View>
             <TextView
+                style="@style/Text03"
                 android:id="@+id/tvOverview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin" />
         </LinearLayout>
     </ScrollView>
 

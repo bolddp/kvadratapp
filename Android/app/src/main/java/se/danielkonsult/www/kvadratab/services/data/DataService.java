@@ -24,6 +24,12 @@ public interface DataService {
     ConsultantData[] getFilteredConsultants();
 
     /**
+     * Gets the data for a consultant, making sure that the details are included
+     * and have been refreshed if they were loaded previously.
+     */
+    void getConsultantDetails(int consultantId, ConsultantDataListener listener);
+
+    /**
      * Tries a filter without applying it and returns the number of hits
      * it would produce.
      */

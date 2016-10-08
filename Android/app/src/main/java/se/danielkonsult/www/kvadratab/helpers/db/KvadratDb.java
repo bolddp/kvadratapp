@@ -64,6 +64,7 @@ public class KvadratDb extends SQLiteOpenHelper {
             if (version == 1){
                 // Update consultant table
                 db.execSQL(DbSpec.ConsultantEntry.SQL_ADD_COLUMN_OVERVIEW);
+                db.execSQL(DbSpec.ConsultantEntry.SQL_ADD_COLUMN_DETAILSTIMESTAMP);
 
                 // Create notification table
                 db.execSQL(DbSpec.NotificationEntry.SQL_CREATE);

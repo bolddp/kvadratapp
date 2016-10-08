@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
+import se.danielkonsult.www.kvadratab.entities.SummaryData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 
 /**

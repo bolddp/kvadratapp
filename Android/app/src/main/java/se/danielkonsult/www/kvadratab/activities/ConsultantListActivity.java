@@ -1,11 +1,13 @@
 package se.danielkonsult.www.kvadratab.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -14,6 +16,7 @@ import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.adapters.ConsultantListAdapter;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.fragments.ConsultantFilterFragment;
+import se.danielkonsult.www.kvadratab.helpers.Constants;
 import se.danielkonsult.www.kvadratab.services.data.ConsultantFilter;
 import se.danielkonsult.www.kvadratab.services.data.DataServiceListener;
 
@@ -66,6 +69,16 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
         _fabFilter.setVisibility(currentVisibility);
     }
 
+    /**
+     * Opens the consultant details activity.
+     */
+    private void gotoConsultantDetails(int consultantId) {
+        Intent intent = new Intent(this, ConsultantDetailsActivity.class);
+        intent.putExtra(Constants.EXTRA_CONSULTANT_ID, consultantId);
+
+        startActivity(intent);
+    }
+
     // Public methods
 
     @Override
@@ -74,6 +87,14 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
         setContentView(R.layout.activity_consultant_list);
 
         _lvMain = (ListView) findViewById(R.id.lvMain);
+        _lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ConsultantData consultant = (ConsultantData) parent.getItemAtPosition(position);
+                gotoConsultantDetails(consultant.Id);
+            }
+        });
+
         _fabFilter = (FloatingActionButton) findViewById(R.id.fabFilter);
         _fabFilter.setOnClickListener(new View.OnClickListener() {
             @Override

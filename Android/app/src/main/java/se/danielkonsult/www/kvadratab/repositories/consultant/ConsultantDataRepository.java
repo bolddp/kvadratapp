@@ -1,6 +1,7 @@
 package se.danielkonsult.www.kvadratab.repositories.consultant;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
 
 /**
  * Created by Daniel on 2016-09-13.
@@ -31,5 +32,5 @@ public interface ConsultantDataRepository {
     /**
      * Updated the details of the consultant.
      */
-    void updateDetails(int consultantId, String[] competenceAreas, String description, String overview);
+    void updateDetails(int consultantId, ConsultantDetails details);
 }

@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
 
 public class ConsultantDetailsParser {
 
@@ -14,8 +15,8 @@ public class ConsultantDetailsParser {
     /**
      * Parses the contents of a consultant details web page.
      */
-    public static ConsultantData parse(String urlContents) {
-        ConsultantData result = new ConsultantData();
+    public static ConsultantDetails parse(String urlContents) {
+        ConsultantDetails result = new ConsultantDetails();
 
         // Locate the competence areas
         List<String> competences = new ArrayList<>();

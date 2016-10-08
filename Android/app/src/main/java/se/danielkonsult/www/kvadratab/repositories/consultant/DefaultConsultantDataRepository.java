@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.helpers.Utils;
 import se.danielkonsult.www.kvadratab.helpers.db.DbSpec;
@@ -161,13 +162,16 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
     }
 
     @Override
-    public void updateDetails(int consultantId, String[] competenceAreas, String description, String overview) {
+    public void updateDetails(int consultantId, ConsultantDetails details) {
         SQLiteDatabase db = _db.getWritableDatabase();
 
-        _db.getConsultantCompetenceRepository().update(consultantId, competenceAreas);
+        _db.getConsultantCompetenceRepository().update(consultantId, details.CompetenceAreas);
+
+        long currentTimestamp = System.currentTimeMillis();
 
         // Update overview values
-        String sql = String.format(DbSpec.ConsultantEntry.SQL_UPDATE_DETAILS, description, overview, consultantId);
+        String sql = String.format(DbSpec.ConsultantEntry.SQL_UPDATE_DETAILS, details.Description,
+                details.Overview, currentTimestamp, consultantId);
         db.execSQL(sql);
     }
 }

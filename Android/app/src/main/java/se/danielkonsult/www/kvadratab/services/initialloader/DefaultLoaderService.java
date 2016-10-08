@@ -9,7 +9,7 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
-import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryData;
+import se.danielkonsult.www.kvadratab.entities.SummaryData;
 import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
 
 /**

@@ -4,14 +4,12 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
 import se.danielkonsult.www.kvadratab.helpers.Utils;
-import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataParser;
-import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryData;
-import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryDataParser;
+import se.danielkonsult.www.kvadratab.entities.SummaryData;
 
 /**
  * Performs scraping operations of the Kvadrat AB web page.
@@ -107,7 +105,7 @@ public class WebPageScraper {
         }
     }
 
-    public static ConsultantData scrapeConsultantDetails(int consultantId) throws IOException {
+    public static ConsultantDetails scrapeConsultantDetails(int consultantId) throws IOException {
         HttpURLConnection httpCon = null;
         InputStream is = null;
         try {

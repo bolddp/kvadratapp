@@ -1,15 +1,16 @@
 package se.danielkonsult.www.kvadratab.services.data;
 
-import android.os.AsyncTask;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
+import se.danielkonsult.www.kvadratab.helpers.Constants;
+import se.danielkonsult.www.kvadratab.helpers.KvadratAppException;
 import se.danielkonsult.www.kvadratab.helpers.Utils;
-import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
+import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
 
 /**
  * Created by Daniel on 2016-09-14.
@@ -177,6 +178,34 @@ public class DefaultDataService implements DataService {
             _filteredConsultants = applyFilter(_filter);
 
         return _filteredConsultants;
+    }
+
+    @Override
+    public void getConsultantDetails(int consultantId, ConsultantDataListener listener) {
+        // Get the consultant
+        try {
+            ConsultantData consultant = AppCtrl.getDb().getConsultantDataRepository().getById(consultantId, true);
+            if (consultant == null)
+                throw new KvadratAppException(String.format("Kunde inte hitta konsult med id %d", consultantId));
+
+            // Are the details missing or are they too old?
+            long detailsAgeHours = (System.currentTimeMillis() - consultant.DetailsTimstamp) / (1000 * 3600);
+            if (detailsAgeHours > Constants.CONSULTANT_DETAILS_EXPIRY_HOURS) {
+                // Time to reload the details
+                ConsultantDetails details = WebPageScraper.scrapeConsultantDetails(consultantId);
+                AppCtrl.getDb().getConsultantDataRepository().updateDetails(consultantId, details);
+
+                // Transfer the data to the consultant
+                consultant.CompetenceAreas = details.CompetenceAreas;
+                consultant.Description = details.Description;
+                consultant.Overview = details.Overview;
+            }
+
+            listener.onResult(consultant);
+        } catch (Exception e) {
+            e.printStackTrace();
+            listener.onError(e.getMessage());
+        }
     }
 
     @Override

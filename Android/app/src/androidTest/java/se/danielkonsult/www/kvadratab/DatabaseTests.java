@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
@@ -210,22 +211,22 @@ public class DatabaseTests {
         Assert.assertEquals(3, consultantCount);
 
         // Update the details
-        String[] competences = new String[] { ".NET-utvecklare", "Android-utvecklareåäö" };
-        String description = "Det här är description!";
-        String overview = "Det här är overview";
+        ConsultantDetails details = new ConsultantDetails();
+        details.CompetenceAreas = new String[] { ".NET-utvecklare", "Android-utvecklareåäö" };
+        details.Description = "Det här är description!";
+        details.Overview = "Det här är overview";
         db = new KvadratTestDb(ctx);
-        db.getConsultantDataRepository().updateDetails(consultantData3.Id,
-                competences, description, overview);
+        db.getConsultantDataRepository().updateDetails(consultantData3.Id, details);
 
         // Read it back
         db = new KvadratTestDb(ctx);
         foundConsultant = db.getConsultantDataRepository().getById(consultantData3.Id, true);
-        Assert.assertEquals(foundConsultant.Description, description);
-        Assert.assertEquals(foundConsultant.Overview, overview);
-        Assert.assertEquals(competences.length, foundConsultant.CompetenceAreas.length);
+        Assert.assertEquals(foundConsultant.Description, details.Description);
+        Assert.assertEquals(foundConsultant.Overview, details.Overview);
+        Assert.assertEquals(details.CompetenceAreas.length, foundConsultant.CompetenceAreas.length);
 
-        for (int a = 0;a < competences.length;a++){
-            Assert.assertEquals(competences[a], foundConsultant.CompetenceAreas[a]);
+        for (int a = 0;a < details.CompetenceAreas.length;a++){
+            Assert.assertEquals(details.CompetenceAreas[a], foundConsultant.CompetenceAreas[a]);
         }
     }
 

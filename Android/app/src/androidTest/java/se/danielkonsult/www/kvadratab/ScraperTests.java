@@ -13,11 +13,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataParser;
-import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryData;
+import se.danielkonsult.www.kvadratab.entities.SummaryData;
 import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryDataParser;
 
 /**
@@ -71,17 +72,17 @@ public class ScraperTests {
      */
     @Test
     public void shouldScrapeConsultantDetailsFromWeb() throws IOException {
-        ConsultantData consultant = WebPageScraper.scrapeConsultantDetails(5833);
+        ConsultantDetails details = WebPageScraper.scrapeConsultantDetails(5833);
 
         // Assert the competences
-        Assert.assertEquals("Ledarskaps-/Kommunikationskonsult", consultant.CompetenceAreas[0]);
-        Assert.assertEquals("Föreläsare/inspiratör", consultant.CompetenceAreas[1]);
-        Assert.assertEquals("Utbildare/kursledare", consultant.CompetenceAreas[2]);
-        Assert.assertEquals("Workshopledare/Facilitator", consultant.CompetenceAreas[3]);
+        Assert.assertEquals("Ledarskaps-/Kommunikationskonsult", details.CompetenceAreas[0]);
+        Assert.assertEquals("Föreläsare/inspiratör", details.CompetenceAreas[1]);
+        Assert.assertEquals("Utbildare/kursledare", details.CompetenceAreas[2]);
+        Assert.assertEquals("Workshopledare/Facilitator", details.CompetenceAreas[3]);
 
         // Assert bits and pieces of Description and Overview
-        Assert.assertTrue(consultant.Description.contains("Stellan har många bra referenser"));
-        Assert.assertTrue(consultant.Overview.contains("Med sin humor, värme och medmänsklighet"));
+        Assert.assertTrue(details.Description.contains("Stellan har många bra referenser"));
+        Assert.assertTrue(details.Overview.contains("Med sin humor, värme och medmänsklighet"));
     }
 
     @Test

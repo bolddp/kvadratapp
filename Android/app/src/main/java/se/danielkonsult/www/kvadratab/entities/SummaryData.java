@@ -1,4 +1,4 @@
-package se.danielkonsult.www.kvadratab.helpers.scraper;
+package se.danielkonsult.www.kvadratab.entities;
 
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;

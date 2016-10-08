@@ -48,6 +48,7 @@ public class DbSpec {
         public static final String COLUMN_NAME_JOBROLE = "jobrole";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
         public static final String COLUMN_NAME_OVERVIEW = "overview";
+        public static final String COLUMN_NAME_DETAILSTIMESTAMP = "details_timestamp";
 
         public static final String SQL_CREATE =
                 "CREATE TABLE " + TABLE_NAME + " (" +
@@ -58,10 +59,12 @@ public class DbSpec {
                         COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                         COLUMN_NAME_OFFICEID + INTEGER_TYPE + COMMA_SEP +
                         COLUMN_NAME_OVERVIEW + TEXT_TYPE + COMMA_SEP +
+                        COLUMN_NAME_DETAILSTIMESTAMP + INTEGER_TYPE + COMMA_SEP +
                         "FOREIGN KEY(" + COLUMN_NAME_OFFICEID + ") REFERENCES " +
                         OfficeEntry.TABLE_NAME + "(" + OfficeEntry.COLUMN_NAME_ID + "))";
 
         public static final String SQL_ADD_COLUMN_OVERVIEW = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_OVERVIEW + TEXT_TYPE;
+        public static final String SQL_ADD_COLUMN_DETAILSTIMESTAMP = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_DETAILSTIMESTAMP + INTEGER_TYPE;
 
         public static final String SQL_DELETE =
                 "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -71,7 +74,9 @@ public class DbSpec {
         public static final String SQL_UPDATE_OFFICE_ID = "UPDATE " + TABLE_NAME +
                 " SET " + COLUMN_NAME_OFFICEID + "= %d WHERE id = %d";
         public static final String SQL_UPDATE_DETAILS = "UPDATE " + TABLE_NAME +
-                " SET " + COLUMN_NAME_DESCRIPTION + " = '%s'" + COMMA_SEP + COLUMN_NAME_OVERVIEW + " = '%s'" +
+                " SET " + COLUMN_NAME_DESCRIPTION + " = '%s'" + COMMA_SEP +
+                COLUMN_NAME_OVERVIEW + " = '%s'" + COMMA_SEP +
+                COLUMN_NAME_DETAILSTIMESTAMP + " = %d" +
                 " WHERE " + COLUMN_NAME_ID + " = %d";
     }
 

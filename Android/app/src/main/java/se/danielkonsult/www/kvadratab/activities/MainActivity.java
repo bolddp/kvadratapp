@@ -24,7 +24,7 @@ import se.danielkonsult.www.kvadratab.helpers.Dialogs;
 import se.danielkonsult.www.kvadratab.services.initialloader.LoaderService;
 import se.danielkonsult.www.kvadratab.services.initialloader.LoaderServiceListener;
 
-public class MainActivity extends AppCompatActivity implements LoaderServiceListener {
+public class MainActivity extends BaseActivity implements LoaderServiceListener {
 
     // Private variables
 
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements LoaderServiceList
 
                     String message = String.format(getString(R.string.msg_initialload_error_template), errorMessage);
 
-                    Dialogs.displayError(MainActivity.this, getString(R.string.error_header), message, getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
+                    displayError(message, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // Finish the activity

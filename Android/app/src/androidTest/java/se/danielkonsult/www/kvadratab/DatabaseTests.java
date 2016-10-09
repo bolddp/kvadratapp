@@ -14,7 +14,7 @@ import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.services.notification.NewConsultantNotification;
-import se.danielkonsult.www.kvadratab.services.notification.NewOfficeNotification;
+import se.danielkonsult.www.kvadratab.services.notification.OfficeNewNotification;
 import se.danielkonsult.www.kvadratab.services.notification.Notification;
 
 /**
@@ -245,7 +245,7 @@ public class DatabaseTests {
         // Create new notifications (with a delay to ensure different timestamps)
         NewConsultantNotification ncn = new NewConsultantNotification(6978, "Daniel Persson", "Jönköping");
         Thread.sleep(200);
-        NewOfficeNotification non = new NewOfficeNotification(90, "Vetlanda");
+        OfficeNewNotification non = new OfficeNewNotification(90, "Vetlanda");
 
         // Insert them
         db = new KvadratTestDb(ctx);
@@ -256,7 +256,7 @@ public class DatabaseTests {
         db = new KvadratTestDb(ctx);
         notifications = db.getNotificationRepository().getNotifications(0);
         Assert.assertEquals(2, notifications.length);
-        Assert.assertTrue(notifications[0] instanceof NewOfficeNotification);
+        Assert.assertTrue(notifications[0] instanceof OfficeNewNotification);
         Assert.assertTrue(notifications[1] instanceof NewConsultantNotification);
 
         NewConsultantNotification existing = (NewConsultantNotification) notifications[1];

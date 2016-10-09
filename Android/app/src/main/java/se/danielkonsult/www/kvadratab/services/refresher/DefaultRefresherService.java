@@ -7,11 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
+import se.danielkonsult.www.kvadratab.entities.OfficeData;
+import se.danielkonsult.www.kvadratab.entities.SummaryData;
 import se.danielkonsult.www.kvadratab.helpers.Constants;
+import se.danielkonsult.www.kvadratab.services.notification.Notification;
 
 /**
  * Responsible for refreshing the data in the database, by perform a new scraping
@@ -28,7 +33,21 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
     // Private methods
 
     private void performRefresh(){
-        Log.d(TAG, "Perform refresh");
+        try {
+            List<Notification> notifications = new ArrayList<>();
+
+            // Compare offices
+            SummaryData summaryData = AppCtrl.getWebPageScraper().scrapeSummaryData();
+            OfficeData[] existingOffices = AppCtrl.getDb().getOfficeDataRepository().getAll();
+            OfficeData[] scrapedOffices = summaryData.OfficeDatas;
+            notifications.addAll(OfficeComparer.getOfficeNotifications(existingOffices, scrapedOffices));
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

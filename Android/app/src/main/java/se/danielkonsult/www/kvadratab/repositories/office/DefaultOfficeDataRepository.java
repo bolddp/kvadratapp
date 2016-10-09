@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,5 +85,16 @@ public class DefaultOfficeDataRepository implements OfficeDataRepository {
         values.put(DbSpec.OfficeEntry.COLUMN_NAME_NAME, office.Name);
 
         db.insertOrThrow(DbSpec.OfficeEntry.TABLE_NAME, null, values);
+    }
+
+    @Override
+    public void update(int officeId, String name) {
+        SQLiteDatabase db = _db.getWritableDatabase();
+        ContentValues updatedValues = new ContentValues();
+        updatedValues.put(DbSpec.OfficeEntry.COLUMN_NAME_NAME, name);
+
+        String filter = String.format("%s = %d", DbSpec.OfficeEntry.COLUMN_NAME_ID, officeId);
+
+        db.update(DbSpec.OfficeEntry.TABLE_NAME, updatedValues, filter, null);
     }
 }

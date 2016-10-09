@@ -192,7 +192,7 @@ public class DefaultDataService implements DataService {
             long detailsAgeHours = (System.currentTimeMillis() - consultant.DetailsTimstamp) / (1000 * 3600);
             if (detailsAgeHours > Constants.CONSULTANT_DETAILS_EXPIRY_HOURS) {
                 // Time to reload the details
-                ConsultantDetails details = WebPageScraper.scrapeConsultantDetails(consultantId);
+                ConsultantDetails details = AppCtrl.getWebPageScraper().scrapeConsultantDetails(consultantId);
                 AppCtrl.getDb().getConsultantDataRepository().updateDetails(consultantId, details);
 
                 // Transfer the data to the consultant

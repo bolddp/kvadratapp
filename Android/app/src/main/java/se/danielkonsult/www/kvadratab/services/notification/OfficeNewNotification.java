@@ -1,16 +1,16 @@
 package se.danielkonsult.www.kvadratab.services.notification;
 
 /**
- * Created by Daniel on 2016-10-05.
+ * Notification for a new office.
  */
-public class NewOfficeNotification extends Notification {
+public class OfficeNewNotification extends Notification {
 
     // Constructors
 
-    public NewOfficeNotification() {
+    public OfficeNewNotification() {
     }
 
-    public NewOfficeNotification(int officeId, String name) {
+    public OfficeNewNotification(int officeId, String name) {
         OfficeId = officeId;
         Name = name;
     }

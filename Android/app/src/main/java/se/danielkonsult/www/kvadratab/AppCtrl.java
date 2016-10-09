@@ -3,6 +3,8 @@ package se.danielkonsult.www.kvadratab;
 import android.content.Context;
 
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
+import se.danielkonsult.www.kvadratab.helpers.scraper.DefaultWebPageScraper;
+import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
 import se.danielkonsult.www.kvadratab.services.data.DataService;
 import se.danielkonsult.www.kvadratab.services.data.DefaultDataService;
 import se.danielkonsult.www.kvadratab.services.initialloader.DefaultLoaderService;
@@ -27,6 +29,7 @@ public class AppCtrl {
     private static PrefsService _prefsService;
     private static ImageService _imageService;
     private static RefresherService _refresherService;
+    private static WebPageScraper _webPageScraper;
 
     /**
      * Returns the application context that has been set.
@@ -85,5 +88,12 @@ public class AppCtrl {
             _refresherService = new DefaultRefresherService();
 
         return _refresherService;
+    }
+
+    public static WebPageScraper getWebPageScraper() {
+        if (_webPageScraper == null)
+            _webPageScraper = new DefaultWebPageScraper();
+
+        return _webPageScraper;
     }
 }

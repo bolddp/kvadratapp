@@ -26,7 +26,7 @@ public class DefaultLoaderService implements LoaderService {
      * Loads the summary data (offices and tags) and adds it to the database.
      */
     private SummaryData loadSummaryData() throws IOException {
-        SummaryData summaryData = WebPageScraper.scrapeSummaryData();
+        SummaryData summaryData = AppCtrl.getWebPageScraper().scrapeSummaryData();
 
         for (OfficeData od : summaryData.OfficeDatas)
             AppCtrl.getDb().getOfficeDataRepository().insert(od);
@@ -43,7 +43,7 @@ public class DefaultLoaderService implements LoaderService {
      */
     private void linkOfficesToConsultants(OfficeData[] offices) throws IOException {
         for (OfficeData od: offices){
-            ConsultantData[] consultants = WebPageScraper.scrapeConsultants(od.Id, 0);
+            ConsultantData[] consultants = AppCtrl.getWebPageScraper().scrapeConsultants(od.Id, 0);
             for (ConsultantData cd : consultants){
                 AppCtrl.getDb().getConsultantDataRepository().updateOffice(cd.Id, od.Id);
             }
@@ -98,7 +98,7 @@ public class DefaultLoaderService implements LoaderService {
 
                     int progress = 0;
                     // Scrape the web page for all consultants and loop them
-                    ConsultantData[] consultants = WebPageScraper.scrapeConsultants(0,0);
+                    ConsultantData[] consultants = AppCtrl.getWebPageScraper().scrapeConsultants(0,0);
                     listener.onInitialLoadProgress(progress, consultants.length);
                     for (ConsultantData cd : consultants){
                         // Save the consultant to database

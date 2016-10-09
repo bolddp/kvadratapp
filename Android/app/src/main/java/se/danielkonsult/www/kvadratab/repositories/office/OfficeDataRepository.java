@@ -10,4 +10,11 @@ public interface OfficeDataRepository {
     OfficeData[] getAll();
 
     void insert(OfficeData officeData);
+
+    /**
+     * Updates the data of an office.
+     * @param officeId The if of the office that should be updated
+     * @param name The new name of the office
+     */
+    void update(int officeId, String name);
 }

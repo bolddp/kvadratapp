@@ -16,6 +16,7 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
+import se.danielkonsult.www.kvadratab.helpers.scraper.DefaultWebPageScraper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataParser;
 import se.danielkonsult.www.kvadratab.entities.SummaryData;
@@ -49,7 +50,7 @@ public class ScraperTests {
     @Test
     public void shouldScrapeAllConsultantsFromWebPage() throws IOException {
 
-        ConsultantData[] assertConsultantDatas = WebPageScraper.scrapeConsultants(0,0);
+        ConsultantData[] assertConsultantDatas = new DefaultWebPageScraper().scrapeConsultants(0,0);
         Assert.assertNotNull(assertConsultantDatas);
 
         boolean foundConsultant = false;
@@ -72,7 +73,7 @@ public class ScraperTests {
      */
     @Test
     public void shouldScrapeConsultantDetailsFromWeb() throws IOException {
-        ConsultantDetails details = WebPageScraper.scrapeConsultantDetails(5833);
+        ConsultantDetails details = new DefaultWebPageScraper().scrapeConsultantDetails(5833);
 
         // Assert the competences
         Assert.assertEquals("Ledarskaps-/Kommunikationskonsult", details.CompetenceAreas[0]);
@@ -135,7 +136,7 @@ public class ScraperTests {
     @Test
     public void shouldScrapeOfficeConsultantsFromWebPage() throws Throwable {
 
-        ConsultantData[] assertConsultantDatas = WebPageScraper.scrapeConsultants(17,0);
+        ConsultantData[] assertConsultantDatas = new DefaultWebPageScraper().scrapeConsultants(17,0);
         Assert.assertNotNull(assertConsultantDatas);
         // Don't assert an exact number since the web page contents most likely will change
         Assert.assertTrue(String.format("Length: %d", assertConsultantDatas.length), (assertConsultantDatas.length > 12) && (assertConsultantDatas.length < 50));
@@ -152,7 +153,7 @@ public class ScraperTests {
     @Test
     public void shouldScrapeSummaryDataFromWebPage() throws Throwable {
 
-        SummaryData assertSummaryPageData = WebPageScraper.scrapeSummaryData();
+        SummaryData assertSummaryPageData = new DefaultWebPageScraper().scrapeSummaryData();
         Assert.assertNotNull(assertSummaryPageData);
 
         // Don't assert an exact number since the web page contents most likely will change

@@ -38,6 +38,7 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
 
             // Compare offices
             notifications.addAll(OfficeComparer.compare());
+            notifications.addAll(ConsultantComparer.compare());
 
             // Send all notifications to the service
             for (Notification not : notifications)

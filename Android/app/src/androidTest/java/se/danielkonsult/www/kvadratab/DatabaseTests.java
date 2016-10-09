@@ -13,7 +13,7 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
-import se.danielkonsult.www.kvadratab.services.notification.NewConsultantNotification;
+import se.danielkonsult.www.kvadratab.services.notification.ConsultantInsertedNotification;
 import se.danielkonsult.www.kvadratab.services.notification.OfficeInsertedNotification;
 import se.danielkonsult.www.kvadratab.services.notification.Notification;
 
@@ -243,7 +243,7 @@ public class DatabaseTests {
         Assert.assertEquals(0, notifications.length);
 
         // Create new notifications (with a delay to ensure different timestamps)
-        NewConsultantNotification ncn = new NewConsultantNotification(6978, "Daniel Persson", "Jönköping");
+        ConsultantInsertedNotification ncn = new ConsultantInsertedNotification(6978, "Daniel Persson", "Jönköping");
         Thread.sleep(200);
         OfficeInsertedNotification non = new OfficeInsertedNotification(90, "Vetlanda");
 
@@ -257,12 +257,12 @@ public class DatabaseTests {
         notifications = db.getNotificationRepository().getNotifications(0);
         Assert.assertEquals(2, notifications.length);
         Assert.assertTrue(notifications[0] instanceof OfficeInsertedNotification);
-        Assert.assertTrue(notifications[1] instanceof NewConsultantNotification);
+        Assert.assertTrue(notifications[1] instanceof ConsultantInsertedNotification);
 
-        NewConsultantNotification existing = (NewConsultantNotification) notifications[1];
+        ConsultantInsertedNotification existing = (ConsultantInsertedNotification) notifications[1];
         Assert.assertEquals(ncn.ConsultantId, existing.ConsultantId);
         Assert.assertEquals(ncn.Timestamp, existing.Timestamp);
-        Assert.assertEquals(ncn.Name, existing.Name);
+        Assert.assertEquals(ncn.FirstName, existing.FirstName);
         Assert.assertEquals(ncn.Office, existing.Office);
     }
 }

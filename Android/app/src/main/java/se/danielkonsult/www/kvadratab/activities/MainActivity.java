@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
-import se.danielkonsult.www.kvadratab.helpers.Dialogs;
 import se.danielkonsult.www.kvadratab.services.initialloader.LoaderService;
 import se.danielkonsult.www.kvadratab.services.initialloader.LoaderServiceListener;
 
@@ -140,7 +138,7 @@ public class MainActivity extends BaseActivity implements LoaderServiceListener 
             @Override
             public void run() {
                 // Make sure the refresher background worker is running as well
-                AppCtrl.getRefresher().ensureStarted();
+                AppCtrl.getRefresherService().ensureStarted();
 
                 // Do we need to perform an initial load?
                 LoaderService loaderService = AppCtrl.getInitialLoader();

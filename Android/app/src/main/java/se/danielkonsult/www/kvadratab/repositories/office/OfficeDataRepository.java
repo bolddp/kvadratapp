@@ -17,4 +17,9 @@ public interface OfficeDataRepository {
      * @param name The new name of the office
      */
     void update(int officeId, String name);
+
+    /**
+     * Deletes an office by its id.
+     */
+    void delete(int officeId);
 }

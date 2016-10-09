@@ -5,10 +5,13 @@ import android.content.Context;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.helpers.scraper.DefaultWebPageScraper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
+import se.danielkonsult.www.kvadratab.repositories.notification.DefaultNotificationRepository;
 import se.danielkonsult.www.kvadratab.services.data.DataService;
 import se.danielkonsult.www.kvadratab.services.data.DefaultDataService;
 import se.danielkonsult.www.kvadratab.services.initialloader.DefaultLoaderService;
 import se.danielkonsult.www.kvadratab.services.initialloader.LoaderService;
+import se.danielkonsult.www.kvadratab.services.notification.DefaultNotificationService;
+import se.danielkonsult.www.kvadratab.services.notification.NotificationService;
 import se.danielkonsult.www.kvadratab.services.refresher.DefaultRefresherService;
 import se.danielkonsult.www.kvadratab.services.image.DefaultImageService;
 import se.danielkonsult.www.kvadratab.services.image.ImageService;
@@ -30,6 +33,7 @@ public class AppCtrl {
     private static ImageService _imageService;
     private static RefresherService _refresherService;
     private static WebPageScraper _webPageScraper;
+    private static NotificationService _notificationService;
 
     /**
      * Returns the application context that has been set.
@@ -83,11 +87,18 @@ public class AppCtrl {
         return _initialLoader;
     }
 
-    public static RefresherService getRefresher() {
+    public static RefresherService getRefresherService() {
         if (_refresherService == null)
             _refresherService = new DefaultRefresherService();
 
         return _refresherService;
+    }
+
+    public static NotificationService getNotificationService() {
+        if (_notificationService == null)
+            _notificationService = new DefaultNotificationService();
+
+        return _notificationService;
     }
 
     public static WebPageScraper getWebPageScraper() {
@@ -95,5 +106,26 @@ public class AppCtrl {
             _webPageScraper = new DefaultWebPageScraper();
 
         return _webPageScraper;
+    }
+
+    // Test methods
+
+    /**
+     * Sets the db instance to use, instead of lazy creating it. Used for tests.
+     */
+    public static void setTestDb(KvadratDb db) {
+        _db = db;
+    }
+
+    public static void setTestRefresherService(RefresherService refresherService) {
+        _refresherService = refresherService;
+    }
+
+    public static void setTestWebPageScraper(WebPageScraper webPageScraper) {
+        _webPageScraper = webPageScraper;
+    }
+
+    public static void setTestNotificationService(NotificationService notificationService) {
+        _notificationService = notificationService;
     }
 }

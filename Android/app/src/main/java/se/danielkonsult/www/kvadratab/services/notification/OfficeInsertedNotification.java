@@ -3,14 +3,14 @@ package se.danielkonsult.www.kvadratab.services.notification;
 /**
  * Notification for a new office.
  */
-public class OfficeNewNotification extends Notification {
+public class OfficeInsertedNotification extends Notification {
 
     // Constructors
 
-    public OfficeNewNotification() {
+    public OfficeInsertedNotification() {
     }
 
-    public OfficeNewNotification(int officeId, String name) {
+    public OfficeInsertedNotification(int officeId, String name) {
         OfficeId = officeId;
         Name = name;
     }

@@ -37,12 +37,11 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
             List<Notification> notifications = new ArrayList<>();
 
             // Compare offices
-            SummaryData summaryData = AppCtrl.getWebPageScraper().scrapeSummaryData();
-            OfficeData[] existingOffices = AppCtrl.getDb().getOfficeDataRepository().getAll();
-            OfficeData[] scrapedOffices = summaryData.OfficeDatas;
-            notifications.addAll(OfficeComparer.getOfficeNotifications(existingOffices, scrapedOffices));
+            notifications.addAll(OfficeComparer.compare());
 
-
+            // Send all notifications to the service
+            for (Notification not : notifications)
+                AppCtrl.getNotificationService().addNotification(not);
 
         } catch (Exception e) {
             e.printStackTrace();

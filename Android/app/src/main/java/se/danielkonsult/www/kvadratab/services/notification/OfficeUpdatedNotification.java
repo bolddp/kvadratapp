@@ -3,14 +3,14 @@ package se.danielkonsult.www.kvadratab.services.notification;
 /**
  * Created by Daniel on 2016-10-09.
  */
-public class OfficeChangedNotification extends Notification {
+public class OfficeUpdatedNotification extends Notification {
 
     // Constructors
 
-    public OfficeChangedNotification() {
+    public OfficeUpdatedNotification() {
     }
 
-    public OfficeChangedNotification(int id, String oldName, String newName) {
+    public OfficeUpdatedNotification(int id, String oldName, String newName) {
         Id = id;
         OldName = oldName;
         NewName = newName;

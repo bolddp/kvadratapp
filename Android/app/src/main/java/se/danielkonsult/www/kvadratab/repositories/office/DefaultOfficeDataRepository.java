@@ -97,4 +97,13 @@ public class DefaultOfficeDataRepository implements OfficeDataRepository {
 
         db.update(DbSpec.OfficeEntry.TABLE_NAME, updatedValues, filter, null);
     }
+
+    @Override
+    public void delete(int officeId) {
+        SQLiteDatabase db = _db.getWritableDatabase();
+        String whereClause = DbSpec.OfficeEntry.COLUMN_NAME_ID + "=?";
+        String[] whereArgs = new String[] { Integer.toString(officeId) };
+
+        db.delete(DbSpec.OfficeEntry.TABLE_NAME, whereClause, whereArgs);
+    }
 }

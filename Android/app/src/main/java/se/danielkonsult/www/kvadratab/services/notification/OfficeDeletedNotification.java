@@ -3,14 +3,14 @@ package se.danielkonsult.www.kvadratab.services.notification;
 /**
  * Notification for a removed office.
  */
-public class OfficeRemovedNotification extends Notification {
+public class OfficeDeletedNotification extends Notification {
 
     // Constructor
 
-    public OfficeRemovedNotification() {
+    public OfficeDeletedNotification() {
     }
 
-    public OfficeRemovedNotification(int id, String name) {
+    public OfficeDeletedNotification(int id, String name) {
         Id = id;
         Name = name;
     }

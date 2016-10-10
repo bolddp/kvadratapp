@@ -21,6 +21,7 @@ import se.danielkonsult.www.kvadratab.mocks.TestWebPageScraper;
 import se.danielkonsult.www.kvadratab.repositories.office.OfficeDataRepository;
 import se.danielkonsult.www.kvadratab.services.image.DefaultImageService;
 import se.danielkonsult.www.kvadratab.services.image.ImageService;
+import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedBitmapNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedNameNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedOfficeNotification;
 import se.danielkonsult.www.kvadratab.services.notification.Notification;
@@ -124,7 +125,10 @@ public class RefresherTests {
 
         // Create some consultants and download their images
         ConsultantData cd1 = new ConsultantData(6985, "Daniel", "Persson", 1);
+        ConsultantData cd2 = new ConsultantData(6271, "May-Lis", "Farnes", 1);
         AppCtrl.getDb().getConsultantDataRepository().insert(cd1);
+        AppCtrl.getDb().getConsultantDataRepository().insert(cd2);
+        // Download actual images (not optimal that unit test accesses web, but WTH...)
         imgService.downloadConsultantBitmapAndSaveToFile(6985);
 
         // Prep the test scraper with consultant data
@@ -154,5 +158,8 @@ public class RefresherTests {
         Assert.assertEquals("Daniel", officeNot.FirstName);
         Assert.assertEquals("Pärsson", officeNot.LastName); // Notification uses updated name
         Assert.assertEquals(od2.Name, officeNot.NewOffice);
+
+        ConsultantUpdatedBitmapNotification bitmapNot = (ConsultantUpdatedBitmapNotification) notHash.get(ConsultantUpdatedBitmapNotification.class.getSimpleName());
+        Assert.assertEquals(cd2.Id, bitmapNot.ConsultantId);
     }
 }

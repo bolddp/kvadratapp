@@ -164,6 +164,19 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
     }
 
     @Override
+    public void updateName(int consultantId, String firstName, String lastName) {
+        SQLiteDatabase db = _db.getWritableDatabase();
+
+        ContentValues updatedValues = new ContentValues();
+        updatedValues.put(DbSpec.ConsultantEntry.COLUMN_NAME_FIRSTNAME, firstName);
+        updatedValues.put(DbSpec.ConsultantEntry.COLUMN_NAME_LASTNAME, lastName);
+
+        String filter = String.format("%s = %d", DbSpec.ConsultantEntry.COLUMN_NAME_ID, consultantId);
+
+        db.update(DbSpec.ConsultantEntry.TABLE_NAME, updatedValues, filter, null);
+    }
+
+    @Override
     public void updateDetails(int consultantId, ConsultantDetails details) {
         SQLiteDatabase db = _db.getWritableDatabase();
 

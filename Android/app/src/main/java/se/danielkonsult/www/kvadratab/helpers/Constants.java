@@ -10,4 +10,5 @@ public class Constants {
 
     public static final int REFRESHER_INTENT_REQUEST_CODE = 1122;
     public static final String REFRESHER_INTENT_ACTION = "se.danielkonsult.www.kvadratab.refresher";
+    public static final long REFRESHER_CONSULTANT_IMAGE_COMPARISON_INTERVAL_HOURS = 168; // Once a week the consultant images should be compared
 }

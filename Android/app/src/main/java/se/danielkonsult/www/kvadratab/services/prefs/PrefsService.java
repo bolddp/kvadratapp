@@ -9,4 +9,7 @@ public interface PrefsService {
 
     void setHasInitialLoadingBeenPerformed(boolean value);
 
+    long getImageComparisonTimestamp();
+
+    void setImageComparisonTimestamp(long lastImageComparisonTimestamp);
 }

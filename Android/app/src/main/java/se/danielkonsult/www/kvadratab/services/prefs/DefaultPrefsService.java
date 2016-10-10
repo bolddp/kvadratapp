@@ -14,6 +14,7 @@ public class DefaultPrefsService implements PrefsService {
     // Private variables
 
     private static final String PREF_INITIAL_LOAD_PERFORMED = "pref_initial_load_performed";
+    private static final String PREF_IMAGE_COMPARISON_TIMESTAMP = "pref_image_comparison_timestamp";
 
     private SharedPreferences _prefs = PreferenceManager.getDefaultSharedPreferences(AppCtrl.getApplicationContext());
 
@@ -26,5 +27,15 @@ public class DefaultPrefsService implements PrefsService {
 
     public void setHasInitialLoadingBeenPerformed(boolean value){
         _prefs.edit().putBoolean(PREF_INITIAL_LOAD_PERFORMED, value).commit();
+    }
+
+    @Override
+    public long getImageComparisonTimestamp() {
+        return _prefs.getLong(PREF_IMAGE_COMPARISON_TIMESTAMP, 0);
+    }
+
+    @Override
+    public void setImageComparisonTimestamp(long value) {
+        _prefs.edit().putLong(PREF_IMAGE_COMPARISON_TIMESTAMP, value).commit();
     }
 }

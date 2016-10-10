@@ -30,6 +30,11 @@ public interface ConsultantDataRepository {
     void updateOffice(int consultantId, int officeId);
 
     /**
+     * Updates the name of a consultant.
+     */
+    void updateName(int consultantId, String firstName, String lastName);
+
+    /**
      * Updated the details of the consultant.
      */
     void updateDetails(int consultantId, ConsultantDetails details);

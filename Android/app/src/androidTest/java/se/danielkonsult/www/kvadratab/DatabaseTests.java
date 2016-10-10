@@ -243,7 +243,7 @@ public class DatabaseTests {
         Assert.assertEquals(0, notifications.length);
 
         // Create new notifications (with a delay to ensure different timestamps)
-        ConsultantInsertedNotification ncn = new ConsultantInsertedNotification(6978, "Daniel Persson", "Jönköping");
+        ConsultantInsertedNotification ncn = new ConsultantInsertedNotification(6978, "Daniel", "Persson", "Jönköping");
         Thread.sleep(200);
         OfficeInsertedNotification non = new OfficeInsertedNotification(90, "Vetlanda");
 

@@ -1,6 +1,7 @@
 package se.danielkonsult.www.kvadratab.mocks;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
@@ -10,15 +11,20 @@ import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
 
 /**
- * Created by Daniel on 2016-10-09.
+ * Web scraper for unit tests, that can be setup with arbitrary data instead
+ * of actually scraping it from the web.
  */
 public class TestWebPageScraper implements WebPageScraper {
 
     private SummaryData _summaryData;
+    private final HashMap<Integer, ConsultantData[]> _officeConsultantDatas = new HashMap<>();
 
     @Override
     public ConsultantData[] scrapeConsultants(int officeId, int tagId) throws IOException {
-        return new ConsultantData[0];
+        if (!_officeConsultantDatas.containsKey(officeId))
+            return new ConsultantData[0];
+
+        return _officeConsultantDatas.get(officeId);
     }
 
     @Override
@@ -35,5 +41,9 @@ public class TestWebPageScraper implements WebPageScraper {
         _summaryData = new SummaryData();
         _summaryData.OfficeDatas = officeDatas;
         _summaryData.TagDatas = tagDatas;
+    }
+
+    public void setConsultantData(int officeId, ConsultantData[] consultantDatas) {
+        _officeConsultantDatas.put(officeId, consultantDatas);
     }
 }

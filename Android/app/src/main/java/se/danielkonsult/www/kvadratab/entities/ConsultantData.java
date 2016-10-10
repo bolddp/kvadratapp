@@ -7,6 +7,18 @@ import android.graphics.Bitmap;
  */
 public class ConsultantData {
 
+    // Constructors
+
+    public ConsultantData() {
+    }
+
+    public ConsultantData(int id, String firstName, String lastName, int officeId) {
+        Id = id;
+        FirstName = firstName;
+        LastName = lastName;
+        OfficeId = officeId;
+    }
+
     public int Id;
 
     public String FirstName;

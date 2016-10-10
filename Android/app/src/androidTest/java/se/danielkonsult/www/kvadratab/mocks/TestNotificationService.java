@@ -16,9 +16,11 @@ public class TestNotificationService implements NotificationService {
     private List<Notification> _notifications = new ArrayList<>();
 
     @Override
-    public void addNotification(Notification notification) {
-        _notifications.add(notification);
+    public void addNotifications(List<Notification> notifications) {
+        _notifications.addAll(notifications);
     }
+
+    // Test methods
 
     public List<Notification> getNotifications(){
         return _notifications;

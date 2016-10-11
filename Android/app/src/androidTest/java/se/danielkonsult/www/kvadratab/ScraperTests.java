@@ -194,10 +194,11 @@ public class ScraperTests {
             file.delete();
 
         Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmap(7829);
-
         Assert.assertNotNull(bitmap);
         Assert.assertEquals(600, bitmap.getWidth());
         Assert.assertEquals(600, bitmap.getHeight());
+
+        AppCtrl.getImageService().saveConsultantBitmapToFile(7829, bitmap);
 
         Bitmap bitmap2 = AppCtrl.getImageService().getConsultantBitmapFromFile(7829);
         Assert.assertNotNull(bitmap2);

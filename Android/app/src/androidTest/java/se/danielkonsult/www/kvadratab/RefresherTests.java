@@ -1,6 +1,7 @@
 package se.danielkonsult.www.kvadratab;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -15,12 +16,15 @@ import java.util.List;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.helpers.KvadratAppException;
+import se.danielkonsult.www.kvadratab.mocks.TestImageService;
 import se.danielkonsult.www.kvadratab.mocks.TestNotificationService;
+import se.danielkonsult.www.kvadratab.mocks.TestPrefsService;
 import se.danielkonsult.www.kvadratab.mocks.TestRefresherService;
 import se.danielkonsult.www.kvadratab.mocks.TestWebPageScraper;
 import se.danielkonsult.www.kvadratab.repositories.office.OfficeDataRepository;
 import se.danielkonsult.www.kvadratab.services.image.DefaultImageService;
 import se.danielkonsult.www.kvadratab.services.image.ImageService;
+import se.danielkonsult.www.kvadratab.services.notification.ConsultantInsertedNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedBitmapNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedNameNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedOfficeNotification;
@@ -49,6 +53,8 @@ public class RefresherTests {
         AppCtrl.setTestRefresherService(new TestRefresherService());
         AppCtrl.setTestWebPageScraper(new TestWebPageScraper());
         AppCtrl.setTestNotificationService(new TestNotificationService());
+        AppCtrl.setTestImageService(new TestImageService());
+        AppCtrl.setPrefsService(new TestPrefsService());
     }
 
     @Test
@@ -115,6 +121,8 @@ public class RefresherTests {
     public void shouldCompareConsultants() throws IOException, KvadratAppException {
         setupTestEnvironment();
 
+        // Simulate that the consultant images haven't been updated for 8 days
+        AppCtrl.getPrefsService().setImageComparisonTimestamp(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 8));
         ImageService imgService = new DefaultImageService();
 
         // Create two offices
@@ -126,19 +134,34 @@ public class RefresherTests {
         // Create some consultants and download their images
         ConsultantData cd1 = new ConsultantData(6985, "Daniel", "Persson", 1);
         ConsultantData cd2 = new ConsultantData(6271, "May-Lis", "Farnes", 1);
+        ConsultantData cd3 = new ConsultantData(5872, "Mikael", "Lindsten", 1);
         AppCtrl.getDb().getConsultantDataRepository().insert(cd1);
         AppCtrl.getDb().getConsultantDataRepository().insert(cd2);
-        // Download actual images (not optimal that unit test accesses web, but WTH...)
-        imgService.downloadConsultantBitmapAndSaveToFile(6985);
+        AppCtrl.getDb().getConsultantDataRepository().insert(cd3);
 
-        // Prep the test scraper with consultant data
+        // Download actual images and save them (not optimal that unit test accesses web, but WTH...)
+        // Later on, the test image service will deliver mixed up images to simulate updated consultant images
+        Bitmap bitmap = imgService.downloadConsultantBitmap(6985);
+        imgService.saveConsultantBitmapToFile(6985, bitmap);
+        bitmap = imgService.downloadConsultantBitmap(6271);
+        imgService.saveConsultantBitmapToFile(6271, bitmap);
+        bitmap = imgService.downloadConsultantBitmap(5872);
+        imgService.saveConsultantBitmapToFile(5872, bitmap);
+
+        // Prep the test scraper with consultant data where one consultant is deleted
         TestWebPageScraper scraper = (TestWebPageScraper) AppCtrl.getWebPageScraper();
+        scraper.setConsultantData(1, new ConsultantData[] {
+                new ConsultantData(6271, "May-Lis", "Farnes", 1), // Image will have been updated (TestImageService takes care of that)
+        });
         scraper.setConsultantData(2, new ConsultantData[] {
-                new ConsultantData(6985, "Daniel", "Pärsson", 2)
+                new ConsultantData(6985, "Daniel", "Pärsson", 2), // Office changed
+                new ConsultantData(7565, "Roland", "Heimdahl", 2) // New consultant
         });
 
         // Compare the consultant datas
         List<Notification> notifications = ConsultantComparer.compare();
+
+        Assert.assertEquals(4, notifications.size());
 
         // Assert that the correct notifications are present by putting them in a hash
         // with the Notification type as key
@@ -161,5 +184,34 @@ public class RefresherTests {
 
         ConsultantUpdatedBitmapNotification bitmapNot = (ConsultantUpdatedBitmapNotification) notHash.get(ConsultantUpdatedBitmapNotification.class.getSimpleName());
         Assert.assertEquals(cd2.Id, bitmapNot.ConsultantId);
+        Assert.assertEquals(cd2.FirstName, bitmapNot.FirstName);
+        Assert.assertEquals(cd2.LastName, bitmapNot.LastName);
+
+        ConsultantInsertedNotification insertNot = (ConsultantInsertedNotification) notHash.get(ConsultantInsertedNotification.class.getSimpleName());
+        Assert.assertEquals(7565, insertNot.ConsultantId);
+        Assert.assertEquals("Roland", insertNot.FirstName);
+        Assert.assertEquals("Heimdahl", insertNot.LastName);
+        Assert.assertEquals(od2.Name, insertNot.Office);
+    }
+
+    /**
+     * Tests whether bitmaps can be properly compared when downloaded
+     * and read from disk. (Seems that it's not the case...)
+     */
+    @Test
+    public void shouldCompareBitmaps() throws IOException {
+        setupTestEnvironment();
+
+        ImageService srv = new DefaultImageService();
+
+        Bitmap bitmap = srv.downloadConsultantBitmap(6985);
+        Bitmap bitmap2 = srv.downloadConsultantBitmap(6985);
+        Assert.assertTrue("Before file save", bitmap.sameAs(bitmap2));
+
+        srv.saveConsultantBitmapToFile(6985, bitmap);
+        bitmap = srv.getConsultantBitmapFromFile(6985);
+        srv.saveConsultantBitmapToFile(6986, bitmap2);
+        bitmap2 = srv.getConsultantBitmapFromFile(6986);
+        Assert.assertTrue("After file save", bitmap.sameAs(bitmap2));
     }
 }

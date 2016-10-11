@@ -10,7 +10,6 @@ import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.entities.SummaryData;
-import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
 
 /**
  * Performs the initial loading of consultant data from the
@@ -104,7 +103,8 @@ public class DefaultLoaderService implements LoaderService {
                         // Save the consultant to database
                         db.getConsultantDataRepository().insert(cd);
                         // Load the consultant image and save it to disk
-                        Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmapAndSaveToFile(cd.Id);
+                        Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmap(cd.Id);
+                        AppCtrl.getImageService().saveConsultantBitmapToFile(cd.Id, bitmap);
 
                         // Notify listeners of this new glorious consultant
                         listener.onConsultantAdded(cd, bitmap);

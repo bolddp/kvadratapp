@@ -61,7 +61,7 @@ public class ConsultantComparer {
                     AppCtrl.getDb().getConsultantDataRepository().updateOffice(scrapedConsultant.Id, office.Id);
 
                     // Download the image and save to file
-                    AppCtrl.getImageService().downloadConsultantBitmapAndSaveToFile(scrapedConsultant.Id);
+                    AppCtrl.getImageService().downloadConsultantBitmap(scrapedConsultant.Id);
 
                     // It's a new consultant
                     result.add(new ConsultantInsertedNotification(scrapedConsultant.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
@@ -86,10 +86,12 @@ public class ConsultantComparer {
                     // Should we compare bitmaps this time (determined earlier)?
                     if (shouldCompareBitmaps){
                         Bitmap existingBitmap = AppCtrl.getImageService().getConsultantBitmapFromFile(existing.Id);
-                        Bitmap scrapedBitmap = AppCtrl.getImageService().downloadConsultantBitmapAndSaveToFile(existing.Id);
+                        // Scrape the bitmap and save it to file to be able to compare it to the existing bitmap, also read from file
+                        AppCtrl.getImageService().saveConsultantBitmapToFile(100000, AppCtrl.getImageService().downloadConsultantBitmap(existing.Id));
+                        Bitmap scrapedBitmap = AppCtrl.getImageService().getConsultantBitmapFromFile(100000);
 
                         if (!existingBitmap.sameAs(scrapedBitmap)){
-                            // It's already been downloaded and saved, all we need to do is create a notification
+                            AppCtrl.getImageService().saveConsultantBitmapToFile(existing.Id, scrapedBitmap);
                             result.add(new ConsultantUpdatedBitmapNotification(existing.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
                         }
                     }

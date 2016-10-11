@@ -17,7 +17,6 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.scraper.DefaultWebPageScraper;
-import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataParser;
 import se.danielkonsult.www.kvadratab.entities.SummaryData;
 import se.danielkonsult.www.kvadratab.helpers.scraper.SummaryDataParser;
@@ -194,7 +193,7 @@ public class ScraperTests {
         for (File file : files)
             file.delete();
 
-        Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmapAndSaveToFile(7829);
+        Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmap(7829);
 
         Assert.assertNotNull(bitmap);
         Assert.assertEquals(600, bitmap.getWidth());

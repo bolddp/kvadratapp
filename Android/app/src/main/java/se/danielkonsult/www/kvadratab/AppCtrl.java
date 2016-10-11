@@ -128,4 +128,12 @@ public class AppCtrl {
     public static void setTestNotificationService(NotificationService notificationService) {
         _notificationService = notificationService;
     }
+
+    public static void setTestImageService(ImageService imageService) {
+        _imageService = imageService;
+    }
+
+    public static void setPrefsService(PrefsService prefsService) {
+        _prefsService = prefsService;
+    }
 }

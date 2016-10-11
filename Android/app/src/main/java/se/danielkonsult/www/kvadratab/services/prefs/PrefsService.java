@@ -11,5 +11,5 @@ public interface PrefsService {
 
     long getImageComparisonTimestamp();
 
-    void setImageComparisonTimestamp(long lastImageComparisonTimestamp);
+    void setImageComparisonTimestamp(long timestamp);
 }

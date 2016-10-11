@@ -8,7 +8,9 @@ import java.io.IOException;
  * Created by Daniel on 2016-09-24.
  */
 public interface ImageService {
-    Bitmap downloadConsultantBitmapAndSaveToFile(int id) throws IOException;
+    Bitmap downloadConsultantBitmap(int id) throws IOException;
+
+    void saveConsultantBitmapToFile(int id, Bitmap bitmap) throws IOException;
 
     Bitmap getConsultantBitmapFromFile(int id);
 

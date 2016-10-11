@@ -35,7 +35,7 @@ public class DefaultPrefsService implements PrefsService {
     }
 
     @Override
-    public void setImageComparisonTimestamp(long value) {
-        _prefs.edit().putLong(PREF_IMAGE_COMPARISON_TIMESTAMP, value).commit();
+    public void setImageComparisonTimestamp(long timestamp) {
+        _prefs.edit().putLong(PREF_IMAGE_COMPARISON_TIMESTAMP, timestamp).commit();
     }
 }

@@ -81,11 +81,10 @@ public class DefaultImageService implements ImageService {
     }
 
     /***
-     * Downloads a consultant image by its id, resizes it if necessary,
-     * saves it to file as a JPG and returns it as a Bitmap object.
+     * Downloads a consultant image by its id and resizes it if necessary.
      */
     @Override
-    public Bitmap downloadConsultantBitmapAndSaveToFile(int id) throws IOException {
+    public Bitmap downloadConsultantBitmap(int id) throws IOException {
         HttpURLConnection httpCon = null;
         InputStream is = null;
         try {
@@ -101,16 +100,7 @@ public class DefaultImageService implements ImageService {
             byte[] bytes = getByteArrayFromStream(is);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0, bytes.length);
 
-            bitmap = getScaledDownBitmap(bitmap, BITMAP_TARGET_SIZE);
-
-            // Convert it to JPG
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream);
-            bytes = stream.toByteArray();
-
-            saveBytesToFile(bytes, getFileNameFromId(id));
-
-            return bitmap;
+            return getScaledDownBitmap(bitmap, BITMAP_TARGET_SIZE);
         } finally {
             try {
                 if (httpCon != null)
@@ -121,6 +111,16 @@ public class DefaultImageService implements ImageService {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void saveConsultantBitmapToFile(int id, Bitmap bitmap) throws IOException {
+        // Convert it to JPG
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream);
+        byte[] bytes = stream.toByteArray();
+
+        saveBytesToFile(bytes, getFileNameFromId(id));
     }
 
     @Override

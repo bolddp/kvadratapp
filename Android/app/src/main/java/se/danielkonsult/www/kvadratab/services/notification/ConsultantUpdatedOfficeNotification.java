@@ -5,6 +5,8 @@ package se.danielkonsult.www.kvadratab.services.notification;
  */
 public class ConsultantUpdatedOfficeNotification extends Notification {
 
+    private static final String HEADER = "Konsult har bytt kontor";
+
     // Constructor
 
 
@@ -16,6 +18,11 @@ public class ConsultantUpdatedOfficeNotification extends Notification {
         FirstName = firstName;
         LastName = lastName;
         NewOffice = newOffice;
+    }
+
+    @Override
+    public String getHeader() {
+        return HEADER;
     }
 
     public int ConsultantId;

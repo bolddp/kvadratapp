@@ -6,6 +6,8 @@ package se.danielkonsult.www.kvadratab.services.notification;
  */
 public class ConsultantUpdatedBitmapNotification extends Notification {
 
+    private static final String HEADER = "Ny konsultbild";
+
     // Constructor
 
     public ConsultantUpdatedBitmapNotification() {
@@ -16,6 +18,11 @@ public class ConsultantUpdatedBitmapNotification extends Notification {
         FirstName = firstName;
         LastName = lastName;
         Office = office;
+    }
+
+    @Override
+    public String getHeader() {
+        return HEADER;
     }
 
     // Fields

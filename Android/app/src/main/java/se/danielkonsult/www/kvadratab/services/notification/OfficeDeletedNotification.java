@@ -5,6 +5,8 @@ package se.danielkonsult.www.kvadratab.services.notification;
  */
 public class OfficeDeletedNotification extends Notification {
 
+    private static final String HEADER = "Kontor har tagits bort";
+
     // Constructor
 
     public OfficeDeletedNotification() {
@@ -13,6 +15,11 @@ public class OfficeDeletedNotification extends Notification {
     public OfficeDeletedNotification(int id, String name) {
         Id = id;
         Name = name;
+    }
+
+    @Override
+    public String getHeader() {
+        return HEADER;
     }
 
     // Fields

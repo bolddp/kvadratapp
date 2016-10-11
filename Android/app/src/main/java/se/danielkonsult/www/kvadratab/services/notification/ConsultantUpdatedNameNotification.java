@@ -5,6 +5,8 @@ package se.danielkonsult.www.kvadratab.services.notification;
  */
 public class ConsultantUpdatedNameNotification extends Notification {
 
+    private static final String HEADER = "Namnbyte";
+
     // Constructors
 
     public ConsultantUpdatedNameNotification() {
@@ -16,6 +18,11 @@ public class ConsultantUpdatedNameNotification extends Notification {
         OldLastName = oldLastName;
         NewFirstName = newFirstName;
         NewLastName = newLastName;
+    }
+
+    @Override
+    public String getHeader() {
+        return HEADER;
     }
 
     // Fields

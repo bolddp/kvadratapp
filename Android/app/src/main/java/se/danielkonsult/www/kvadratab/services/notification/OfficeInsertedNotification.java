@@ -5,6 +5,8 @@ package se.danielkonsult.www.kvadratab.services.notification;
  */
 public class OfficeInsertedNotification extends Notification {
 
+    private static final String HEADER = "Nytt kontor";
+
     // Constructors
 
     public OfficeInsertedNotification() {
@@ -13,6 +15,11 @@ public class OfficeInsertedNotification extends Notification {
     public OfficeInsertedNotification(int officeId, String name) {
         OfficeId = officeId;
         Name = name;
+    }
+
+    @Override
+    public String getHeader() {
+        return HEADER;
     }
 
     // Public fields

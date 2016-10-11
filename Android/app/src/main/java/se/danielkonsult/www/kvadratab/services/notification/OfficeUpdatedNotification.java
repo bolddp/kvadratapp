@@ -5,6 +5,8 @@ package se.danielkonsult.www.kvadratab.services.notification;
  */
 public class OfficeUpdatedNotification extends Notification {
 
+    private static final String HEADER = "Kontor har nytt namn";
+
     // Constructors
 
     public OfficeUpdatedNotification() {
@@ -14,6 +16,11 @@ public class OfficeUpdatedNotification extends Notification {
         Id = id;
         OldName = oldName;
         NewName = newName;
+    }
+
+    @Override
+    public String getHeader() {
+        return HEADER;
     }
 
     // Fields

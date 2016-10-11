@@ -4,82 +4,100 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:clickable="true"
     android:background="@color/filterBackground"
     android:padding="@dimen/activity_horizontal_margin"
     tools:context="se.danielkonsult.www.kvadratab.fragments.ConsultantFilterFragment">
 
+    <!-- Leftmost menu buttons -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
-        android:background="#cc000000">
+        android:orientation="vertical">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabNotifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:src="@drawable/ic_drawer"
+            android:tint="@color/colorDrawerBackground"
+            app:backgroundTint="@color/colorPrimaryDark" />
+
     </LinearLayout>
 
-    <!-- Offices filter -->
+    <!-- Filter part -->
     <LinearLayout
-        android:id="@+id/layoutOffices"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="vertical">
-        <!-- Header -->
-        <TextView
-            style="@style/Text02"
+        <!-- Offices filter -->
+        <LinearLayout
+            android:id="@+id/layoutOffices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Kontor">
-        </TextView>
-        <View android:layout_height="2dp"
-            android:layout_marginTop="@dimen/activity_vertical_margin_xsml"
-            android:layout_width="match_parent"
-            android:background="@color/colorPrimary">
-        </View>
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/layoutOfficeButtons"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            app:flexWrap="wrap"
-            app:flexDirection="row">
-        </com.google.android.flexbox.FlexboxLayout>
-    </LinearLayout>
-    <!-- Name filter -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin_dbl"
-        android:orientation="vertical">
-        <!-- Header -->
-        <TextView
-            style="@style/Text02"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Namn">
-        </TextView>
-        <View android:layout_height="2dp"
-            android:layout_marginTop="@dimen/activity_vertical_margin_xsml"
-            android:layout_width="match_parent"
-            android:background="@color/colorPrimary">
-        </View>
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <!-- Header -->
+            <TextView
+                style="@style/Text02"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kontor">
+            </TextView>
+            <View android:layout_height="2dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin_xsml"
+                android:layout_width="match_parent"
+                android:background="@color/colorPrimary">
+            </View>
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/layoutOfficeButtons"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                app:flexWrap="wrap"
+                app:flexDirection="row">
+            </com.google.android.flexbox.FlexboxLayout>
+        </LinearLayout>
+        <!-- Name filter -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:orientation="horizontal">
-            <EditText
-                android:id="@+id/editName"
+            android:layout_marginTop="@dimen/activity_vertical_margin_dbl"
+            android:orientation="vertical">
+            <!-- Header -->
+            <TextView
+                style="@style/Text02"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="textCapWords"
-                android:maxLines="1"
-                android:background="@android:drawable/edit_text"/>
-            <Button
-                android:id="@+id/btnClearText"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:background="@drawable/selector_btn_cleartext"
-                android:backgroundTint="@color/colorPrimary"/>
+                android:text="Namn">
+            </TextView>
+            <View android:layout_height="2dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin_xsml"
+                android:layout_width="match_parent"
+                android:background="@color/colorPrimary">
+            </View>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/editName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="textCapWords"
+                    android:maxLines="1"
+                    android:background="@android:drawable/edit_text"/>
+                <Button
+                    android:id="@+id/btnClearText"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:background="@drawable/selector_btn_cleartext"
+                    android:backgroundTint="@color/colorPrimary"/>
+            </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

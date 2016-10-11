@@ -11,6 +11,7 @@ import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.helpers.Constants;
+import se.danielkonsult.www.kvadratab.services.notification.ConsultantDeletedNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantInsertedNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedNameNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedOfficeNotification;
@@ -45,15 +46,15 @@ public class ConsultantComparer {
         for (ConsultantData cd : existingConsultants)
                 existingHash.put(cd.Id, cd);
 
-        // Also keep a list of all found consultants to be able to spot deleted consultants
-        List<ConsultantData> allOfficeConsultants = new ArrayList<>();
+        // Also build a hash of all scraped consultants to be able to detect deleted consultants later on
+        HashMap<Integer, ConsultantData> scrapedHash = new HashMap<>();
 
         // Loop the offices and request the consultants by them
         for (OfficeData office : offices){
             ConsultantData[] scrapedConsultants = AppCtrl.getWebPageScraper().scrapeConsultants(office.Id, 0);
 
             for (ConsultantData scrapedConsultant : scrapedConsultants){
-                allOfficeConsultants.add(scrapedConsultant);
+                scrapedHash.put(scrapedConsultant.Id, scrapedConsultant);
 
                 if (!existingHash.containsKey(scrapedConsultant.Id)) {
                     // Insert the consultant and link it to the correct office
@@ -99,7 +100,16 @@ public class ConsultantComparer {
             }
         }
 
-        // Update the timestamp for when images where being compared
+        // Loop all existing consultants and see if anyone of them is missing in the scraped data
+        for (ConsultantData exCon : existingConsultants) {
+            if (!scrapedHash.containsKey(exCon.Id)) {
+                // The consultant is gone, delete from database and create notification
+                AppCtrl.getDb().getConsultantDataRepository().delete(exCon.Id);
+                result.add(new ConsultantDeletedNotification(exCon.Id, exCon.FirstName, exCon.LastName, exCon.Office.Name));
+            }
+        }
+
+        // Update the timestamp for when images were being compared
         if (shouldCompareBitmaps){
             AppCtrl.getPrefsService().setImageComparisonTimestamp(System.currentTimeMillis());
         }

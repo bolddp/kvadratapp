@@ -189,4 +189,13 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
                 details.Overview, currentTimestamp, consultantId);
         db.execSQL(sql);
     }
+
+    @Override
+    public void delete(int id) {
+        SQLiteDatabase db = _db.getWritableDatabase();
+        String whereClause = DbSpec.ConsultantEntry.COLUMN_NAME_ID + "=?";
+        String[] whereArgs = new String[] { Integer.toString(id) };
+
+        db.delete(DbSpec.ConsultantEntry.TABLE_NAME, whereClause, whereArgs);
+    }
 }

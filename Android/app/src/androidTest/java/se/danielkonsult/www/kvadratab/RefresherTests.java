@@ -24,6 +24,7 @@ import se.danielkonsult.www.kvadratab.mocks.TestWebPageScraper;
 import se.danielkonsult.www.kvadratab.repositories.office.OfficeDataRepository;
 import se.danielkonsult.www.kvadratab.services.image.DefaultImageService;
 import se.danielkonsult.www.kvadratab.services.image.ImageService;
+import se.danielkonsult.www.kvadratab.services.notification.ConsultantDeletedNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantInsertedNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedBitmapNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedNameNotification;
@@ -161,7 +162,7 @@ public class RefresherTests {
         // Compare the consultant datas
         List<Notification> notifications = ConsultantComparer.compare();
 
-        Assert.assertEquals(4, notifications.size());
+        Assert.assertEquals(5, notifications.size());
 
         // Assert that the correct notifications are present by putting them in a hash
         // with the Notification type as key
@@ -192,6 +193,12 @@ public class RefresherTests {
         Assert.assertEquals("Roland", insertNot.FirstName);
         Assert.assertEquals("Heimdahl", insertNot.LastName);
         Assert.assertEquals(od2.Name, insertNot.Office);
+
+        ConsultantDeletedNotification delNot = (ConsultantDeletedNotification) notHash.get(ConsultantDeletedNotification.class.getSimpleName());
+        Assert.assertEquals(cd3.Id, delNot.ConsultantId);
+        Assert.assertEquals(cd3.FirstName, delNot.FirstName);
+        Assert.assertEquals(cd3.LastName, delNot.LastName);
+        Assert.assertEquals(od1.Name, delNot.Office);
     }
 
     /**

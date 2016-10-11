@@ -38,4 +38,9 @@ public interface ConsultantDataRepository {
      * Updated the details of the consultant.
      */
     void updateDetails(int consultantId, ConsultantDetails details);
+
+    /**
+     * Deletes a consultant by its id.
+     */
+    void delete(int id);
 }

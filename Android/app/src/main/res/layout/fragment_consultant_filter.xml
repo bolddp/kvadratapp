@@ -16,14 +16,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabNotifications"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:src="@drawable/ic_drawer"
-            android:tint="@color/colorDrawerBackground"
-            app:backgroundTint="@color/colorPrimaryDark" />
+        <Button
+            android:id="@+id/btnNotifications"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/selector_btn_notifications"
+            android:backgroundTint="@color/colorPrimary"/>
 
     </LinearLayout>
 

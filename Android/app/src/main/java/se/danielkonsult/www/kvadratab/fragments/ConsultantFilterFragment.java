@@ -40,7 +40,7 @@ public class ConsultantFilterFragment extends Fragment {
     private EditText _editName;
     private FlexboxLayout _layoutOfficeButtons;
     private Button _btnClearText;
-    private FloatingActionButton _btnNotifications;
+    private Button _btnNotifications;
 
     private List<Integer> _officeIds = new ArrayList<>();
 
@@ -165,7 +165,7 @@ public class ConsultantFilterFragment extends Fragment {
             }
         });
 
-        _btnNotifications = (FloatingActionButton) view.findViewById(R.id.fabNotifications);
+        _btnNotifications = (Button) view.findViewById(R.id.btnNotifications);
         _btnNotifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

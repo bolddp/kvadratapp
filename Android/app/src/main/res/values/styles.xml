@@ -9,7 +9,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppThemeWithActionBar" parent="Theme.AppCompat.Light">
+    <style name="AppThemeWithActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowAnimationStyle">@null</item>
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -29,4 +29,7 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="Text04" parent="TextView">
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>

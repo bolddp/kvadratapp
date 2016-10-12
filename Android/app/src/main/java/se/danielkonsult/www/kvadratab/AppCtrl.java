@@ -34,6 +34,7 @@ public class AppCtrl {
     private static RefresherService _refresherService;
     private static WebPageScraper _webPageScraper;
     private static NotificationService _notificationService;
+    private static boolean _testFlag;
 
     /**
      * Returns the application context that has been set.
@@ -80,7 +81,7 @@ public class AppCtrl {
         return _imageService;
     }
 
-    public static LoaderService getInitialLoader() {
+    public static LoaderService getLoaderService() {
         if (_initialLoader == null)
             _initialLoader = new DefaultLoaderService();
 
@@ -135,5 +136,13 @@ public class AppCtrl {
 
     public static void setPrefsService(PrefsService prefsService) {
         _prefsService = prefsService;
+    }
+
+    public static boolean getTestFlag(){
+        return _testFlag;
+    }
+
+    public static void setTestFlag(boolean value) {
+        _testFlag = value;
     }
 }

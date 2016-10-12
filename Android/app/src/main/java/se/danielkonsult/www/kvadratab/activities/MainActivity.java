@@ -21,10 +21,6 @@ import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.services.initialloader.LoaderService;
 import se.danielkonsult.www.kvadratab.services.initialloader.LoaderServiceListener;
-import se.danielkonsult.www.kvadratab.services.notification.ConsultantDeletedNotification;
-import se.danielkonsult.www.kvadratab.services.notification.ConsultantInsertedNotification;
-import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedBitmapNotification;
-import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedNameNotification;
 
 public class MainActivity extends BaseActivity implements LoaderServiceListener {
 
@@ -39,7 +35,9 @@ public class MainActivity extends BaseActivity implements LoaderServiceListener 
     private ImageView _imgConsultant;
     private TextView _tvLoading;
     private ProgressBar _progbarMain;
-    private long pictureUpdateTimestamp = 0;
+    private ImageView _imgLogo;
+
+    private long _pictureUpdateTimestamp = 0;
     private boolean _isDoingInitialLoading;
 
     // Private methods
@@ -133,6 +131,18 @@ public class MainActivity extends BaseActivity implements LoaderServiceListener 
         _progbarMain = (ProgressBar) findViewById(R.id.progbarMain);
         _progbarMain.setProgress(0);
 
+        // A long click on the logo activates test mode, which will manipulate
+        // the initial loading to omit some data so the first refresh will find
+        // some interesting data
+        _imgLogo = (ImageView) findViewById(R.id.imgLogo);
+        _imgLogo.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AppCtrl.setTestFlag(true);
+                return true;
+            }
+        });
+
         // this.deleteDatabase(KvadratDb.DATABASE_NAME);
 
         AppCtrl.setApplicationContext(getApplicationContext());
@@ -145,22 +155,13 @@ public class MainActivity extends BaseActivity implements LoaderServiceListener 
                 AppCtrl.getRefresherService().ensureStarted();
 
                 // Do we need to perform an initial load?
-                LoaderService loaderService = AppCtrl.getInitialLoader();
+                LoaderService loaderService = AppCtrl.getLoaderService();
                 if (loaderService.isInitialLoadNeeded())
                     loaderService.run(MainActivity.this);
                 else
                     gotoConsultantListActivity();
             }
         }, 1500);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        AppCtrl.getNotificationService().add(new ConsultantInsertedNotification(6985, "Daniel", "Persson", "Jönköping"), true);
-        AppCtrl.getNotificationService().add(new ConsultantDeletedNotification(6985, "Daniel", "Persson", "Jönköping"), true);
-        AppCtrl.getNotificationService().add(new ConsultantUpdatedBitmapNotification(7829, "Sebastian", "Sjöberg", "Stockholm"), true);
-        AppCtrl.getNotificationService().add(new ConsultantUpdatedNameNotification(7565, "Roland", "Heimdahl", "Roland", "von Heimdahl", "Jönköping"), false);
     }
 
     @Override
@@ -197,9 +198,9 @@ public class MainActivity extends BaseActivity implements LoaderServiceListener 
                 }
 
                 // Is it time to update the image?
-                if ((SystemClock.uptimeMillis() - IMAGE_UPDATE_INTERVAL) > pictureUpdateTimestamp){
+                if ((SystemClock.uptimeMillis() - IMAGE_UPDATE_INTERVAL) > _pictureUpdateTimestamp){
                     setConsultantImage(bitmap);
-                    pictureUpdateTimestamp = SystemClock.uptimeMillis();
+                    _pictureUpdateTimestamp = SystemClock.uptimeMillis();
                 }
             }
         });

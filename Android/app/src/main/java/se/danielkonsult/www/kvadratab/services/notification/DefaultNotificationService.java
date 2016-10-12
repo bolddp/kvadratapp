@@ -64,22 +64,22 @@ public class DefaultNotificationService implements NotificationService {
 
 
     @Override
-    public void add(Notification notification, boolean skipNotification) {
+    public void add(Notification notification, boolean createNotification) {
         // Add to database
         AppCtrl.getDb().getNotificationRepository().insert(notification);
-        if (!skipNotification) {
+        if (createNotification) {
             createNotification(1);
         }
 
     }
 
     @Override
-    public void addAll(List<Notification> notifications, boolean skipNotification) {
+    public void addAll(List<Notification> notifications, boolean createNotification) {
         // Add to database
         for (Notification notification : notifications){
             AppCtrl.getDb().getNotificationRepository().insert(notification);
         }
-        if (!skipNotification) {
+        if (createNotification) {
             createNotification(notifications.size());
         }
     }

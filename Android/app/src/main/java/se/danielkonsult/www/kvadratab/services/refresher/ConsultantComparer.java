@@ -58,11 +58,13 @@ public class ConsultantComparer {
 
                 if (!existingHash.containsKey(scrapedConsultant.Id)) {
                     // Insert the consultant and link it to the correct office
+                    scrapedConsultant.OfficeId = office.Id;
                     AppCtrl.getDb().getConsultantDataRepository().insert(scrapedConsultant);
-                    AppCtrl.getDb().getConsultantDataRepository().updateOffice(scrapedConsultant.Id, office.Id);
+                    // AppCtrl.getDb().getConsultantDataRepository().updateOffice(scrapedConsultant.Id, office.Id);
 
                     // Download the image and save to file
-                    AppCtrl.getImageService().downloadConsultantBitmap(scrapedConsultant.Id);
+                    Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmap(scrapedConsultant.Id);
+                    AppCtrl.getImageService().saveConsultantBitmapToFile(scrapedConsultant.Id, bitmap);
 
                     // It's a new consultant
                     result.add(new ConsultantInsertedNotification(scrapedConsultant.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
@@ -72,8 +74,8 @@ public class ConsultantComparer {
                     ConsultantData existing = existingHash.get(scrapedConsultant.Id);
 
                     // Have the consultant moved to another office?
-                    if (existing.OfficeId != scrapedConsultant.OfficeId) {
-                        AppCtrl.getDb().getConsultantDataRepository().updateOffice(existing.Id, scrapedConsultant.OfficeId);
+                    if (existing.OfficeId != office.Id) {
+                        AppCtrl.getDb().getConsultantDataRepository().updateOffice(existing.Id, office.Id);
                         result.add(new ConsultantUpdatedOfficeNotification(scrapedConsultant.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
                     }
 

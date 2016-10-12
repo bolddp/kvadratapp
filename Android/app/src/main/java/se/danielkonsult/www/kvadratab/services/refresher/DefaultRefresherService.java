@@ -14,6 +14,7 @@ import java.util.Random;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.helpers.Constants;
+import se.danielkonsult.www.kvadratab.services.notification.ErrorNotification;
 import se.danielkonsult.www.kvadratab.services.notification.Notification;
 
 /**
@@ -27,23 +28,30 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
     // Private variables
 
     private static final String TAG = "DefaultRefresherService";
+    private Thread _refreshThread;
 
     // Private methods
 
     private void performRefresh(){
-        try {
-            List<Notification> notifications = new ArrayList<>();
+        _refreshThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<Notification> notifications = new ArrayList<>();
 
-            // Compare offices
-            notifications.addAll(OfficeComparer.compare());
-            notifications.addAll(ConsultantComparer.compare());
+                    // Compare offices
+                    notifications.addAll(OfficeComparer.compare());
+                    notifications.addAll(ConsultantComparer.compare());
 
-            // Send all notifications to the service
-            AppCtrl.getNotificationService().addAll(notifications, false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+                    // Send all notifications to the service
+                    AppCtrl.getNotificationService().addAll(notifications, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    AppCtrl.getNotificationService().add(new ErrorNotification(e.getMessage()), true);
+                }
+            }
+        });
+        _refreshThread.start();
     }
 
     @Override
@@ -52,18 +60,24 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
 
         long milliSecondsPerDay = 1000 * 60 * 60 * 24;
 
-        Random rnd = new Random();
-        int hour = rnd.nextInt(2) + 8;
-        int minutes = rnd.nextInt(60);
-
-        // The alarm that triggers a refresh should go off some time between 8:00 AM and 9:59 AM
-        // to avoid having app instances choking the web page at the same time
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minutes);
+        if (!AppCtrl.getTestFlag()) {
+            // Not in test mode : The alarm that triggers a refresh should go off some time between 8:00 AM and 9:59 AM
+            // to avoid having several app instances choking the web page at the same time
+            Random rnd = new Random();
+            int hour = rnd.nextInt(2) + 8;
+            int minutes = rnd.nextInt(60);
 
-        Log.d(TAG, String.format("Set to go off at %2d:%2d", hour, minutes));
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
+            calendar.set(Calendar.MINUTE, minutes);
+        }
+        else {
+            // Test mode is enabled, set up a refresh in 5 minutes
+            calendar.add(Calendar.MINUTE, 2);
+        }
+
+        Log.d(TAG, String.format("Set to go off at %2d:%2d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
 
         Intent refresherIntent = new Intent(AppCtrl.getApplicationContext(), DefaultRefresherService.class);
         refresherIntent.setAction(Constants.REFRESHER_INTENT_ACTION);

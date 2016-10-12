@@ -44,6 +44,7 @@
             </RelativeLayout>
             <!-- Logo -->
             <ImageView
+                android:id="@+id/imgLogo"
                 android:layout_width="match_parent"
                 android:scaleType="centerInside"
                 android:layout_height="48dp"

@@ -89,6 +89,8 @@ public class DefaultLoaderService implements LoaderService {
                 KvadratDb db = AppCtrl.getDb();
 
                 try {
+                    boolean isTest = AppCtrl.getTestFlag();
+
                     // Notify listeners that the initial load has started
                     listener.onInitialLoadStarted();
 
@@ -101,6 +103,16 @@ public class DefaultLoaderService implements LoaderService {
                     ConsultantData[] consultants = AppCtrl.getWebPageScraper().scrapeConsultants(0,0);
                     listener.onInitialLoadProgress(progress, consultants.length);
                     for (ConsultantData cd : consultants){
+                        if (isTest) {
+                            if (cd.Id == 6985) {
+                                // Skip consultant 6985 (Daniel Persson)
+                                continue;
+                            }
+                            else if (cd.Id == 7565){
+                                cd.LastName = "von Heimdahl";
+                            }
+                        }
+
                         // Save the consultant to database
                         db.getConsultantDataRepository().insert(cd);
                         // Load the consultant image and save it to disk
@@ -120,7 +132,7 @@ public class DefaultLoaderService implements LoaderService {
                     AppCtrl.getPrefsService().setHasInitialLoadingBeenPerformed(true);
 
                     // Create a notification about this
-                    AppCtrl.getNotificationService().add(new InfoNotification("Första inladdning av konsulter avslutad"), true);
+                    AppCtrl.getNotificationService().add(new InfoNotification("Första inladdning av konsulter avslutad"), false);
 
                     // All done for now, notify
                     listener.onInitialLoadingCompleted();

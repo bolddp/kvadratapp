@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Random;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
-import se.danielkonsult.www.kvadratab.entities.OfficeData;
-import se.danielkonsult.www.kvadratab.entities.SummaryData;
 import se.danielkonsult.www.kvadratab.helpers.Constants;
 import se.danielkonsult.www.kvadratab.services.notification.Notification;
 
@@ -41,7 +39,7 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
             notifications.addAll(ConsultantComparer.compare());
 
             // Send all notifications to the service
-            AppCtrl.getNotificationService().addNotifications(notifications);
+            AppCtrl.getNotificationService().addAll(notifications);
         } catch (Exception e) {
             e.printStackTrace();
         }

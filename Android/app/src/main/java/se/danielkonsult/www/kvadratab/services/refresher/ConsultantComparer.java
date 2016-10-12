@@ -81,7 +81,7 @@ public class ConsultantComparer {
                     if (!existing.FirstName.equals(scrapedConsultant.FirstName) ||
                         !existing.LastName.equals(scrapedConsultant.LastName)) {
                         AppCtrl.getDb().getConsultantDataRepository().updateName(existing.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName);
-                        result.add(new ConsultantUpdatedNameNotification(scrapedConsultant.Id, existing.FirstName, existing.LastName, scrapedConsultant.FirstName, scrapedConsultant.LastName));
+                        result.add(new ConsultantUpdatedNameNotification(scrapedConsultant.Id, existing.FirstName, existing.LastName, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
                     }
 
                     // Should we compare bitmaps this time (determined earlier)?

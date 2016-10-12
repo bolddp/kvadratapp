@@ -10,7 +10,13 @@ import se.danielkonsult.www.kvadratab.AppCtrl;
 public class DefaultNotificationService implements NotificationService {
 
     @Override
-    public void addNotifications(List<Notification> notifications) {
+    public void add(Notification notification) {
+        // Add to database
+        AppCtrl.getDb().getNotificationRepository().insert(notification);
+    }
+
+    @Override
+    public void addAll(List<Notification> notifications) {
         // Add to database
         for (Notification notification : notifications){
             AppCtrl.getDb().getNotificationRepository().insert(notification);

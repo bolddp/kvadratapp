@@ -19,6 +19,8 @@ public class NotificationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
+        setTitle("Händelser");
+
         _lvMain = (ListView) findViewById(R.id.lvMain);
         Notification[] notifications = AppCtrl.getDb().getNotificationRepository().getNotifications(Constants.NOTIFICATIONS_MAX_COUNT);
 

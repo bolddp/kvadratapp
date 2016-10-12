@@ -21,6 +21,10 @@ import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.services.initialloader.LoaderService;
 import se.danielkonsult.www.kvadratab.services.initialloader.LoaderServiceListener;
+import se.danielkonsult.www.kvadratab.services.notification.ConsultantDeletedNotification;
+import se.danielkonsult.www.kvadratab.services.notification.ConsultantInsertedNotification;
+import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedBitmapNotification;
+import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedNameNotification;
 
 public class MainActivity extends BaseActivity implements LoaderServiceListener {
 
@@ -148,6 +152,15 @@ public class MainActivity extends BaseActivity implements LoaderServiceListener 
                     gotoConsultantListActivity();
             }
         }, 1500);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppCtrl.getNotificationService().add(new ConsultantInsertedNotification(6985, "Daniel", "Persson", "Jönköping"));
+        AppCtrl.getNotificationService().add(new ConsultantDeletedNotification(6985, "Daniel", "Persson", "Jönköping"));
+        AppCtrl.getNotificationService().add(new ConsultantUpdatedBitmapNotification(7829, "Sebastian", "Sjöberg", "Stockholm"));
+        AppCtrl.getNotificationService().add(new ConsultantUpdatedNameNotification(7565, "Roland", "Heimdahl", "Roland", "von Heimdahl", "Jönköping"));
     }
 
     @Override

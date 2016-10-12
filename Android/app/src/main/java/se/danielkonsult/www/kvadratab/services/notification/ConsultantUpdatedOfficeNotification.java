@@ -1,5 +1,7 @@
 package se.danielkonsult.www.kvadratab.services.notification;
 
+import android.text.Html;
+
 /**
  * Created by Daniel on 2016-10-10.
  */
@@ -23,6 +25,11 @@ public class ConsultantUpdatedOfficeNotification extends Notification {
     @Override
     public String getHeader() {
         return HEADER;
+    }
+
+    @Override
+    public String getDetails() {
+        return String.format("<b>%s %s</b> bytt kontor till <b>%s</b>", FirstName, LastName, NewOffice);
     }
 
     public int ConsultantId;

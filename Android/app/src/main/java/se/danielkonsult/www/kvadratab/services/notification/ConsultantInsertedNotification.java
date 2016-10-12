@@ -1,6 +1,7 @@
 package se.danielkonsult.www.kvadratab.services.notification;
 
 import android.graphics.Bitmap;
+import android.text.Html;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
 
@@ -32,6 +33,11 @@ public class ConsultantInsertedNotification extends Notification {
     @Override
     public String getHeader() {
         return HEADER;
+    }
+
+    @Override
+    public String getDetails() {
+        return String.format("<b>%s %s, %s</b> är tillagd som konsult", FirstName, LastName, Office);
     }
 
     // Public fields

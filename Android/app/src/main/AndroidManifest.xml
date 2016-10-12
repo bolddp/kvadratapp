@@ -31,7 +31,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activities.NotificationActivity"></activity>
+        <activity android:name=".activities.NotificationActivity"
+            android:theme="@style/AppThemeWithActionBar"></activity>
     </application>
 
 </manifest>

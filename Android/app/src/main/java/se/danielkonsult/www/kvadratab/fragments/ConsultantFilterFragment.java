@@ -1,9 +1,11 @@
 package se.danielkonsult.www.kvadratab.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,6 +23,7 @@ import java.util.List;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.R;
+import se.danielkonsult.www.kvadratab.activities.NotificationActivity;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.services.data.ConsultantFilter;
 
@@ -37,6 +40,7 @@ public class ConsultantFilterFragment extends Fragment {
     private EditText _editName;
     private FlexboxLayout _layoutOfficeButtons;
     private Button _btnClearText;
+    private FloatingActionButton _btnNotifications;
 
     private List<Integer> _officeIds = new ArrayList<>();
 
@@ -78,6 +82,11 @@ public class ConsultantFilterFragment extends Fragment {
         }
 
         _editName.setText(currentFilter.getName());
+    }
+
+    private void gotoNotificationActivity() {
+        Intent intent = new Intent(getContext(), NotificationActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -153,6 +162,14 @@ public class ConsultantFilterFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 _editName.getText().clear();
+            }
+        });
+
+        _btnNotifications = (FloatingActionButton) view.findViewById(R.id.fabNotifications);
+        _btnNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoNotificationActivity();
             }
         });
 

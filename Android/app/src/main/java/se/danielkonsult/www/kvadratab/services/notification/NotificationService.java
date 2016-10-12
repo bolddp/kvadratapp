@@ -7,5 +7,7 @@ import java.util.List;
  */
 public interface NotificationService {
 
-    void addNotifications(List<Notification> notifications);
+    void add(Notification notification);
+
+    void addAll(List<Notification> notifications);
 }

@@ -1,5 +1,7 @@
 package se.danielkonsult.www.kvadratab.services.notification;
 
+import android.text.Html;
+
 /**
  * A notification for a consultant that has been removed
  * from the web page.
@@ -23,6 +25,11 @@ public class ConsultantDeletedNotification extends Notification {
     @Override
     public String getHeader() {
         return HEADER;
+    }
+
+    @Override
+    public String getDetails() {
+        return String.format("<b>%s %s, %s</b> har tagits bort ur konsultregistret", FirstName, LastName, Office);
     }
 
     // Fields

@@ -2,6 +2,7 @@ package se.danielkonsult.www.kvadratab.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class NotificationAdapter extends ArrayAdapter<Notification> {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) _context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.adapter_consultant_list, null);
+            convertView = inflater.inflate(R.layout.adapter_notification_list, null);
         }
 
         Notification item = getItem(position);
@@ -44,7 +45,7 @@ public class NotificationAdapter extends ArrayAdapter<Notification> {
 
         Bitmap bitmap = item.getBitmap();
         if (bitmap == null){
-            imgMain.setVisibility(View.INVISIBLE);
+            imgMain.setVisibility(View.GONE);
         }
         else {
             imgMain.setImageBitmap(bitmap);
@@ -52,7 +53,7 @@ public class NotificationAdapter extends ArrayAdapter<Notification> {
         }
 
         tvHeader.setText(item.getHeader());
-        tvDetails.setText(item.getDetails());
+        tvDetails.setText(Html.fromHtml(item.getDetails()));
 
         return convertView;
     }

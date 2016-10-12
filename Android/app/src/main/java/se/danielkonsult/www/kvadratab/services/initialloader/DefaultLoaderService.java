@@ -10,6 +10,7 @@ import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.entities.SummaryData;
+import se.danielkonsult.www.kvadratab.services.notification.InfoNotification;
 
 /**
  * Performs the initial loading of consultant data from the
@@ -117,6 +118,9 @@ public class DefaultLoaderService implements LoaderService {
 
                     // Indicate that a complete initial load has been performed
                     AppCtrl.getPrefsService().setHasInitialLoadingBeenPerformed(true);
+
+                    // Create a notification about this
+                    AppCtrl.getNotificationService().add(new InfoNotification("Initial inladdning av konsulter avslutad"));
 
                     // All done for now, notify
                     listener.onInitialLoadingCompleted();

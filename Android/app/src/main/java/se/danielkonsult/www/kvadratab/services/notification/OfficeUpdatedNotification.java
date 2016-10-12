@@ -1,5 +1,7 @@
 package se.danielkonsult.www.kvadratab.services.notification;
 
+import android.text.Html;
+
 /**
  * Created by Daniel on 2016-10-09.
  */
@@ -21,6 +23,11 @@ public class OfficeUpdatedNotification extends Notification {
     @Override
     public String getHeader() {
         return HEADER;
+    }
+
+    @Override
+    public String getDetails() {
+        return String.format("Kontor %s har bytt namn till <b>%s</b>", OldName, NewName);
     }
 
     // Fields

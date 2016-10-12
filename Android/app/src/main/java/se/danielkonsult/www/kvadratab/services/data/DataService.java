@@ -11,6 +11,11 @@ public interface DataService {
     void setListener(DataServiceListener listener);
 
     /**
+     * Resets the service so it has to reload its contents from the database.
+     */
+    void reset();
+
+    /**
      * Gets a list of all offices.
      * @return
      */

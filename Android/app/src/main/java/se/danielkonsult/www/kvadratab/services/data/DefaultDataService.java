@@ -111,52 +111,11 @@ public class DefaultDataService implements DataService {
         _listener = listener;
     }
 
-//    @Override
-//    public void start() {
-//        // Start on a separate thread to not lock up GUI
-//        Runnable startRunnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                // Do we have any consultants in the database yet? And how long is it since the last refresh?
-//                KvadratDb db = AppCtrl.getDb();
-//                int consultantCount = db.getConsultantCount();
-//
-//                boolean isDataOld = false;
-//                if (consultantCount > 0){
-//                    // There are consultants, but how long since they were refreshed?
-//                    int hoursSinceLastRefresh = AppCtrl.getPrefsService().getHoursSinceLastRefresh();
-//                    if (hoursSinceLastRefresh > REFRESH_INTERVAL_HOURS){
-//                        // Drop the database and then get a new handle to it
-//                        AppCtrl.dropDatabase();
-//                        db = AppCtrl.getDb();
-//
-//                        // Delete all consultant images
-//                        AppCtrl.getImageService().deleteAllConsultantImages();
-//
-//                        isDataOld = true;
-//                    }
-//                }
-//
-//                if ((consultantCount == 0) || isDataOld) {
-//                    InitialLoader loader = new InitialLoader(db, _listeners);
-//                    loader.run();
-//                }
-//                else {
-//                    // Prep by loading the consultants before saying we're finished
-//                    setOffices(db.getAllOffices());
-//                    setAllConsultants(db.getAllConsultants(true));
-//
-//                    // Signal that the data already is available, but also
-//                    // check if it's time for a refresh of the data.
-//                    _listeners.onFilteredConsultantsUpdated();
-//
-////                    Refresher refresher = new Refresher(db, _listeners);
-////                    refresher.run();
-//                }
-//            }
-//        };
-//        AsyncTask.execute(startRunnable);
-//    }
+    @Override
+    public void reset() {
+        _allConsultants = null;
+        _offices = null;
+    }
 
     @Override
     public OfficeData[] getOffices() {

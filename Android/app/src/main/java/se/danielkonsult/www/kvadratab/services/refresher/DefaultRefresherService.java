@@ -44,7 +44,12 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
                     notifications.addAll(ConsultantComparer.compare());
 
                     // Send all notifications to the service
-                    AppCtrl.getNotificationService().addAll(notifications, true);
+                    if (notifications.size() > 0) {
+                        // Force a refresh of the cached contents
+                        AppCtrl.getDataService().reset();
+
+                        AppCtrl.getNotificationService().addAll(notifications, true);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     AppCtrl.getNotificationService().add(new ErrorNotification(e.getMessage()), true);
@@ -66,15 +71,16 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
             // Not in test mode : The alarm that triggers a refresh should go off some time between 8:00 AM and 9:59 AM
             // to avoid having several app instances choking the web page at the same time
             Random rnd = new Random();
-            int hour = rnd.nextInt(2) + 8;
+            int hour = rnd.nextInt(2)+2;
             int minutes = rnd.nextInt(60);
 
+            calendar.add(Calendar.HOUR, 24);
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minutes);
         }
         else {
             // Test mode is enabled, set up a refresh in 5 minutes
-            calendar.add(Calendar.MINUTE, 2);
+            calendar.add(Calendar.MINUTE, 5);
         }
 
         Log.d(TAG, String.format("Set to go off at %2d:%2d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));

@@ -1,5 +1,6 @@
 package se.danielkonsult.www.kvadratab.services.notification;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.Html;
 
@@ -9,7 +10,7 @@ import se.danielkonsult.www.kvadratab.AppCtrl;
  * A notification about a consultant whose profile
  * picture has been updated.
  */
-public class ConsultantUpdatedBitmapNotification extends Notification {
+public class ConsultantUpdatedBitmapNotification extends Notification implements ClickableNotification {
 
     private static final String HEADER = "Ny profilbild";
 
@@ -38,6 +39,11 @@ public class ConsultantUpdatedBitmapNotification extends Notification {
     @Override
     public String getDetails() {
         return String.format("<b>%s %s, %s</b> har uppdaterat sin profilbild", FirstName, LastName, Office);
+    }
+
+    @Override
+    public void click(Context context) {
+        gotoConsultantDetailsActivity(context, ConsultantId);
     }
 
     // Fields

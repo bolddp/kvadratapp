@@ -1,11 +1,24 @@
 package se.danielkonsult.www.kvadratab.services.notification;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+
+import se.danielkonsult.www.kvadratab.activities.ConsultantDetailsActivity;
+import se.danielkonsult.www.kvadratab.helpers.Constants;
 
 /**
  * Base class for notifications, containing common properties.
  */
 public abstract class Notification {
+
+    // Protected methods
+
+    protected void gotoConsultantDetailsActivity(Context context, int consultantId) {
+        Intent intent = new Intent(context, ConsultantDetailsActivity.class);
+        intent.putExtra(Constants.EXTRA_CONSULTANT_ID, consultantId);
+        context.startActivity(intent);
+    }
 
     // Constructor
 

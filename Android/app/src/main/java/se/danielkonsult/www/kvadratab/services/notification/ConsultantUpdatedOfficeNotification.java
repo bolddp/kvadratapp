@@ -1,11 +1,12 @@
 package se.danielkonsult.www.kvadratab.services.notification;
 
+import android.content.Context;
 import android.text.Html;
 
 /**
  * Created by Daniel on 2016-10-10.
  */
-public class ConsultantUpdatedOfficeNotification extends Notification {
+public class ConsultantUpdatedOfficeNotification extends Notification implements ClickableNotification {
 
     private static final String HEADER = "Konsult har bytt kontor";
 
@@ -31,6 +32,13 @@ public class ConsultantUpdatedOfficeNotification extends Notification {
     public String getDetails() {
         return String.format("<b>%s %s</b> bytt kontor till <b>%s</b>", FirstName, LastName, NewOffice);
     }
+
+    @Override
+    public void click(Context context) {
+        gotoConsultantDetailsActivity(context, ConsultantId);
+    }
+
+    // Fields
 
     public int ConsultantId;
     public String FirstName;

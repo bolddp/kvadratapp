@@ -1,5 +1,6 @@
 package se.danielkonsult.www.kvadratab.services.notification;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.Html;
 
@@ -8,7 +9,7 @@ import se.danielkonsult.www.kvadratab.AppCtrl;
 /**
  * Notification for when the name of a consultant has been changed.
  */
-public class ConsultantUpdatedNameNotification extends Notification {
+public class ConsultantUpdatedNameNotification extends Notification implements ClickableNotification {
 
     private static final String HEADER = "Namnbyte";
 
@@ -39,6 +40,11 @@ public class ConsultantUpdatedNameNotification extends Notification {
     @Override
     public String getDetails() {
         return String.format("%s %s, %s har bytt namn till <b>%s %s</b>", OldFirstName, OldLastName, Office, NewFirstName, NewLastName);
+    }
+
+    @Override
+    public void click(Context context) {
+        gotoConsultantDetailsActivity(context, ConsultantId);
     }
 
     // Fields

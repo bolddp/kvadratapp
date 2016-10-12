@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 import se.danielkonsult.www.kvadratab.R;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
+import se.danielkonsult.www.kvadratab.services.notification.ClickableNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantInsertedNotification;
 import se.danielkonsult.www.kvadratab.services.notification.Notification;
 
@@ -57,4 +58,11 @@ public class NotificationAdapter extends ArrayAdapter<Notification> {
 
         return convertView;
     }
-}
+
+    /**
+     * Notifications that aren't clickable should not appear so.
+     */
+    @Override
+    public boolean isEnabled(int position) {
+        return getItem(position) instanceof ClickableNotification;
+    }}

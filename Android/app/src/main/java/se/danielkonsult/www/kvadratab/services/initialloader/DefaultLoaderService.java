@@ -120,7 +120,7 @@ public class DefaultLoaderService implements LoaderService {
                     AppCtrl.getPrefsService().setHasInitialLoadingBeenPerformed(true);
 
                     // Create a notification about this
-                    AppCtrl.getNotificationService().add(new InfoNotification("Initial inladdning av konsulter avslutad"));
+                    AppCtrl.getNotificationService().add(new InfoNotification("Första inladdning av konsulter avslutad"), true);
 
                     // All done for now, notify
                     listener.onInitialLoadingCompleted();

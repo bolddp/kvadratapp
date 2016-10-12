@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface NotificationService {
 
-    void add(Notification notification);
+    void add(Notification notification, boolean skipNotification);
 
-    void addAll(List<Notification> notifications);
+    void addAll(List<Notification> notifications, boolean skipNotification);
 }

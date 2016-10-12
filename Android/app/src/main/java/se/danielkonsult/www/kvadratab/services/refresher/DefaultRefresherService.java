@@ -39,7 +39,7 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
             notifications.addAll(ConsultantComparer.compare());
 
             // Send all notifications to the service
-            AppCtrl.getNotificationService().addAll(notifications);
+            AppCtrl.getNotificationService().addAll(notifications, false);
         } catch (Exception e) {
             e.printStackTrace();
         }

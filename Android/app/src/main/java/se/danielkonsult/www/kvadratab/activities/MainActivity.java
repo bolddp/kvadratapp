@@ -157,10 +157,10 @@ public class MainActivity extends BaseActivity implements LoaderServiceListener 
     @Override
     protected void onResume() {
         super.onResume();
-        AppCtrl.getNotificationService().add(new ConsultantInsertedNotification(6985, "Daniel", "Persson", "Jönköping"));
-        AppCtrl.getNotificationService().add(new ConsultantDeletedNotification(6985, "Daniel", "Persson", "Jönköping"));
-        AppCtrl.getNotificationService().add(new ConsultantUpdatedBitmapNotification(7829, "Sebastian", "Sjöberg", "Stockholm"));
-        AppCtrl.getNotificationService().add(new ConsultantUpdatedNameNotification(7565, "Roland", "Heimdahl", "Roland", "von Heimdahl", "Jönköping"));
+        AppCtrl.getNotificationService().add(new ConsultantInsertedNotification(6985, "Daniel", "Persson", "Jönköping"), true);
+        AppCtrl.getNotificationService().add(new ConsultantDeletedNotification(6985, "Daniel", "Persson", "Jönköping"), true);
+        AppCtrl.getNotificationService().add(new ConsultantUpdatedBitmapNotification(7829, "Sebastian", "Sjöberg", "Stockholm"), true);
+        AppCtrl.getNotificationService().add(new ConsultantUpdatedNameNotification(7565, "Roland", "Heimdahl", "Roland", "von Heimdahl", "Jönköping"), false);
     }
 
     @Override

@@ -61,15 +61,8 @@ public class KvadratDb extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         for (int version = oldVersion;version < newVersion-1;version++){
-            if (version == 1){
-                // Update consultant table
-                db.execSQL(DbSpec.ConsultantEntry.SQL_ADD_COLUMN_OVERVIEW);
-                db.execSQL(DbSpec.ConsultantEntry.SQL_ADD_COLUMN_DETAILSTIMESTAMP);
-
-                // Create notification table
-                db.execSQL(DbSpec.NotificationEntry.SQL_CREATE);
-
-                db.execSQL(DbSpec.ConsultantCompetenceEntry.SQL_CREATE);
+            if (version == 2){
+                // TBD Upgrade from version 2 to version 3
             }
         }
     }

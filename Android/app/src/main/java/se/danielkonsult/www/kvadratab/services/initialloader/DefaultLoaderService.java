@@ -10,6 +10,7 @@ import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.entities.SummaryData;
+import se.danielkonsult.www.kvadratab.services.notification.ErrorNotification;
 import se.danielkonsult.www.kvadratab.services.notification.InfoNotification;
 
 /**
@@ -141,6 +142,8 @@ public class DefaultLoaderService implements LoaderService {
                 catch (Throwable ex){
                     // Notify listeners of the problem
                     listener.onError(TAG, ex.getMessage());
+                    // Also create a notification
+                    AppCtrl.getNotificationService().add(new ErrorNotification(ex.getMessage()), true);
                 }
             }
         });

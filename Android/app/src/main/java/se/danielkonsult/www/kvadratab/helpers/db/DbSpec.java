@@ -22,8 +22,6 @@ public class DbSpec {
                 "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_NAME_ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP +
                 COLUMN_NAME_NAME + TEXT_TYPE + " )";
-        public static final String SQL_DELETE =
-                "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
     public static class TagEntry {
@@ -35,8 +33,6 @@ public class DbSpec {
                 "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_NAME_ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP +
                 COLUMN_NAME_NAME + TEXT_TYPE + " )";
-        public static final String SQL_DELETE =
-                "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
     public static class ConsultantEntry {
@@ -63,12 +59,6 @@ public class DbSpec {
                         "FOREIGN KEY(" + COLUMN_NAME_OFFICEID + ") REFERENCES " +
                         OfficeEntry.TABLE_NAME + "(" + OfficeEntry.COLUMN_NAME_ID + "))";
 
-        public static final String SQL_ADD_COLUMN_OVERVIEW = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_OVERVIEW + TEXT_TYPE;
-        public static final String SQL_ADD_COLUMN_DETAILSTIMESTAMP = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_DETAILSTIMESTAMP + INTEGER_TYPE;
-
-        public static final String SQL_DELETE =
-                "DROP TABLE IF EXISTS " + TABLE_NAME;
-
         public static final String SQL_COUNT_ALL = "SELECT COUNT(*) FROM " + TABLE_NAME;
 
         public static final String SQL_UPDATE_OFFICE_ID = "UPDATE " + TABLE_NAME +
@@ -94,9 +84,6 @@ public class DbSpec {
                         ConsultantEntry.TABLE_NAME + "(" + ConsultantEntry.COLUMN_NAME_ID + ")," +
                         "FOREIGN KEY(" + COLUMN_NAME_TAG_ID + ") REFERENCES " +
                         TagEntry.TABLE_NAME + "(" + TagEntry.COLUMN_NAME_ID + "))";
-
-        public static final String SQL_DELETE =
-                "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
     public static class ConsultantCompetenceEntry {
@@ -135,10 +122,5 @@ public class DbSpec {
                         COLUMN_NAME_TIMESTAMP + INTEGER_TYPE + COMMA_SEP +
                         COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
                         COLUMN_NAME_DATA + TEXT_TYPE + ")";
-
-        public static final String SQL_DELETE =
-                "DROP TABLE IF EXISTS " + TABLE_NAME;
-
-
     }
 }

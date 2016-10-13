@@ -44,7 +44,7 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
                     // If in test mode, always inform that a new scan has been performed
                     if (AppCtrl.getPrefsService().getTestMode()){
                         // Add a notification that a scan has been performed
-                        notifications.add(new InfoNotification("performRefresh"));
+                        notifications.add(new InfoNotification("Refresh av data"));
                     }
 
                     // Compare offices
@@ -109,6 +109,10 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
 
         Log.d(TAG, "onReceive! action: " + intent.getAction());
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+            Log.d(TAG, "ACTION_BOOT_COMPLETED");
+            if (AppCtrl.getPrefsService().getTestMode()){
+                AppCtrl.getNotificationService().add(new InfoNotification("ensureStarted on Boot completed"), true);
+            }
             ensureStarted();
         }
         else if (intent.getAction().equals(Constants.REFRESHER_INTENT_ACTION)) {

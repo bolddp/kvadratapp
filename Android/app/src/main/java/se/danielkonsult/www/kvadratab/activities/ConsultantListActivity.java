@@ -108,6 +108,11 @@ public class ConsultantListActivity extends AppCompatActivity implements Consult
 
         // Perform an initial update of the consultants list
         onFilteredConsultantsUpdated();
+
+        // Inform of test mode at startup
+        if (AppCtrl.getPrefsService().getTestMode()){
+            Toast.makeText(this, "Test mode is ON", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

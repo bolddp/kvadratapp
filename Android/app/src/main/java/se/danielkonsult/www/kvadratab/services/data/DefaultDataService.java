@@ -101,11 +101,6 @@ public class DefaultDataService implements DataService {
         return result.toArray(new ConsultantData[result.size()]);
     }
 
-    // Constructor
-    public DefaultDataService() {
-        _filter = new ConsultantFilter();
-    }
-
     @Override
     public void setListener(DataServiceListener listener) {
         _listener = listener;
@@ -134,7 +129,7 @@ public class DefaultDataService implements DataService {
     @Override
     public ConsultantData[] getFilteredConsultants() {
         if (_filteredConsultants == null)
-            _filteredConsultants = applyFilter(_filter);
+            _filteredConsultants = applyFilter(getFilter());
 
         return _filteredConsultants;
     }
@@ -177,7 +172,7 @@ public class DefaultDataService implements DataService {
     @Override
     public void useTriedFilter() {
         if (_triedFilterConsultants != null){
-            _filter = _triedFilter;
+            setFilter(_triedFilter);
             setFilteredConsultants(_triedFilterConsultants);
 
             _triedFilterConsultants = null;
@@ -188,10 +183,17 @@ public class DefaultDataService implements DataService {
     public void setFilter(ConsultantFilter filter) {
         _filter = filter;
         applyFilter(_filter);
+        // Save to prefs as well
+        AppCtrl.getPrefsService().setConsultantFilter(_filter);
     }
 
     @Override
     public ConsultantFilter getFilter() {
+        if (_filter == null)
+            _filter = AppCtrl.getPrefsService().getConsultantFilter();
+        if (_filter == null)
+            _filter = new ConsultantFilter();
+
         return _filter;
     }
 }

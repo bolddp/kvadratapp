@@ -89,7 +89,7 @@ public class DefaultLoaderService implements LoaderService {
                 KvadratDb db = AppCtrl.getDb();
 
                 try {
-                    boolean isTest = AppCtrl.getTestFlag();
+                    boolean isTest = AppCtrl.getPrefsService().getTestMode();
 
                     // Notify listeners that the initial load has started
                     listener.onInitialLoadStarted();
@@ -109,6 +109,7 @@ public class DefaultLoaderService implements LoaderService {
                                 continue;
                             }
                             else if (cd.Id == 7565){
+                                // Change last name of Roland Heimdahl
                                 cd.LastName = "von Heimdahl";
                             }
                         }

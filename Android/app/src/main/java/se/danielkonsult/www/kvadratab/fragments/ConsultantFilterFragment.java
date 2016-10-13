@@ -47,8 +47,6 @@ public class ConsultantFilterFragment extends Fragment {
     // Private methods
 
     private void setupFragment() {
-        ConsultantFilter currentFilter = AppCtrl.getDataService().getFilter();
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final float scale = getContext().getResources().getDisplayMetrics().density;
 
@@ -57,7 +55,6 @@ public class ConsultantFilterFragment extends Fragment {
             Button btn = (Button) inflater.inflate(R.layout.button_office_filter, null);
             btn.setText(od.Name);
             btn.setTag(od.Id);
-            btn.setSelected(currentFilter.getOfficeIds().contains(od.Id));
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -79,6 +76,18 @@ public class ConsultantFilterFragment extends Fragment {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) btn.getLayoutParams();
             params.topMargin = (int) (8 * scale + 0.5f);
             params.rightMargin = (int) (8 * scale + 0.5f);
+        }
+    }
+
+    private void refreshFragment(){
+        ConsultantFilter currentFilter = AppCtrl.getDataService().getFilter();
+
+        _officeIds = new ArrayList<>(currentFilter.getOfficeIds());
+
+        for (int a = 0;a<_layoutOfficeButtons.getChildCount();a++){
+            Button btn = (Button) _layoutOfficeButtons.getChildAt(a);
+            int id = (int) btn.getTag();
+            btn.setSelected(currentFilter.getOfficeIds().contains(id));
         }
 
         _editName.setText(currentFilter.getName());
@@ -177,6 +186,12 @@ public class ConsultantFilterFragment extends Fragment {
 
         view.setVisibility(View.GONE);
         return  view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshFragment();
     }
 
     /**

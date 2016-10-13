@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +16,7 @@ import java.util.Random;
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.helpers.Constants;
 import se.danielkonsult.www.kvadratab.services.notification.ErrorNotification;
+import se.danielkonsult.www.kvadratab.services.notification.InfoNotification;
 import se.danielkonsult.www.kvadratab.services.notification.Notification;
 
 /**
@@ -38,6 +40,12 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
             public void run() {
                 try {
                     List<Notification> notifications = new ArrayList<>();
+
+                    // If in test mode, always inform that a new scan has been performed
+                    if (AppCtrl.getPrefsService().getTestMode()){
+                        // Add a notification that a scan has been performed
+                        notifications.add(new InfoNotification("performRefresh"));
+                    }
 
                     // Compare offices
                     notifications.addAll(OfficeComparer.compare());
@@ -67,7 +75,7 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        if (!AppCtrl.getTestFlag()) {
+        if (!AppCtrl.getPrefsService().getTestMode()) {
             // Not in test mode : The alarm that triggers a refresh should go off some time between 8:00 AM and 9:59 AM
             // to avoid having several app instances choking the web page at the same time
             Random rnd = new Random();
@@ -79,8 +87,8 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
             calendar.set(Calendar.MINUTE, minutes);
         }
         else {
-            // Test mode is enabled, set up a refresh in 5 minutes
-            calendar.add(Calendar.MINUTE, 5);
+            // Test mode is enabled, set up a refresh in a few minutes
+            calendar.add(Calendar.MINUTE, 3);
         }
 
         Log.d(TAG, String.format("Set to go off at %2d:%2d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));

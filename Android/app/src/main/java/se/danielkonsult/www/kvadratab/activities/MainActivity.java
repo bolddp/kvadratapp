@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.R;
@@ -131,19 +132,19 @@ public class MainActivity extends BaseActivity implements LoaderServiceListener 
         _progbarMain = (ProgressBar) findViewById(R.id.progbarMain);
         _progbarMain.setProgress(0);
 
-        // A long click on the logo activates test mode, which will manipulate
+        // A long click on the logo toggles test mode, which will manipulate
         // the initial loading to omit some data so the first refresh will find
         // some interesting data
         _imgLogo = (ImageView) findViewById(R.id.imgLogo);
         _imgLogo.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                AppCtrl.setTestFlag(true);
+                boolean testMode = !AppCtrl.getPrefsService().getTestMode();
+                AppCtrl.getPrefsService().setTestMode(testMode);
+                Toast.makeText(MainActivity.this, String.format("Test mode is %s", (testMode ? "ON" : "OFF")), Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
-
-        // this.deleteDatabase(KvadratDb.DATABASE_NAME);
 
         AppCtrl.setApplicationContext(getApplicationContext());
 

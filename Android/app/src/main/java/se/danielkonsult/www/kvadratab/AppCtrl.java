@@ -137,12 +137,4 @@ public class AppCtrl {
     public static void setPrefsService(PrefsService prefsService) {
         _prefsService = prefsService;
     }
-
-    public static boolean getTestFlag(){
-        return _testFlag;
-    }
-
-    public static void setTestFlag(boolean value) {
-        _testFlag = value;
-    }
 }

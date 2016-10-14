@@ -10,7 +10,7 @@ Appen finns här:
 
 # Versionshistorik
 
-v1.0 - 2016-10-13
+## v1.0 - 2016-10-13
 
 * Smartare scanning, en gång per dag
 * Visning av enskild konsultprofil
@@ -20,4 +20,4 @@ v1.0 - 2016-10-13
  * Uppdaterad profilbild på konsult
  * m.fl.
 
-v0.2 - Första officiella versionen
+## v0.2 - Första officiella versionen

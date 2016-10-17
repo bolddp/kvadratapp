@@ -8,7 +8,11 @@ Appen finns här:
 * Android - [Google Play](https://play.google.com/store/apps/details?id=se.danielkonsult.www.kvadratab)
 * iOS - TBD
 
-# Versionshistorik
+# Versionshistorik Android
+
+## v1.1 - 2016-10-17
+
+* Fixade bugg som fick appen att krascha när händelse-vyn öppnades
 
 ## v1.0 - 2016-10-13
 

@@ -5,7 +5,6 @@ import android.content.Context;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.helpers.scraper.DefaultWebPageScraper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
-import se.danielkonsult.www.kvadratab.repositories.notification.DefaultNotificationRepository;
 import se.danielkonsult.www.kvadratab.services.data.DataService;
 import se.danielkonsult.www.kvadratab.services.data.DefaultDataService;
 import se.danielkonsult.www.kvadratab.services.initialloader.DefaultLoaderService;

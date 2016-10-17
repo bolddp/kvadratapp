@@ -104,8 +104,9 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
     @Override
     public void onReceive(Context context, Intent intent) {
         // Make sure we have a context to work with
-        if (AppCtrl.getApplicationContext() == null)
+        if (AppCtrl.getApplicationContext() == null) {
             AppCtrl.setApplicationContext(context);
+        }
 
         Log.d(TAG, "onReceive! action: " + intent.getAction());
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {

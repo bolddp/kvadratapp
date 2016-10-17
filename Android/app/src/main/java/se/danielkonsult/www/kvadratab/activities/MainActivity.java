@@ -146,8 +146,6 @@ public class MainActivity extends BaseActivity implements LoaderServiceListener 
             }
         });
 
-        AppCtrl.setApplicationContext(getApplicationContext());
-
         // Start initial loading or goto consultant list activity
         _handler.postDelayed(new Runnable() {
             @Override

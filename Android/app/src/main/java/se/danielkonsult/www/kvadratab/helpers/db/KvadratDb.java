@@ -56,7 +56,7 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        for (int version = oldVersion;version < newVersion-1;version++){
+        for (int version = oldVersion;version < newVersion;version++){
             if (version == 2){
                 // Updating from db version 2 to 3
                 db.execSQL(DbSpec.ConsultantEntry.SQL_ADDCOLUMN_TELEPHONENUMBER);

@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.HashMap;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
@@ -170,6 +171,23 @@ public class ScraperTests {
             Assert.assertTrue(tagData.Id > 0);
             Assert.assertTrue(tagData.Name != null && tagData.Name != "");
         }
+    }
+
+    @Test
+    public void shouldScrapeAdministrationFromWebPage() throws IOException {
+        ConsultantData[] consultantDatas = new DefaultWebPageScraper().scrapeAdministration();
+        Assert.assertNotNull(consultantDatas);
+
+        // At least 10 people should be found
+        Assert.assertTrue(consultantDatas.length > 10);
+
+        // Create a hash from the consultants first and last name
+        HashMap<String, ConsultantData> cHash = new HashMap<>();
+        for (ConsultantData cd : consultantDatas)
+            cHash.put(cd.FirstName + " " + cd.LastName, cd);
+
+        Assert.assertTrue(cHash.containsKey("Mathias Bransmo"));
+        Assert.assertTrue(cHash.containsKey("Marianne Wallgren"));
     }
 
     /**

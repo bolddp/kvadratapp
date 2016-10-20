@@ -4,9 +4,11 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
@@ -26,6 +28,7 @@ public class DefaultWebPageScraper implements WebPageScraper {
     private static final String SCRAPE_ALLCONSULTANTS_URL = "http://www.kvadrat.se/wp-content/themes/blocks/ext/consultdata_new.php";
     private static final String SCRAPE_SUMMARYDATA_URL = "http://www.kvadrat.se/konsulter/konsulter/";
     private static final String SCRAPE_CONSULTANTDETAILS_URL = "http://www.kvadrat.se/profil/?id=%d";
+    private static final String SCRAPE_ADMINISTRATION_OFFICES = "http://www.kvadrat.se/kontakt/";
 
     private static final int STD_TIMEOUT = 10000;
     private static final String USER_AGENT = "KvadratApp/1.0";
@@ -41,6 +44,37 @@ public class DefaultWebPageScraper implements WebPageScraper {
         offices.add(new OfficeData(Constants.ADMINISTRATION_OFFICE_ID, Constants.ADMINISTRATION_OFFICE_NAME));
 
         summaryData.OfficeDatas = offices.toArray(new OfficeData[offices.size()]);
+    }
+
+    private List<ConsultantData> scrapeAdministrationDetails(String adminUrl) throws IOException {
+        HttpURLConnection httpCon = null;
+        InputStream is = null;
+        try {
+            URL url = new URL(adminUrl);
+            httpCon = (HttpURLConnection) url.openConnection();
+            httpCon.setConnectTimeout(STD_TIMEOUT);
+            httpCon.setRequestProperty("User-Agent", USER_AGENT);
+            httpCon.setRequestProperty("Accept", ACCEPT);
+
+            is = httpCon.getInputStream();
+
+            // Try to read the contents of the URL as a string
+            String urlContents = Utils.getStringFromStream(is);
+            if (urlContents == null)
+                return null;
+
+            return Arrays.asList(AdministrationParser.parseOfficeDetails(urlContents));
+        }
+        finally {
+            try {
+                if (httpCon != null)
+                    httpCon.disconnect();
+                if (is != null)
+                    is.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // Public methods
@@ -161,6 +195,39 @@ public class DefaultWebPageScraper implements WebPageScraper {
 
     @Override
     public ConsultantData[] scrapeAdministration() throws IOException {
-        return new ConsultantData[0];
+        HttpURLConnection httpCon = null;
+        InputStream is = null;
+        try {
+            URL url = new URL(SCRAPE_ADMINISTRATION_OFFICES);
+            httpCon = (HttpURLConnection) url.openConnection();
+            httpCon.setConnectTimeout(STD_TIMEOUT);
+            httpCon.setRequestProperty("User-Agent", USER_AGENT);
+            httpCon.setRequestProperty("Accept", ACCEPT);
+
+            is = httpCon.getInputStream();
+
+            // Try to read the contents of the URL as a string
+            String urlContents = Utils.getStringFromStream(is);
+            if (urlContents == null)
+                return null;
+
+            List<ConsultantData> result = new ArrayList<>();
+            String[] administrationOffices = AdministrationParser.parseOfficeUrls(urlContents);
+            for (String adminUrl : administrationOffices){
+                result.addAll(scrapeAdministrationDetails(adminUrl));
+            }
+
+            return result.toArray(new ConsultantData[result.size()]);
+        }
+        finally {
+            try {
+                if (httpCon != null)
+                    httpCon.disconnect();
+                if (is != null)
+                    is.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

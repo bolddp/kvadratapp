@@ -41,6 +41,7 @@ public class DbSpec {
         public static final String COLUMN_NAME_FIRSTNAME = "firstname";
         public static final String COLUMN_NAME_LASTNAME = "lastname";
         public static final String COLUMN_NAME_OFFICEID = "office_id";
+        public static final String COLUMN_NAME_TELEPHONE_NUMBER = "telno";
         public static final String COLUMN_NAME_JOBROLE = "jobrole";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
         public static final String COLUMN_NAME_OVERVIEW = "overview";
@@ -55,6 +56,7 @@ public class DbSpec {
                         COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                         COLUMN_NAME_OFFICEID + INTEGER_TYPE + COMMA_SEP +
                         COLUMN_NAME_OVERVIEW + TEXT_TYPE + COMMA_SEP +
+                        COLUMN_NAME_TELEPHONE_NUMBER + TEXT_TYPE + COMMA_SEP +
                         COLUMN_NAME_DETAILSTIMESTAMP + INTEGER_TYPE + COMMA_SEP +
                         "FOREIGN KEY(" + COLUMN_NAME_OFFICEID + ") REFERENCES " +
                         OfficeEntry.TABLE_NAME + "(" + OfficeEntry.COLUMN_NAME_ID + "))";
@@ -68,6 +70,8 @@ public class DbSpec {
                 COLUMN_NAME_OVERVIEW + " = '%s'" + COMMA_SEP +
                 COLUMN_NAME_DETAILSTIMESTAMP + " = %d" +
                 " WHERE " + COLUMN_NAME_ID + " = %d";
+
+        public static final String SQL_ADDCOLUMN_TELEPHONENUMBER = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_TELEPHONE_NUMBER + TEXT_TYPE;
     }
 
     public static class ConsultantTagEntry{

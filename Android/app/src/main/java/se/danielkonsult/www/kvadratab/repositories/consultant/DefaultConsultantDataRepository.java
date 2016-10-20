@@ -32,7 +32,8 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
             DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION,
             DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID,
             DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW,
-            DbSpec.ConsultantEntry.COLUMN_NAME_DETAILSTIMESTAMP
+            DbSpec.ConsultantEntry.COLUMN_NAME_DETAILSTIMESTAMP,
+            DbSpec.ConsultantEntry.COLUMN_NAME_TELEPHONE_NUMBER
     };
     private final String orderBy = DbSpec.ConsultantEntry.COLUMN_NAME_LASTNAME + "," + DbSpec.ConsultantEntry.COLUMN_NAME_FIRSTNAME;
 
@@ -53,6 +54,7 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
         consultantData.OfficeId = c.getInt(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID));
         consultantData.Overview = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW));
         consultantData.DetailsTimstamp = c.getLong(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_DETAILSTIMESTAMP));
+        consultantData.TelephoneNumber = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_TELEPHONE_NUMBER));
 
         return consultantData;
     }
@@ -145,6 +147,8 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
             values.put(DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE, consultant.JobRole);
         if (!Utils.isStringNullOrEmpty(consultant.Description))
             values.put(DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION, consultant.Description);
+        if (!Utils.isStringNullOrEmpty(consultant.TelephoneNumber))
+            values.put(DbSpec.ConsultantEntry.COLUMN_NAME_TELEPHONE_NUMBER, consultant.TelephoneNumber);
 
         // Insert office data
         if (consultant.OfficeId != 0)

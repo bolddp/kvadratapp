@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
  * Carries information from the main web page about one consultant.
  */
 public class ConsultantData {
-
     // Constructors
 
     public ConsultantData() {
@@ -25,6 +24,7 @@ public class ConsultantData {
     public String LastName;
     public String JobRole;
     public String Description;
+    public String TelephoneNumber;
     public int OfficeId;
     public String Overview;
 

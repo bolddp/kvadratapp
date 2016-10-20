@@ -10,9 +10,11 @@ import se.danielkonsult.www.kvadratab.entities.SummaryData;
  * Created by Daniel on 2016-10-09.
  */
 public interface WebPageScraper {
-    ConsultantData[] scrapeConsultants(int officeId, int tagId) throws IOException;
-
     SummaryData scrapeSummaryData() throws IOException;
 
+    ConsultantData[] scrapeConsultants(int officeId, int tagId) throws IOException;
+
     ConsultantDetails scrapeConsultantDetails(int consultantId) throws IOException;
+
+    ConsultantData[] scrapeAdministration() throws IOException;
 }

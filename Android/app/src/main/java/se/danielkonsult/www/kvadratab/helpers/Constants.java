@@ -13,4 +13,7 @@ public class Constants {
     public static final long REFRESHER_CONSULTANT_IMAGE_COMPARISON_INTERVAL_HOURS = 168; // Once a week the consultant images should be compared
 
     public static final int NOTIFICATIONS_MAX_COUNT = 20;
+
+    public static final int ADMINISTRATION_OFFICE_ID = 666666;
+    public static final String ADMINISTRATION_OFFICE_NAME = "Admin / försäljning";
 }

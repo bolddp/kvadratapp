@@ -37,6 +37,11 @@ public class TestWebPageScraper implements WebPageScraper {
         return null;
     }
 
+    @Override
+    public ConsultantData[] scrapeAdministration() throws IOException {
+        return null;
+    }
+
     public void setSummaryData(OfficeData[] officeDatas, TagData[] tagDatas) {
         _summaryData = new SummaryData();
         _summaryData.OfficeDatas = officeDatas;

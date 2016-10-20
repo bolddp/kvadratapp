@@ -5,9 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
+import se.danielkonsult.www.kvadratab.entities.OfficeData;
+import se.danielkonsult.www.kvadratab.helpers.Constants;
 import se.danielkonsult.www.kvadratab.helpers.Utils;
 import se.danielkonsult.www.kvadratab.entities.SummaryData;
 
@@ -25,6 +30,18 @@ public class DefaultWebPageScraper implements WebPageScraper {
     private static final int STD_TIMEOUT = 10000;
     private static final String USER_AGENT = "KvadratApp/1.0";
     private static final String ACCEPT = "text/html";
+
+    // Private methods
+
+    /**
+     * Adds an office representing the administration, with a fixed id and name.
+     */
+    private void appendAdministrationOffice(SummaryData summaryData) {
+        List<OfficeData> offices = new ArrayList<OfficeData>(Arrays.asList(summaryData.OfficeDatas));
+        offices.add(new OfficeData(Constants.ADMINISTRATION_OFFICE_ID, Constants.ADMINISTRATION_OFFICE_NAME));
+
+        summaryData.OfficeDatas = offices.toArray(new OfficeData[offices.size()]);
+    }
 
     // Public methods
 
@@ -93,7 +110,10 @@ public class DefaultWebPageScraper implements WebPageScraper {
             if (urlContents == null)
                 return null;
 
-            return SummaryDataParser.parse(urlContents);
+            SummaryData result = SummaryDataParser.parse(urlContents);
+            appendAdministrationOffice(result);
+
+            return result;
         }
         finally {
             try {
@@ -137,5 +157,10 @@ public class DefaultWebPageScraper implements WebPageScraper {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public ConsultantData[] scrapeAdministration() throws IOException {
+        return new ConsultantData[0];
     }
 }

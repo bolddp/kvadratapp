@@ -16,6 +16,7 @@ import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.ConsultantDetails;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.entities.TagData;
+import se.danielkonsult.www.kvadratab.helpers.Constants;
 import se.danielkonsult.www.kvadratab.helpers.scraper.DefaultWebPageScraper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.ConsultantDataParser;
 import se.danielkonsult.www.kvadratab.entities.SummaryData;
@@ -125,9 +126,7 @@ public class ScraperTests {
         Assert.assertNotNull(pageData);
         Assert.assertEquals(6, pageData.OfficeDatas.length);
         Assert.assertEquals(8, pageData.TagDatas.length);
-
     }
-
 
     /**
      * Tests that the consultants from a specific office can be scraped properly.
@@ -152,17 +151,22 @@ public class ScraperTests {
     @Test
     public void shouldScrapeSummaryDataFromWebPage() throws Throwable {
 
-        SummaryData assertSummaryPageData = new DefaultWebPageScraper().scrapeSummaryData();
-        Assert.assertNotNull(assertSummaryPageData);
+        SummaryData pageData = new DefaultWebPageScraper().scrapeSummaryData();
+        Assert.assertNotNull(pageData);
 
         // Don't assert an exact number since the web page contents most likely will change
-        Assert.assertTrue(String.format("Offices length: %d", assertSummaryPageData.OfficeDatas.length), (assertSummaryPageData.OfficeDatas.length > 5) && (assertSummaryPageData.OfficeDatas.length < 10));
-        for (OfficeData officeData : assertSummaryPageData.OfficeDatas) {
+        Assert.assertTrue(String.format("Offices length: %d", pageData.OfficeDatas.length), (pageData.OfficeDatas.length > 5) && (pageData.OfficeDatas.length < 10));
+        for (OfficeData officeData : pageData.OfficeDatas) {
             Assert.assertTrue(officeData.Id > 0);
             Assert.assertTrue(officeData.Name != null && officeData.Name != "");
         }
-        Assert.assertTrue(String.format("Tags length: %d", assertSummaryPageData.TagDatas.length), (assertSummaryPageData.TagDatas.length > 7) && (assertSummaryPageData.TagDatas.length < 10));
-        for (TagData tagData : assertSummaryPageData.TagDatas) {
+
+        // But the last one should always be administration!
+        Assert.assertTrue(pageData.OfficeDatas[pageData.OfficeDatas.length-1].Id == Constants.ADMINISTRATION_OFFICE_ID);
+        Assert.assertTrue(pageData.OfficeDatas[pageData.OfficeDatas.length-1].Name == Constants.ADMINISTRATION_OFFICE_NAME);
+
+        Assert.assertTrue(String.format("Tags length: %d", pageData.TagDatas.length), (pageData.TagDatas.length > 7) && (pageData.TagDatas.length < 10));
+        for (TagData tagData : pageData.TagDatas) {
             Assert.assertTrue(tagData.Id > 0);
             Assert.assertTrue(tagData.Name != null && tagData.Name != "");
         }

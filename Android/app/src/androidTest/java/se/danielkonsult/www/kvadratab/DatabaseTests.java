@@ -213,7 +213,7 @@ public class DatabaseTests {
         // Update the details
         ConsultantDetails details = new ConsultantDetails();
         details.CompetenceAreas = new String[] { ".NET-utvecklare", "Android-utvecklareåäö" };
-        details.Description = "Det här är description!";
+        details.Description = "Det här' är description!";
         details.Overview = "Det här är overview";
         db = new KvadratTestDb(ctx);
         db.getConsultantDataRepository().updateDetails(consultantData3.Id, details);

@@ -184,10 +184,13 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
 
         long currentTimestamp = System.currentTimeMillis();
 
-        // Update overview values
-        String sql = String.format(DbSpec.ConsultantEntry.SQL_UPDATE_DETAILS, details.Description,
-                details.Overview, currentTimestamp, consultantId);
-        db.execSQL(sql);
+        ContentValues updatedValues = new ContentValues();
+        updatedValues.put(DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION, details.Description);
+        updatedValues.put(DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW, details.Overview);
+        updatedValues.put(DbSpec.ConsultantEntry.COLUMN_NAME_DETAILSTIMESTAMP, currentTimestamp);
+
+        String filter = String.format("%s = %d", DbSpec.ConsultantEntry.COLUMN_NAME_ID, consultantId);
+        db.update(DbSpec.ConsultantEntry.TABLE_NAME, updatedValues, filter, null);
     }
 
     @Override

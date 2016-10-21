@@ -63,11 +63,6 @@ public class DbSpec {
 
         public static final String SQL_UPDATE_OFFICE_ID = "UPDATE " + TABLE_NAME +
                 " SET " + COLUMN_NAME_OFFICEID + "= %d WHERE id = %d";
-        public static final String SQL_UPDATE_DETAILS = "UPDATE " + TABLE_NAME +
-                " SET " + COLUMN_NAME_DESCRIPTION + " = '%s'" + COMMA_SEP +
-                COLUMN_NAME_OVERVIEW + " = '%s'" + COMMA_SEP +
-                COLUMN_NAME_DETAILSTIMESTAMP + " = %d" +
-                " WHERE " + COLUMN_NAME_ID + " = %d";
     }
 
     public static class ConsultantTagEntry{

@@ -159,8 +159,12 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
     public void updateOffice(int consultantId, int officeId) {
         SQLiteDatabase db = _db.getWritableDatabase();
 
-        String sql = String.format(DbSpec.ConsultantEntry.SQL_UPDATE_OFFICE_ID, officeId, consultantId);
-        db.execSQL(sql);
+        ContentValues updatedValues = new ContentValues();
+        updatedValues.put(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID, officeId);
+
+        String filter = String.format("%s = %d", DbSpec.ConsultantEntry.COLUMN_NAME_ID, consultantId);
+
+        db.update(DbSpec.ConsultantEntry.TABLE_NAME, updatedValues, filter, null);
     }
 
     @Override

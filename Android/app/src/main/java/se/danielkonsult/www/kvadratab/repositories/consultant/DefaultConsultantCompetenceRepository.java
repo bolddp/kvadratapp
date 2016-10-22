@@ -1,5 +1,6 @@
 package se.danielkonsult.www.kvadratab.repositories.consultant;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.helpers.db.DbSpec;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
+import se.danielkonsult.www.kvadratab.services.prefs.DefaultPrefsService;
 
 /**
  * Created by Daniel on 2016-10-06.
@@ -53,13 +55,28 @@ public class DefaultConsultantCompetenceRepository implements ConsultantCompeten
     public void update(int consultantId, String[] competences) {
         SQLiteDatabase db = _db.getWritableDatabase();
 
-        // Clear any old competence entries and then add the new ones
-        String sql = String.format(DbSpec.ConsultantCompetenceEntry.SQL_CLEAR_BY_CONSULTANT_ID, consultantId);
-        db.execSQL(sql);
+
+//        public static final String SQL_CLEAR_BY_CONSULTANT_ID = "DELETE FROM " + TABLE_NAME +
+//                " WHERE " + COLUMN_NAME_CONSULTANT_ID + " = %d" ;
+//        public static final String SQL_INSERT = "INSERT INTO " + TABLE_NAME + " (" +
+//                COLUMN_NAME_CONSULTANT_ID + COMMA_SEP +
+//                COLUMN_NAME_INDEX + COMMA_SEP +
+//                COLUMN_NAME_COMPETENCE + ") VALUES (%d, %d, '%s')";
+
+        // Clear current competence entries
+        String whereClause = DbSpec.ConsultantCompetenceEntry.COLUMN_NAME_CONSULTANT_ID + "=?";
+        String[] whereArgs = new String[] { Integer.toString(consultantId) };
+        db.delete(DbSpec.ConsultantCompetenceEntry.TABLE_NAME, whereClause, whereArgs);
+
+        // Add new ones
         int index = 0;
         for (String competence : competences){
-            sql = String.format(DbSpec.ConsultantCompetenceEntry.SQL_INSERT, consultantId, index, competence);
-            db.execSQL(sql);
+            ContentValues values = new ContentValues();
+            values.put(DbSpec.ConsultantCompetenceEntry.COLUMN_NAME_CONSULTANT_ID, consultantId);
+            values.put(DbSpec.ConsultantCompetenceEntry.COLUMN_NAME_INDEX, index);
+            values.put(DbSpec.ConsultantCompetenceEntry.COLUMN_NAME_COMPETENCE, competence);
+
+            db.insertOrThrow(DbSpec.ConsultantCompetenceEntry.TABLE_NAME, null, values);
             index++;
         }
     }

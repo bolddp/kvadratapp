@@ -210,15 +210,34 @@ public class DatabaseTests {
         consultantCount = db.getConsultantDataRepository().getCount();
         Assert.assertEquals(3, consultantCount);
 
-        // Update the details
+        // Create the details
         ConsultantDetails details = new ConsultantDetails();
-        details.CompetenceAreas = new String[] { ".NET-utvecklare", "Android-utvecklareåäö" };
+        details.CompetenceAreas = new String[] { ".NET-utvecklare", "Android-utvecklare" };
         details.Description = "Det här' är description!";
         details.Overview = "Det här är overview";
         db = new KvadratTestDb(ctx);
         db.getConsultantDataRepository().updateDetails(consultantData3.Id, details);
 
-        // Read it back
+        // Read it back and assert
+        db = new KvadratTestDb(ctx);
+        foundConsultant = db.getConsultantDataRepository().getById(consultantData3.Id, true);
+        Assert.assertEquals(foundConsultant.Description, details.Description);
+        Assert.assertEquals(foundConsultant.Overview, details.Overview);
+        Assert.assertEquals(details.CompetenceAreas.length, foundConsultant.CompetenceAreas.length);
+
+        for (int a = 0;a < details.CompetenceAreas.length;a++){
+            Assert.assertEquals(details.CompetenceAreas[a], foundConsultant.CompetenceAreas[a]);
+        }
+
+        // Update the details
+        details = new ConsultantDetails();
+        details.CompetenceAreas = new String[] { ".NET-utvecklare", "Systemarkitekt", "Scrum master" };
+        details.Description = "Det här' är description!";
+        details.Overview = "Det här är overview";
+        db = new KvadratTestDb(ctx);
+        db.getConsultantDataRepository().updateDetails(consultantData3.Id, details);
+
+        // Read it back and assert
         db = new KvadratTestDb(ctx);
         foundConsultant = db.getConsultantDataRepository().getById(consultantData3.Id, true);
         Assert.assertEquals(foundConsultant.Description, details.Description);

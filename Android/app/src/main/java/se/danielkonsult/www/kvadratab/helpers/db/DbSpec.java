@@ -60,9 +60,6 @@ public class DbSpec {
                         OfficeEntry.TABLE_NAME + "(" + OfficeEntry.COLUMN_NAME_ID + "))";
 
         public static final String SQL_COUNT_ALL = "SELECT COUNT(*) FROM " + TABLE_NAME;
-
-        public static final String SQL_UPDATE_OFFICE_ID = "UPDATE " + TABLE_NAME +
-                " SET " + COLUMN_NAME_OFFICEID + "= %d WHERE id = %d";
     }
 
     public static class ConsultantTagEntry{
@@ -95,13 +92,6 @@ public class DbSpec {
                         "PRIMARY KEY(" + COLUMN_NAME_CONSULTANT_ID + ", " + COLUMN_NAME_INDEX + "),"+
                         "FOREIGN KEY(" + COLUMN_NAME_CONSULTANT_ID + ") REFERENCES " +
                         ConsultantEntry.TABLE_NAME + "(" + ConsultantEntry.COLUMN_NAME_ID + "))";
-
-        public static final String SQL_CLEAR_BY_CONSULTANT_ID = "DELETE FROM " + TABLE_NAME +
-                " WHERE " + COLUMN_NAME_CONSULTANT_ID + " = %d" ;
-        public static final String SQL_INSERT = "INSERT INTO " + TABLE_NAME + " (" +
-                COLUMN_NAME_CONSULTANT_ID + COMMA_SEP +
-                COLUMN_NAME_INDEX + COMMA_SEP +
-                COLUMN_NAME_COMPETENCE + ") VALUES (%d, %d, '%s')";
     }
 
     public static class NotificationEntry {

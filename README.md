@@ -8,6 +8,10 @@ Appen finns här:
 
 # Versionshistorik Android
 
+## v1.2 - 2016-10-22
+
+* Fixade bugg som orsakade fel om konsultdetaljer innehöll citationstecken
+
 ## v1.1 - 2016-10-17
 
 * Fixade bugg som fick appen att krascha när händelse-vyn öppnades

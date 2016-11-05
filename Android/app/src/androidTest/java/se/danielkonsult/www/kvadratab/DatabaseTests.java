@@ -247,6 +247,19 @@ public class DatabaseTests {
         for (int a = 0;a < details.CompetenceAreas.length;a++){
             Assert.assertEquals(details.CompetenceAreas[a], foundConsultant.CompetenceAreas[a]);
         }
+
+        // Add competences
+        db = new KvadratTestDb(ctx);
+        db.getConsultantCompetenceRepository().update(foundConsultant.Id, new String[] { "ABC", "DEF", "GHI" });
+
+        // Delete the consultant
+        db = new KvadratTestDb(ctx);
+        db.getConsultantDataRepository().delete(foundConsultant.Id);
+
+        // Make sure it's gone
+        db = new KvadratTestDb(ctx);
+        foundConsultant = db.getConsultantDataRepository().getById(foundConsultant.Id, true);
+        Assert.assertNull(foundConsultant);
     }
 
     @Test

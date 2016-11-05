@@ -11,6 +11,7 @@ import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.entities.ConsultantData;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.helpers.Constants;
+import se.danielkonsult.www.kvadratab.helpers.KvadratAppException;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantDeletedNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantInsertedNotification;
 import se.danielkonsult.www.kvadratab.services.notification.ConsultantUpdatedNameNotification;
@@ -24,7 +25,7 @@ import se.danielkonsult.www.kvadratab.services.notification.Notification;
  */
 public class ConsultantComparer {
 
-    public static List<Notification> compare() throws IOException {
+    public static List<Notification> compare() throws IOException, KvadratAppException {
         List<Notification> result = new ArrayList<>();
 
         long lastImageComparisonTimestamp = AppCtrl.getPrefsService().getImageComparisonTimestamp();
@@ -54,50 +55,54 @@ public class ConsultantComparer {
             ConsultantData[] scrapedConsultants = AppCtrl.getWebPageScraper().scrapeConsultants(office.Id, 0);
 
             for (ConsultantData scrapedConsultant : scrapedConsultants){
-                scrapedHash.put(scrapedConsultant.Id, scrapedConsultant);
+                try {
+                    scrapedHash.put(scrapedConsultant.Id, scrapedConsultant);
 
-                if (!existingHash.containsKey(scrapedConsultant.Id)) {
-                    // Insert the consultant and link it to the correct office
-                    scrapedConsultant.OfficeId = office.Id;
-                    AppCtrl.getDb().getConsultantDataRepository().insert(scrapedConsultant);
-                    // AppCtrl.getDb().getConsultantDataRepository().updateOffice(scrapedConsultant.Id, office.Id);
+                    if (!existingHash.containsKey(scrapedConsultant.Id)) {
+                        // Insert the consultant and link it to the correct office
+                        scrapedConsultant.OfficeId = office.Id;
+                        AppCtrl.getDb().getConsultantDataRepository().insert(scrapedConsultant);
+                        // AppCtrl.getDb().getConsultantDataRepository().updateOffice(scrapedConsultant.Id, office.Id);
 
-                    // Download the image and save to file
-                    Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmap(scrapedConsultant.Id);
-                    AppCtrl.getImageService().saveConsultantBitmapToFile(scrapedConsultant.Id, bitmap);
+                        // Download the image and save to file
+                        Bitmap bitmap = AppCtrl.getImageService().downloadConsultantBitmap(scrapedConsultant.Id);
+                        AppCtrl.getImageService().saveConsultantBitmapToFile(scrapedConsultant.Id, bitmap);
 
-                    // It's a new consultant
-                    result.add(new ConsultantInsertedNotification(scrapedConsultant.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
-                }
-                else {
-                    // It's an existing consultant
-                    ConsultantData existing = existingHash.get(scrapedConsultant.Id);
-
-                    // Have the consultant moved to another office?
-                    if (existing.OfficeId != office.Id) {
-                        AppCtrl.getDb().getConsultantDataRepository().updateOffice(existing.Id, office.Id);
-                        result.add(new ConsultantUpdatedOfficeNotification(scrapedConsultant.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
+                        // It's a new consultant
+                        result.add(new ConsultantInsertedNotification(scrapedConsultant.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
                     }
+                    else {
+                        // It's an existing consultant
+                        ConsultantData existing = existingHash.get(scrapedConsultant.Id);
 
-                    // Has the name of the consultant changed?
-                    if (!existing.FirstName.equals(scrapedConsultant.FirstName) ||
-                        !existing.LastName.equals(scrapedConsultant.LastName)) {
-                        AppCtrl.getDb().getConsultantDataRepository().updateName(existing.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName);
-                        result.add(new ConsultantUpdatedNameNotification(scrapedConsultant.Id, existing.FirstName, existing.LastName, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
-                    }
+                        // Have the consultant moved to another office?
+                        if (existing.OfficeId != office.Id) {
+                            AppCtrl.getDb().getConsultantDataRepository().updateOffice(existing.Id, office.Id);
+                            result.add(new ConsultantUpdatedOfficeNotification(scrapedConsultant.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
+                        }
 
-                    // Should we compare bitmaps this time (determined earlier)?
-                    if (shouldCompareBitmaps){
-                        Bitmap existingBitmap = AppCtrl.getImageService().getConsultantBitmapFromFile(existing.Id);
-                        // Scrape the bitmap and save it to file to be able to compare it to the existing bitmap, also read from file
-                        AppCtrl.getImageService().saveConsultantBitmapToFile(100000, AppCtrl.getImageService().downloadConsultantBitmap(existing.Id));
-                        Bitmap scrapedBitmap = AppCtrl.getImageService().getConsultantBitmapFromFile(100000);
+                        // Has the name of the consultant changed?
+                        if (!existing.FirstName.equals(scrapedConsultant.FirstName) ||
+                            !existing.LastName.equals(scrapedConsultant.LastName)) {
+                            AppCtrl.getDb().getConsultantDataRepository().updateName(existing.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName);
+                            result.add(new ConsultantUpdatedNameNotification(scrapedConsultant.Id, existing.FirstName, existing.LastName, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
+                        }
 
-                        if (!existingBitmap.sameAs(scrapedBitmap)){
-                            AppCtrl.getImageService().saveConsultantBitmapToFile(existing.Id, scrapedBitmap);
-                            result.add(new ConsultantUpdatedBitmapNotification(existing.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
+                        // Should we compare bitmaps this time (determined earlier)?
+                        if (shouldCompareBitmaps){
+                            Bitmap existingBitmap = AppCtrl.getImageService().getConsultantBitmapFromFile(existing.Id);
+                            // Scrape the bitmap and save it to file to be able to compare it to the existing bitmap, also read from file
+                            AppCtrl.getImageService().saveConsultantBitmapToFile(100000, AppCtrl.getImageService().downloadConsultantBitmap(existing.Id));
+                            Bitmap scrapedBitmap = AppCtrl.getImageService().getConsultantBitmapFromFile(100000);
+
+                            if (!existingBitmap.sameAs(scrapedBitmap)){
+                                AppCtrl.getImageService().saveConsultantBitmapToFile(existing.Id, scrapedBitmap);
+                                result.add(new ConsultantUpdatedBitmapNotification(existing.Id, scrapedConsultant.FirstName, scrapedConsultant.LastName, office.Name));
+                            }
                         }
                     }
+                } catch (Exception ex) {
+                    throw new KvadratAppException(String.format("Fel vid behandling av konsult tillhörande kontor! (Officeid: %d, konsultid: %d)", office.Id, scrapedConsultant.Id), ex);
                 }
             }
         }

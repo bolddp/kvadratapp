@@ -43,27 +43,35 @@ public class OfficeComparer {
 
         // Have any offices been removed? (Found in existing but not in scraped)
         for (OfficeData od : existingOffices) {
-            if (!scrapedHash.containsKey(od.Id)) {
-                result.add(new OfficeDeletedNotification(od.Id, od.Name));
-                AppCtrl.getDb().getOfficeDataRepository().delete(od.Id);
-            }
-            else {
-                // It exists, but it might have changed?
-                OfficeData scrapedItem = scrapedHash.get(od.Id);
-                if (!od.Name.equals(scrapedItem.Name)) {
-                    result.add(new OfficeUpdatedNotification(od.Id, od.Name, scrapedItem.Name));
-                    // Update the database as well
-                    AppCtrl.getDb().getOfficeDataRepository().update(od.Id, scrapedItem.Name);
+            try {
+                if (!scrapedHash.containsKey(od.Id)) {
+                    result.add(new OfficeDeletedNotification(od.Id, od.Name));
+                    AppCtrl.getDb().getOfficeDataRepository().delete(od.Id);
                 }
+                else {
+                    // It exists, but it might have changed?
+                    OfficeData scrapedItem = scrapedHash.get(od.Id);
+                    if (!od.Name.equals(scrapedItem.Name)) {
+                        result.add(new OfficeUpdatedNotification(od.Id, od.Name, scrapedItem.Name));
+                        // Update the database as well
+                        AppCtrl.getDb().getOfficeDataRepository().update(od.Id, scrapedItem.Name);
+                    }
+                }
+            } catch (Exception ex) {
+                throw new KvadratAppException(String.format("Fel vid behandling av kontor! (Id: %d)", od.Id), ex);
             }
         }
 
         // Have any offices been added? Found in scraped but not in existing
         for (OfficeData od : scrapedOffices){
-            if (!existingHash.containsKey(od.Id)){
-                result.add(new OfficeInsertedNotification(od.Id, od.Name));
-                // Update the database as well
-                AppCtrl.getDb().getOfficeDataRepository().insert(od);
+            try {
+                if (!existingHash.containsKey(od.Id)){
+                    result.add(new OfficeInsertedNotification(od.Id, od.Name));
+                    // Update the database as well
+                    AppCtrl.getDb().getOfficeDataRepository().insert(od);
+                }
+            } catch (Exception ex) {
+                throw new KvadratAppException(String.format("Fel vid behandling av kontor! (Id: %d)", od.Id), ex);
             }
         }
 

@@ -9,4 +9,8 @@ public class KvadratAppException extends Exception {
     public KvadratAppException(String detailMessage) {
         super(detailMessage);
     }
+
+    public KvadratAppException(String detailMessage, Throwable throwable) {
+        super(detailMessage, throwable);
+    }
 }

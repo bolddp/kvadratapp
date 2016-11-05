@@ -60,7 +60,9 @@ public class DefaultRefresherService extends BroadcastReceiver implements Refres
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    AppCtrl.getNotificationService().add(new ErrorNotification(e.getMessage()), true);
+
+                    String errorMessage = String.format("Error message: %s\nStacktrace: %s", e.getMessage(), Log.getStackTraceString(e));
+                    AppCtrl.getNotificationService().add(new ErrorNotification(errorMessage), true);
                 }
             }
         });

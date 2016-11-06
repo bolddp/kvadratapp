@@ -106,7 +106,12 @@ public class DefaultLoaderService implements LoaderService {
                     for (ConsultantData cd : consultants){
                         if (isTest) {
                             if (cd.Id == 6985) {
-                                // Skip consultant 6985 (Daniel Persson)
+                                // Skip consultant 6985 (Daniel Persson) and add a fake one that will
+                                // be deleted during the next refresh
+                                ConsultantData fake = new ConsultantData(3333, "Teste", "Testsson", 17);
+                                fake.CompetenceAreas = new String[] { "Frontend", "Mellanend", "Backend" };
+                                db.getConsultantDataRepository().insert(fake);
+
                                 continue;
                             }
                             else if (cd.Id == 7565){

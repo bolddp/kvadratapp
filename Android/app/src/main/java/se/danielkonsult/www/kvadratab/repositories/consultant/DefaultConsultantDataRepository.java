@@ -153,6 +153,11 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
             values.put(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID, consultant.Office.Id);
 
         db.insertOrThrow(DbSpec.ConsultantEntry.TABLE_NAME, null, values);
+
+        // Does the consultant have competence data as well+
+        if ((consultant.CompetenceAreas != null) && (consultant.CompetenceAreas.length > 0)) {
+            _db.getConsultantCompetenceRepository().update(consultant.Id, consultant.CompetenceAreas);
+        }
     }
 
     @Override

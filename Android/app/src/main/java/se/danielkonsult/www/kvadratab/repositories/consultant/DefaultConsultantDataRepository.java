@@ -201,6 +201,8 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
     public void delete(int id) {
         SQLiteDatabase db = _db.getWritableDatabase();
 
+        _db.getConsultantCompetenceRepository().delete(id);
+
         String whereClause = DbSpec.ConsultantEntry.COLUMN_NAME_ID + "=?";
         String[] whereArgs = new String[] { Integer.toString(id) };
 

@@ -14,4 +14,9 @@ public interface ConsultantCompetenceRepository {
      * Updates the competences of a consultant.
      */
     void update(int consultantId, String[] competences);
+
+    /**
+     * Deletes the competences of a consultant.
+     */
+    void delete(int consultantId);
 }

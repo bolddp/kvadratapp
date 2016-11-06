@@ -28,6 +28,17 @@ public class DefaultConsultantCompetenceRepository implements ConsultantCompeten
 
     private KvadratDb _db;
 
+    // Private methods
+
+    /**
+     * Deletes the competences of a specific consultant.
+     */
+    private void delete(SQLiteDatabase db, int consultantId) {
+        String whereClause = DbSpec.ConsultantCompetenceEntry.COLUMN_NAME_CONSULTANT_ID + "=?";
+        String[] whereArgs = new String[] { Integer.toString(consultantId) };
+        db.delete(DbSpec.ConsultantCompetenceEntry.TABLE_NAME, whereClause, whereArgs);
+    }
+
     // Constructor
 
     public DefaultConsultantCompetenceRepository(KvadratDb db) {
@@ -55,18 +66,7 @@ public class DefaultConsultantCompetenceRepository implements ConsultantCompeten
     public void update(int consultantId, String[] competences) {
         SQLiteDatabase db = _db.getWritableDatabase();
 
-
-//        public static final String SQL_CLEAR_BY_CONSULTANT_ID = "DELETE FROM " + TABLE_NAME +
-//                " WHERE " + COLUMN_NAME_CONSULTANT_ID + " = %d" ;
-//        public static final String SQL_INSERT = "INSERT INTO " + TABLE_NAME + " (" +
-//                COLUMN_NAME_CONSULTANT_ID + COMMA_SEP +
-//                COLUMN_NAME_INDEX + COMMA_SEP +
-//                COLUMN_NAME_COMPETENCE + ") VALUES (%d, %d, '%s')";
-
-        // Clear current competence entries
-        String whereClause = DbSpec.ConsultantCompetenceEntry.COLUMN_NAME_CONSULTANT_ID + "=?";
-        String[] whereArgs = new String[] { Integer.toString(consultantId) };
-        db.delete(DbSpec.ConsultantCompetenceEntry.TABLE_NAME, whereClause, whereArgs);
+        delete(db, consultantId);
 
         // Add new ones
         int index = 0;
@@ -79,5 +79,11 @@ public class DefaultConsultantCompetenceRepository implements ConsultantCompeten
             db.insertOrThrow(DbSpec.ConsultantCompetenceEntry.TABLE_NAME, null, values);
             index++;
         }
+    }
+
+    @Override
+    public void delete(int consultantId) {
+        SQLiteDatabase db = _db.getWritableDatabase();
+        delete(db, consultantId);
     }
 }

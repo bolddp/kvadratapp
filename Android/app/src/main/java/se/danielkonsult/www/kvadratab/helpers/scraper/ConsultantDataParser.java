@@ -35,7 +35,8 @@ public class ConsultantDataParser {
     // Public methods
 
     public static ConsultantData[] parse(String urlContents){
-        final Pattern pattern = Pattern.compile("<a.*?/profil/\\?id=(\\d*).*?<div class='full-name'>(.*?)<.*?<");
+        // final Pattern pattern = Pattern.compile("<a.*?/profil/\\?id=(\\d*).*?<div class='full-name'>(.*?)<.*?<");
+        final Pattern pattern = Pattern.compile("<a.*?/konsult/(\\d*).*?<div class='full-name'>(.*?)<.*?<");
 
         List<ConsultantData> result = new ArrayList<>();
 

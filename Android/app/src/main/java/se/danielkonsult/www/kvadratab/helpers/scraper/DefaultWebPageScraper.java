@@ -18,7 +18,8 @@ public class DefaultWebPageScraper implements WebPageScraper {
 
     // Private variables
 
-    private static final String SCRAPE_ALLCONSULTANTS_URL = "http://www.kvadrat.se/wp-content/themes/blocks/ext/consultdata_new.php";
+    // private static final String SCRAPE_ALLCONSULTANTS_URL = "http://www.kvadrat.se/wp-content/themes/blocks/ext/consultdata_new.php";
+    private static final String SCRAPE_ALLCONSULTANTS_URL = "http://www.kvadrat.se/wp-admin/admin-ajax.php?";
     private static final String SCRAPE_SUMMARYDATA_URL = "http://www.kvadrat.se/konsulter/konsulter/";
     private static final String SCRAPE_CONSULTANTDETAILS_URL = "http://www.kvadrat.se/profil/?id=%d";
 
@@ -43,7 +44,7 @@ public class DefaultWebPageScraper implements WebPageScraper {
             httpCon.setRequestMethod("POST");
 
             // Set body
-            String str = String.format("consultantsearch=&offset=1&count=6&offices=%d&tags=%d", officeId, tagId);
+            String str = String.format("action=get_consult_data&consultantsearch=&offices=%d&tags=%d&offset=1&count=1000", officeId, tagId);
             byte[] outputBytes = str.getBytes("UTF-8");
             BufferedOutputStream outStream = null;
             try {

@@ -79,4 +79,10 @@ public class DefaultNotificationRepository implements NotificationRepository {
 
         db.insertOrThrow(DbSpec.NotificationEntry.TABLE_NAME, null, values);
     }
+
+    @Override
+    public void clear() {
+        SQLiteDatabase db = _db.getWritableDatabase();
+        db.delete(DbSpec.NotificationEntry.TABLE_NAME, null, null);
+    }
 }

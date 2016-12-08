@@ -19,4 +19,9 @@ public interface NotificationRepository {
      * @param notification
      */
     void insert(Notification notification);
+
+    /**
+     * Deletes all notifications.
+     */
+    void clear();
 }

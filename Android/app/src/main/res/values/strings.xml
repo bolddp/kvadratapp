@@ -9,4 +9,9 @@
     <string name="btn_ok">OK</string>
     <string name="msg_initialload_error_template">Det uppstod ett fel då konsultdata skulle laddas ner.\n\nFelmeddelande: %s</string>
     <string name="msg_filter_no_hits">Nuvarande filter ger inga träffar!</string>
+    <string name="clear_notifications">Rensa notifieringar</string>
+    <string name="question_header">Bekräfta</string>
+    <string name="msg_confirm_clear_notifications">Vill du radera alla händelser?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nej</string>
 </resources>

@@ -8,6 +8,16 @@ Appen finns här:
 
 # Versionshistorik Android
 
+## v1.4 - 2016-12-08
+
+- Uppdaterad för att hämta data från uppdaterad Kvadrat-webbsida
+- Händelser kan nu raderas
+- Knappar för val av kontor i filtret har blivit tillsnyggade
+
+## v1.3 - 2016-11-06
+
+- Fixade bugg som orsakade fel när konsult skulle raderas
+
 ## v1.2 - 2016-10-22
 
 * Fixade bugg som orsakade fel om konsultdetaljer innehöll citationstecken

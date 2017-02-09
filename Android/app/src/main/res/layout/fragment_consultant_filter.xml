@@ -22,6 +22,12 @@
             android:layout_height="48dp"
             android:background="@drawable/selector_btn_notifications"
             android:backgroundTint="@color/colorPrimary"/>
+        <Button
+            android:id="@+id/btnGame"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/selector_btn_notifications"
+            android:backgroundTint="@color/colorPrimary"/>
 
     </LinearLayout>
 

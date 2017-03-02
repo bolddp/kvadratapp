@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "se.danielkonsult.www.kvadratab"
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 7
         versionName "1.4"

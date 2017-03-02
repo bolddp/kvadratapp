@@ -32,4 +32,11 @@
     <style name="Text04" parent="TextView">
         <item name="android:textSize">14sp</item>
     </style>
+
+    <style name="MenuButton" parent="Base.Widget.AppCompat.Button">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:backgroundTint">@color/colorPrimary</item>
+    </style>
 </resources>

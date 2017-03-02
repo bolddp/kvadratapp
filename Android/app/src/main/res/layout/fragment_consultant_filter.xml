@@ -17,17 +17,13 @@
         android:orientation="vertical">
 
         <Button
+            style="@style/MenuButton"
             android:id="@+id/btnNotifications"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/selector_btn_notifications"
-            android:backgroundTint="@color/colorPrimary"/>
+            android:background="@drawable/selector_btn_notifications"/>
         <Button
+            style="@style/MenuButton"
             android:id="@+id/btnGame"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/selector_btn_notifications"
-            android:backgroundTint="@color/colorPrimary"/>
+            android:background="@drawable/selector_btn_quiz"/>
 
     </LinearLayout>
 

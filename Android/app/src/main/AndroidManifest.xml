@@ -22,7 +22,6 @@
         </activity>
         <activity android:name=".activities.ConsultantListActivity" />
         <activity android:name=".activities.ConsultantDetailsActivity" />
-        <activity android:name=".activities.GameActivity" />
 
         <receiver
             android:name=".services.refresher.DefaultRefresherService"

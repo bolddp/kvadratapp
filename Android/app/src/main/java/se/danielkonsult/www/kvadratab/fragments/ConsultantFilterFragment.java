@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,7 +22,6 @@ import java.util.List;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
 import se.danielkonsult.www.kvadratab.R;
-import se.danielkonsult.www.kvadratab.activities.GameActivity;
 import se.danielkonsult.www.kvadratab.activities.NotificationActivity;
 import se.danielkonsult.www.kvadratab.entities.OfficeData;
 import se.danielkonsult.www.kvadratab.services.data.ConsultantFilter;
@@ -42,7 +40,6 @@ public class ConsultantFilterFragment extends Fragment {
     private FlexboxLayout _layoutOfficeButtons;
     private Button _btnClearText;
     private Button _btnNotifications;
-    private Button _btnGame;
 
     private List<Integer> _officeIds = new ArrayList<>();
 
@@ -97,11 +94,6 @@ public class ConsultantFilterFragment extends Fragment {
 
     private void gotoNotificationActivity() {
         Intent intent = new Intent(getContext(), NotificationActivity.class);
-        startActivity(intent);
-    }
-
-    private void gotoGameActivity() {
-        Intent intent = new Intent(getContext(), GameActivity.class);
         startActivity(intent);
     }
 
@@ -188,17 +180,6 @@ public class ConsultantFilterFragment extends Fragment {
                 gotoNotificationActivity();
             }
         });
-
-        _btnGame = (Button) view.findViewById(R.id.btnGame);
-        _btnGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gotoGameActivity();
-            }
-        });
-
-
-
         setupFragment();
 
         view.setVisibility(View.GONE);

@@ -2,6 +2,7 @@ package se.danielkonsult.www.kvadratab;
 
 import android.content.Context;
 
+import se.danielkonsult.www.kvadratab.helpers.GenderHelper;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.helpers.scraper.DefaultWebPageScraper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
@@ -33,7 +34,7 @@ public class AppCtrl {
     private static RefresherService _refresherService;
     private static WebPageScraper _webPageScraper;
     private static NotificationService _notificationService;
-    private static boolean _testFlag;
+    private static GenderHelper _genderHelper;
 
     /**
      * Returns the application context that has been set.
@@ -106,6 +107,12 @@ public class AppCtrl {
             _webPageScraper = new DefaultWebPageScraper();
 
         return _webPageScraper;
+    }
+
+    public static GenderHelper getGenderHelper() {
+        if (_genderHelper == null)
+            _genderHelper = new GenderHelper();
+        return _genderHelper;
     }
 
     // Test methods

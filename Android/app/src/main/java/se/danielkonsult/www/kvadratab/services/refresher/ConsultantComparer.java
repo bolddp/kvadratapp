@@ -61,6 +61,7 @@ public class ConsultantComparer {
                     if (!existingHash.containsKey(scrapedConsultant.Id)) {
                         // Insert the consultant and link it to the correct office
                         scrapedConsultant.OfficeId = office.Id;
+                        scrapedConsultant.Gender = AppCtrl.getGenderHelper().getGender(scrapedConsultant.FirstName);
                         AppCtrl.getDb().getConsultantDataRepository().insert(scrapedConsultant);
                         // AppCtrl.getDb().getConsultantDataRepository().updateOffice(scrapedConsultant.Id, office.Id);
 

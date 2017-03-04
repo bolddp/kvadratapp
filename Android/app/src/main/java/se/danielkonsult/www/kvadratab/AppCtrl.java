@@ -3,6 +3,8 @@ package se.danielkonsult.www.kvadratab;
 import android.content.Context;
 
 import se.danielkonsult.www.kvadratab.helpers.GenderHelper;
+import se.danielkonsult.www.kvadratab.helpers.db.DbMigrator;
+import se.danielkonsult.www.kvadratab.helpers.db.DefaultDbMigrator;
 import se.danielkonsult.www.kvadratab.helpers.db.KvadratDb;
 import se.danielkonsult.www.kvadratab.helpers.scraper.DefaultWebPageScraper;
 import se.danielkonsult.www.kvadratab.helpers.scraper.WebPageScraper;
@@ -35,6 +37,7 @@ public class AppCtrl {
     private static WebPageScraper _webPageScraper;
     private static NotificationService _notificationService;
     private static GenderHelper _genderHelper;
+    private static DbMigrator _dbMigrator;
 
     /**
      * Returns the application context that has been set.
@@ -48,9 +51,17 @@ public class AppCtrl {
     }
 
     public static KvadratDb getDb() {
-        if (_db == null)
+        if (_db == null) {
             _db = new KvadratDb();
+            getDbMigrator().ensureGenderSet(_db);
+        }
         return _db;
+    }
+
+    public static DbMigrator getDbMigrator() {
+        if (_dbMigrator == null)
+            _dbMigrator = new DefaultDbMigrator();
+        return _dbMigrator;
     }
 
     /* Drops the database and forces a new copy to be created the next

@@ -35,9 +35,11 @@ public interface ConsultantDataRepository {
     void updateName(int consultantId, String firstName, String lastName);
 
     /**
-     * Updated the details of the consultant.
+     * Updates the details of the consultant.
      */
     void updateDetails(int consultantId, ConsultantDetails details);
+
+    void updateGender(int consultantId, String gender);
 
     /**
      * Deletes a consultant by its id.

@@ -45,6 +45,7 @@ public class DbSpec {
         public static final String COLUMN_NAME_DESCRIPTION = "description";
         public static final String COLUMN_NAME_OVERVIEW = "overview";
         public static final String COLUMN_NAME_DETAILSTIMESTAMP = "details_timestamp";
+        public static final String COLUMN_NAME_GENDER = "gender";
 
         public static final String SQL_CREATE =
                 "CREATE TABLE " + TABLE_NAME + " (" +
@@ -56,10 +57,12 @@ public class DbSpec {
                         COLUMN_NAME_OFFICEID + INTEGER_TYPE + COMMA_SEP +
                         COLUMN_NAME_OVERVIEW + TEXT_TYPE + COMMA_SEP +
                         COLUMN_NAME_DETAILSTIMESTAMP + INTEGER_TYPE + COMMA_SEP +
+                        COLUMN_NAME_GENDER + TEXT_TYPE + COMMA_SEP +
                         "FOREIGN KEY(" + COLUMN_NAME_OFFICEID + ") REFERENCES " +
                         OfficeEntry.TABLE_NAME + "(" + OfficeEntry.COLUMN_NAME_ID + "))";
 
         public static final String SQL_COUNT_ALL = "SELECT COUNT(*) FROM " + TABLE_NAME;
+        public static final String SQL_ADD_GENDER_COLUMN = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_GENDER + " " + TEXT_TYPE + ";";
     }
 
     public static class ConsultantTagEntry{

@@ -3,6 +3,7 @@ package se.danielkonsult.www.kvadratab.repositories.consultant;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +33,8 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
             DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION,
             DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID,
             DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW,
-            DbSpec.ConsultantEntry.COLUMN_NAME_DETAILSTIMESTAMP
+            DbSpec.ConsultantEntry.COLUMN_NAME_DETAILSTIMESTAMP,
+            DbSpec.ConsultantEntry.COLUMN_NAME_GENDER
     };
     private final String orderBy = DbSpec.ConsultantEntry.COLUMN_NAME_LASTNAME + "," + DbSpec.ConsultantEntry.COLUMN_NAME_FIRSTNAME;
 
@@ -53,6 +55,7 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
         consultantData.OfficeId = c.getInt(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OFFICEID));
         consultantData.Overview = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW));
         consultantData.DetailsTimstamp = c.getLong(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_DETAILSTIMESTAMP));
+        consultantData.Gender = c.getString(c.getColumnIndex(DbSpec.ConsultantEntry.COLUMN_NAME_GENDER));
 
         return consultantData;
     }
@@ -145,6 +148,10 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
             values.put(DbSpec.ConsultantEntry.COLUMN_NAME_JOBROLE, consultant.JobRole);
         if (!Utils.isStringNullOrEmpty(consultant.Description))
             values.put(DbSpec.ConsultantEntry.COLUMN_NAME_DESCRIPTION, consultant.Description);
+        if (!Utils.isStringNullOrEmpty(consultant.Gender)) {
+            values.put(DbSpec.ConsultantEntry.COLUMN_NAME_GENDER, consultant.Gender);
+            Log.i("GenderHelper", String.format("%s : %s", consultant.FirstName, consultant.Gender));
+        }
 
         // Insert office data
         if (consultant.OfficeId != 0)
@@ -198,6 +205,15 @@ public class DefaultConsultantDataRepository implements ConsultantDataRepository
         updatedValues.put(DbSpec.ConsultantEntry.COLUMN_NAME_OVERVIEW, details.Overview);
         updatedValues.put(DbSpec.ConsultantEntry.COLUMN_NAME_DETAILSTIMESTAMP, currentTimestamp);
 
+        String filter = String.format("%s = %d", DbSpec.ConsultantEntry.COLUMN_NAME_ID, consultantId);
+        db.update(DbSpec.ConsultantEntry.TABLE_NAME, updatedValues, filter, null);
+    }
+
+    @Override
+    public void updateGender(int consultantId, String gender) {
+        SQLiteDatabase db = _db.getWritableDatabase();
+        ContentValues updatedValues = new ContentValues();
+        updatedValues.put(DbSpec.ConsultantEntry.COLUMN_NAME_GENDER, gender);
         String filter = String.format("%s = %d", DbSpec.ConsultantEntry.COLUMN_NAME_ID, consultantId);
         db.update(DbSpec.ConsultantEntry.TABLE_NAME, updatedValues, filter, null);
     }

@@ -109,6 +109,7 @@ public class DefaultLoaderService implements LoaderService {
                                 // Skip consultant 6985 (Daniel Persson) and add a fake one that will
                                 // be deleted during the next refresh
                                 ConsultantData fake = new ConsultantData(3333, "Teste", "Testsson", 17);
+                                fake.Gender = "M";
                                 fake.CompetenceAreas = new String[] { "Frontend", "Mellanend", "Backend" };
                                 db.getConsultantDataRepository().insert(fake);
 
@@ -119,6 +120,9 @@ public class DefaultLoaderService implements LoaderService {
                                 cd.LastName = "von Heimdahl";
                             }
                         }
+
+                        // Determine gender
+                        cd.Gender = AppCtrl.getGenderHelper().getGender(cd.FirstName);
 
                         // Save the consultant to database
                         db.getConsultantDataRepository().insert(cd);

@@ -42,11 +42,11 @@ public class GenderHelper {
     /* Gets the suggested gender of a name, returning M for male
     and F for female names.
      */
-    public String getGender(String fullName) {
+    public String getGender(String firstName) {
         if (_femaleNamesHash == null) {
             _femaleNamesHash = loadNames();
         }
-        String[] namePieces = fullName.split(" ");
+        String[] namePieces = firstName.split(" ");
         if ((namePieces.length > 0) && _femaleNamesHash.contains(namePieces[0].toLowerCase())) {
             return "F";
         }

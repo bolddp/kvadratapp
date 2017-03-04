@@ -22,7 +22,7 @@
             android:background="@drawable/selector_btn_notifications"/>
         <Button
             style="@style/MenuButton"
-            android:id="@+id/btnGame"
+            android:id="@+id/btnQuiz"
             android:background="@drawable/selector_btn_quiz"/>
 
     </LinearLayout>

@@ -5,10 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import se.danielkonsult.www.kvadratab.AppCtrl;
-import se.danielkonsult.www.kvadratab.entities.ConsultantData;
-import se.danielkonsult.www.kvadratab.entities.NotificationData;
-import se.danielkonsult.www.kvadratab.entities.OfficeData;
-import se.danielkonsult.www.kvadratab.entities.TagData;
 import se.danielkonsult.www.kvadratab.repositories.consultant.ConsultantCompetenceRepository;
 import se.danielkonsult.www.kvadratab.repositories.consultant.ConsultantDataRepository;
 import se.danielkonsult.www.kvadratab.repositories.consultant.DefaultConsultantCompetenceRepository;
@@ -19,7 +15,6 @@ import se.danielkonsult.www.kvadratab.repositories.office.DefaultOfficeDataRepos
 import se.danielkonsult.www.kvadratab.repositories.office.OfficeDataRepository;
 import se.danielkonsult.www.kvadratab.repositories.tag.DefaultTagDataRepository;
 import se.danielkonsult.www.kvadratab.repositories.tag.TagDataRepository;
-import se.danielkonsult.www.kvadratab.services.notification.Notification;
 
 /**
  * Handles the database that stores data that is downloaded from the
@@ -28,8 +23,7 @@ import se.danielkonsult.www.kvadratab.services.notification.Notification;
 public class KvadratDb extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "Kvadrat.db";
-    // public static final int DATABASE_VERSION = 1;
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
 
     private OfficeDataRepository _officeDataRepository;
     private TagDataRepository _tagDataRepository;
@@ -60,9 +54,10 @@ public class KvadratDb extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        for (int version = oldVersion;version < newVersion-1;version++){
+        for (int version = oldVersion;version < newVersion;version++){
             if (version == 2){
-                // TBD Upgrade from version 2 to version 3
+                // Upgrade from version 2 to version 3
+                db.execSQL(DbSpec.ConsultantEntry.SQL_ADD_GENDER_COLUMN);
             }
         }
     }
